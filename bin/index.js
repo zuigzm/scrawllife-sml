@@ -27,7 +27,7 @@ require('yargs')
 			}
 		}
 	)
-	.command('list', '列表', argv => {
+	.command('list', '服务器选择列表', argv => {
 		serverList().then(answers => {
 			if (answers) {
 				ssh(answers)
