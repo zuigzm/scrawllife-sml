@@ -1,5 +1,5 @@
 {
-	"name": "scrawllife-sml",
+	"name": "@scrawllife/sml",
 	"version": "1.0.0",
 	"main": "index.js",
 	"author": "zuigzm <zuigzm@gmail.com>",
