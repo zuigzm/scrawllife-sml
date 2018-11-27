@@ -1,0 +1,21 @@
+{
+	"name": "scrawllife-sml",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "zuigzm <zuigzm@gmail.com>",
+	"license": "MIT",
+	"bin": {
+		"sml": "./bin/index.js"
+	},
+	"scripts": {
+		"test": "node ./bin/index.js"
+	},
+	"dependencies": {
+		"inquirer": "^6.2.0",
+		"ora": "^3.0.0",
+		"pkg-updater": "^1.0.4",
+		"shelljs": "^0.8.3",
+		"ssh2": "^0.6.1",
+		"yargs": "^12.0.5"
+	}
+}
