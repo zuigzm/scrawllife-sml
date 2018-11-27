@@ -1,1 +1,0 @@
-[{"name":"小布网测试服务器248","server":"118.25.96.248","port":"22","username":"root","password":"8&[fSgD-ZKptBbvO"}]
