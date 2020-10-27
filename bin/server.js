@@ -6,19 +6,22 @@ const json = path.join(__dirname, "../server.txt");
 module.exports = () => {
   return new Promise((resolve, reject) => {
     fs.readFile(json, "utf8", (err, data) => {
-      if (err) throw err;
+      if (err) reject(err);
 
-      if (!data) data = [];
-      data = data
-        .split("-")
-        .filter((i) => i)
-        .map((item) => {
-          if (item.length > 0) {
-            return JSON.parse(Buffer.from(item, "base64").toString("utf8"));
-          }
-        });
+      if (!data) {
+        reject("暂无保存的服务器列表");
+      } else {
+        data = data
+          .split("-")
+          .filter((i) => i)
+          .map((item) => {
+            if (item.length > 0) {
+              return JSON.parse(Buffer.from(item, "base64").toString("utf8"));
+            }
+          });
 
-      resolve(data);
+        resolve(data);
+      }
     });
   }).then((data) => {
     return inquirer
@@ -40,7 +43,10 @@ module.exports = () => {
             Object.assign(serverList, item);
           }
         });
-        return serverList;
+        return {
+          select: serverList,
+          datas: data,
+        };
       });
   });
 };
