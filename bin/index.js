@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const ora = require("ora")();
-const chalk = require("chalk");
 const set = require("./set");
 const del = require("./del");
 const serverList = require("./server");
