@@ -30,6 +30,7 @@ require("yargs")
     }
   )
   .command("list", "服务器选择列表", (argv) => {
+    ora.start("获取服务器列表中...");
     serverList()
       .then(({ select }) => {
         if (select) {
@@ -38,14 +39,15 @@ require("yargs")
       })
       .catch((err) => {
         if (err) {
-          console.log(chalk.red("暂时没有服务器列表展示"));
+          ora.warn("暂时未获取到服务器信息");
         }
       });
   })
   .command("del", "删除服务器", (argv) => {
+    ora.start("获取服务器列表中...");
     del().catch((err) => {
       if (err) {
-        console.log(chalk.red("暂时没有服务器列表展示"));
+        ora.warn("暂时未获取到服务器信息");
       }
     });
   })
