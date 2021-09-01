@@ -1,11 +1,12 @@
-const fs = require("fs");
-const path = require("path");
-const inquirer = require("inquirer");
+import inquirer from "inquirer";
+import fs from "fs";
+import path from "path";
+import serverList from "./server";
+
 const json = path.join(__dirname, "../server.txt");
-const serverList = require("./server");
 
 // 删除指定服务器
-module.exports = () => {
+export default () => {
   return serverList()
     .then(({ select, datas }) => {
       // 获取指定的服务器 answers

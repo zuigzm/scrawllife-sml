@@ -1,6 +1,7 @@
-const inquirer = require("inquirer");
-const fs = require("fs");
-const path = require("path");
+import inquirer from "inquirer";
+import fs from "fs";
+import path from "path";
+
 const json = path.join(__dirname, "../server.txt");
 
 const questions = [
@@ -35,7 +36,7 @@ const questions = [
   },
 ];
 
-module.exports = () => {
+export default () => {
   return inquirer.prompt(questions).then((answers) => {
     return inquirer
       .prompt({

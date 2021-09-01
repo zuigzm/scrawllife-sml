@@ -1,10 +1,10 @@
-const inquirer = require("inquirer");
-const fs = require("fs");
-const path = require("path");
-const json = path.join(__dirname, "../server.txt");
-const ora = require("ora")();
+import inquirer from "inquirer";
+import fs from "fs";
+import path from "path";
 
-module.exports = () => {
+const json = path.join(__dirname, "../server.txt");
+
+export default () => {
   return new Promise((resolve, reject) => {
     fs.readFile(json, "utf8", (err, data) => {
       if (err) reject(err);
