@@ -1,7 +1,9 @@
 import inquirer from "inquirer";
-import fs from "fs";
+// import fs from "fs";
 import path from "path";
+import save from "./save";
 
+const __dirname = path.resolve(path.dirname(""));
 const json = path.join(__dirname, "../server.txt");
 
 const questions = [
@@ -32,7 +34,7 @@ const questions = [
   {
     type: "password",
     name: "password",
-    message: "请设置你的服务器密码(账号密码保存在本地):",
+    message: "自动生成ssh-key(用以下次登录)",
   },
 ];
 
@@ -47,19 +49,21 @@ export default () => {
       .then((ft) => {
         if (ft.type) {
           // 给每个账号设置一个时间戳，来区分
-          const params = {
-            time: Date.now(),
-            ...answers,
-          };
+          // const params = {
+          //   time: Date.now(),
+          //   ...answers,
+          // };
 
-          const base64 = Buffer.from(JSON.stringify(params), "utf8").toString(
-            "base64"
-          );
+          // console.log(answers);
+          save(answers);
+          // const base64 = Buffer.from(JSON.stringify(params), "utf8").toString(
+          //   "base64"
+          // );
 
-          // 在文件后面插入新的数据用base64没有值去分割
-          fs.appendFile(json, `${base64}-`, "utf8", (err) => {
-            if (err) throw err;
-          });
+          // // 在文件后面插入新的数据用base64没有值去分割
+          // fs.appendFile(json, `${base64}-`, "utf8", (err) => {
+          //   if (err) throw err;
+          // });
 
           // // 读取文件
           // fs.readFile(json, "utf8", (err, data) => {

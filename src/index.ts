@@ -1,5 +1,7 @@
 import ORA from "ora";
 import chalk from "chalk";
+import Yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 import set from "./set";
 import del from "./del";
 import serverList from "./server";
@@ -7,8 +9,7 @@ import ssh from "./ssh";
 
 const ora = ORA();
 
-require("yargs")
-  .usage("$0 <cmd> [args]")
+Yargs(hideBin(process.argv))
   .command(
     "set [server]",
     "添加一台新的服务器配置",
@@ -30,7 +31,7 @@ require("yargs")
       }
     }
   )
-  .command("list", "服务器选择列表", (argv) => {
+  .command("list", "服务器选择列表", (argv: any) => {
     serverList()
       .then(({ select }) => {
         if (select) {
@@ -43,11 +44,11 @@ require("yargs")
         }
       });
   })
-  .command("del", "删除服务器", (argv) => {
+  .command("del", "删除服务器", (argv: any) => {
     del().catch((err) => {
       if (err) {
         ora.warn(chalk.yellow("暂时未获取到服务器信息"));
       }
     });
   })
-  .help().argv;
+  .demandCommand(1).argv;

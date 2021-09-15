@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import serverList from "./server";
 
+const __dirname = path.resolve(path.dirname(""));
 const json = path.join(__dirname, "../server.txt");
 
 // 删除指定服务器
