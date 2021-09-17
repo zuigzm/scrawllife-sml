@@ -5585,6 +5585,32 @@ function isYargsInstance(y) {
 
 const Yargs = YargsFactory(shim$1);
 
+var save = (function (sml) {
+  // 使用ssh2 在服务端 生成 ssh
+  var ora = ora$1();
+  var conn = new Client();
+  ora.start("获取服务器反馈中...");
+  conn.on("ready", function () {
+    ora.succeed("ssh连接成功!");
+    conn.shell(function (err, stream) {
+      if (err) return false;
+      stream.on("close", function () {
+        console.log("Stream :: close");
+        conn.end();
+      }).on("data", function (data) {
+        console.log("OUTPUT: " + data);
+      });
+      stream.end("ssh-keygen");
+    });
+  }).connect({
+    host: sml.server,
+    port: sml.port,
+    username: sml.username,
+    password: sml.password // tryKeyboard: true,
+
+  });
+});
+
 var __dirname$2 = path.resolve(path.dirname(""));
 
 path.join(__dirname$2, "../server.txt");
@@ -5626,7 +5652,9 @@ var set = (function () {
         //   time: Date.now(),
         //   ...answers,
         // };
-        console.log(answers); // const base64 = Buffer.from(JSON.stringify(params), "utf8").toString(
+        // console.log(answers);
+        var a = save(answers);
+        console.log(a); // const base64 = Buffer.from(JSON.stringify(params), "utf8").toString(
         //   "base64"
         // );
         // // 在文件后面插入新的数据用base64没有值去分割
@@ -5645,8 +5673,6 @@ var set = (function () {
         //   // 	if (err) throw err
         //   // })
         // });
-
-        return ft.type;
       }
     });
   });
@@ -5803,6 +5829,8 @@ Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务�
       if (answers) {
         ora.succeed(chalk.green("设置服务器信息成功!"));
       }
+    })["catch"](function (err) {
+      console.log("错误");
     });
   }
 }).command("list", "服务器选择列表", function (argv) {

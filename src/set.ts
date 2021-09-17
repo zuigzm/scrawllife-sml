@@ -55,7 +55,10 @@ export default () => {
           // };
 
           // console.log(answers);
-          save(answers);
+          const a = save(answers);
+
+          console.log(a);
+
           // const base64 = Buffer.from(JSON.stringify(params), "utf8").toString(
           //   "base64"
           // );
@@ -77,8 +80,6 @@ export default () => {
           //   // 	if (err) throw err
           //   // })
           // });
-
-          return ft.type;
         }
       });
   });

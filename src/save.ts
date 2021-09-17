@@ -18,7 +18,17 @@ export default (sml: SMLType) => {
     .on("ready", function () {
       ora.succeed("ssh连接成功!");
       conn.shell(function (err: any, stream: any) {
-        if (err) throw err;
+        if (err) return false;
+        stream
+          .on("close", () => {
+            console.log("Stream :: close");
+            conn.end();
+          })
+          .on("data", (data: any) => {
+            console.log("OUTPUT: " + data);
+          });
+
+        stream.end("ssh-keygen");
       });
     })
     .connect({

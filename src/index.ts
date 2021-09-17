@@ -23,11 +23,15 @@ Yargs(hideBin(process.argv))
     (argv: any) => {
       ora.stop();
       if (argv.server) {
-        set().then((answers: any) => {
-          if (answers) {
-            ora.succeed(chalk.green("设置服务器信息成功!"));
-          }
-        });
+        set()
+          .then((answers: any) => {
+            if (answers) {
+              ora.succeed(chalk.green("设置服务器信息成功!"));
+            }
+          })
+          .catch((err) => {
+            console.log("错误");
+          });
       }
     }
   )
