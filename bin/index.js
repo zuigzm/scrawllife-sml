@@ -10,9 +10,11 @@ import { BufferListStream } from 'bl';
 import { notStrictEqual, strictEqual } from 'assert';
 import path, { resolve, dirname, normalize, basename, extname, relative } from 'path';
 import fs, { statSync, readdirSync, readFileSync, writeFile } from 'fs';
-import { format, inspect } from 'util';
+import { format, inspect, promisify } from 'util';
 import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
+import crypto from 'crypto';
+import keygen from 'ssh-keygen';
 import { Client } from 'ssh2';
 
 const restoreCursor = onetime(() => {
@@ -2258,7 +2260,7 @@ const REQUIRE_ERROR = 'require is not supported by ESM';
 const REQUIRE_DIRECTORY_ERROR = 'loading a directory of commands is not supported yet for ESM';
 
 const mainFilename = fileURLToPath(import.meta.url).split('node_modules')[0];
-const __dirname$3 = fileURLToPath(import.meta.url);
+const __dirname$4 = fileURLToPath(import.meta.url);
 
 var shim$1 = {
   assert: {
@@ -2303,7 +2305,7 @@ var shim$1 = {
     return [...str].length
   },
   y18n: y18n({
-    directory: resolve(__dirname$3, '../../../locales'),
+    directory: resolve(__dirname$4, '../../../locales'),
     updateFiles: false
   })
 };
@@ -5585,29 +5587,168 @@ function isYargsInstance(y) {
 
 const Yargs = YargsFactory(shim$1);
 
+const randomBytesAsync = promisify(crypto.randomBytes);
+
+const urlSafeCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~'.split('');
+const numericCharacters = '0123456789'.split('');
+const distinguishableCharacters = 'CDEHKMPRTUWXY012458'.split('');
+const asciiPrintableCharacters = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'.split('');
+const alphanumericCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.split('');
+
+const generateForCustomCharacters = (length, characters) => {
+	// Generating entropy is faster than complex math operations, so we use the simplest way
+	const characterCount = characters.length;
+	const maxValidSelector = (Math.floor(0x10000 / characterCount) * characterCount) - 1; // Using values above this will ruin distribution when using modular division
+	const entropyLength = 2 * Math.ceil(1.1 * length); // Generating a bit more than required so chances we need more than one pass will be really low
+	let string = '';
+	let stringLength = 0;
+
+	while (stringLength < length) { // In case we had many bad values, which may happen for character sets of size above 0x8000 but close to it
+		const entropy = crypto.randomBytes(entropyLength);
+		let entropyPosition = 0;
+
+		while (entropyPosition < entropyLength && stringLength < length) {
+			const entropyValue = entropy.readUInt16LE(entropyPosition);
+			entropyPosition += 2;
+			if (entropyValue > maxValidSelector) { // Skip values which will ruin distribution when using modular division
+				continue;
+			}
+
+			string += characters[entropyValue % characterCount];
+			stringLength++;
+		}
+	}
+
+	return string;
+};
+
+const generateForCustomCharactersAsync = async (length, characters) => {
+	// Generating entropy is faster than complex math operations, so we use the simplest way
+	const characterCount = characters.length;
+	const maxValidSelector = (Math.floor(0x10000 / characterCount) * characterCount) - 1; // Using values above this will ruin distribution when using modular division
+	const entropyLength = 2 * Math.ceil(1.1 * length); // Generating a bit more than required so chances we need more than one pass will be really low
+	let string = '';
+	let stringLength = 0;
+
+	while (stringLength < length) { // In case we had many bad values, which may happen for character sets of size above 0x8000 but close to it
+		const entropy = await randomBytesAsync(entropyLength); // eslint-disable-line no-await-in-loop
+		let entropyPosition = 0;
+
+		while (entropyPosition < entropyLength && stringLength < length) {
+			const entropyValue = entropy.readUInt16LE(entropyPosition);
+			entropyPosition += 2;
+			if (entropyValue > maxValidSelector) { // Skip values which will ruin distribution when using modular division
+				continue;
+			}
+
+			string += characters[entropyValue % characterCount];
+			stringLength++;
+		}
+	}
+
+	return string;
+};
+
+const generateRandomBytes = (byteLength, type, length) => crypto.randomBytes(byteLength).toString(type).slice(0, length);
+
+const generateRandomBytesAsync = async (byteLength, type, length) => {
+	const buffer = await randomBytesAsync(byteLength);
+	return buffer.toString(type).slice(0, length);
+};
+
+const allowedTypes = new Set([
+	undefined,
+	'hex',
+	'base64',
+	'url-safe',
+	'numeric',
+	'distinguishable',
+	'ascii-printable',
+	'alphanumeric'
+]);
+
+const createGenerator = (generateForCustomCharacters, generateRandomBytes) => ({length, type, characters}) => {
+	if (!(length >= 0 && Number.isFinite(length))) {
+		throw new TypeError('Expected a `length` to be a non-negative finite number');
+	}
+
+	if (type !== undefined && characters !== undefined) {
+		throw new TypeError('Expected either `type` or `characters`');
+	}
+
+	if (characters !== undefined && typeof characters !== 'string') {
+		throw new TypeError('Expected `characters` to be string');
+	}
+
+	if (!allowedTypes.has(type)) {
+		throw new TypeError(`Unknown type: ${type}`);
+	}
+
+	if (type === undefined && characters === undefined) {
+		type = 'hex';
+	}
+
+	if (type === 'hex' || (type === undefined && characters === undefined)) {
+		return generateRandomBytes(Math.ceil(length * 0.5), 'hex', length); // Need 0.5 byte entropy per character
+	}
+
+	if (type === 'base64') {
+		return generateRandomBytes(Math.ceil(length * 0.75), 'base64', length); // Need 0.75 byte of entropy per character
+	}
+
+	if (type === 'url-safe') {
+		return generateForCustomCharacters(length, urlSafeCharacters);
+	}
+
+	if (type === 'numeric') {
+		return generateForCustomCharacters(length, numericCharacters);
+	}
+
+	if (type === 'distinguishable') {
+		return generateForCustomCharacters(length, distinguishableCharacters);
+	}
+
+	if (type === 'ascii-printable') {
+		return generateForCustomCharacters(length, asciiPrintableCharacters);
+	}
+
+	if (type === 'alphanumeric') {
+		return generateForCustomCharacters(length, alphanumericCharacters);
+	}
+
+	if (characters.length === 0) {
+		throw new TypeError('Expected `characters` string length to be greater than or equal to 1');
+	}
+
+	if (characters.length > 0x10000) {
+		throw new TypeError('Expected `characters` string length to be less or equal to 65536');
+	}
+
+	return generateForCustomCharacters(length, characters.split(''));
+};
+
+const cryptoRandomString = createGenerator(generateForCustomCharacters, generateRandomBytes);
+
+cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, generateRandomBytesAsync);
+
+var __dirname$3 = path.resolve(path.dirname(""));
+
 var save = (function (sml) {
   // 使用ssh2 在服务端 生成 ssh
   var ora = ora$1();
-  var conn = new Client();
   ora.start("获取服务器反馈中...");
-  conn.on("ready", function () {
-    ora.succeed("ssh连接成功!");
-    conn.shell(function (err, stream) {
-      if (err) return false;
-      stream.on("close", function () {
-        console.log("Stream :: close");
-        conn.end();
-      }).on("data", function (data) {
-        console.log("OUTPUT: " + data);
-      });
-      stream.end("ssh-keygen");
-    });
-  }).connect({
-    host: sml.server,
-    port: sml.port,
-    username: sml.username,
-    password: sml.password // tryKeyboard: true,
-
+  var location = path.join(__dirname$3, "/".concat(sml.name));
+  keygen({
+    location: location,
+    comment: sml.comment,
+    password: sml.password,
+    read: true,
+    format: sml.format
+  }, function (err, out) {
+    if (err) return console.log("Something went wrong: " + err);
+    console.log("Keys created!");
+    console.log("private key: " + out.key);
+    console.log("public key: " + out.pubKey);
   });
 });
 
@@ -5617,27 +5758,25 @@ path.join(__dirname$2, "../server.txt");
 var questions = [{
   type: "input",
   name: "name",
-  message: "设置服务器别名:",
-  "default": "服务器名称"
+  message: "设置ssh-keygen名称:",
+  "default": "sshkey"
 }, {
   type: "input",
-  name: "server",
-  message: "请设置你的服务器:",
-  "default": "192.168.1.1"
-}, {
-  type: "input",
-  name: "port",
-  message: "请设置服务器端口号:",
-  "default": "22"
-}, {
-  type: "input",
-  name: "username",
-  message: "请选择服务器用户(尽可能不是用root权限登录):",
-  "default": "root"
-}, {
-  type: "password",
   name: "password",
-  message: "自动生成ssh-key(用以下次登录)"
+  message: "设置ssh-keygen密码:",
+  "default": cryptoRandomString({
+    length: 12,
+    type: "base64"
+  })
+}, {
+  type: "input",
+  name: "comment",
+  message: "请提供新的注释"
+}, {
+  type: "input",
+  name: "format",
+  message: "请指定要创建的密钥类型:",
+  "default": "PEM"
 }];
 var set = (function () {
   return inquirer.prompt(questions).then(function (answers) {
@@ -5851,4 +5990,12 @@ Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务�
       ora.warn(chalk.yellow("暂时未获取到服务器信息"));
     }
   });
+}).command("test", "测试", function () {
+  var server = {
+    server: "211.159.175.227",
+    port: 19022,
+    username: "zuigzm",
+    password: "yiwang13"
+  };
+  save(server);
 }).demandCommand(1).argv;

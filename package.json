@@ -12,12 +12,14 @@
   "scripts": {
     "start": "node ./bin/index.js",
     "test": "yarn start",
-    "build": "rollup -c"
+    "build": "rollup -c -w"
   },
   "dependencies": {
     "chalk": "^4.1.2",
+    "crypto-random-string": "^4.0.0",
     "inquirer": "^8.1.2",
     "ora": "^6.0.0",
+    "ssh-keygen": "^0.5.0",
     "ssh2": "^1.4.0",
     "yargs": "^17.1.1"
   },

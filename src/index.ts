@@ -6,6 +6,7 @@ import set from "./set";
 import del from "./del";
 import serverList from "./server";
 import ssh from "./ssh";
+import save from "./save";
 
 const ora = ORA();
 
@@ -54,5 +55,15 @@ Yargs(hideBin(process.argv))
         ora.warn(chalk.yellow("暂时未获取到服务器信息"));
       }
     });
+  })
+  .command("test", "测试", () => {
+    const server = {
+      server: "211.159.175.227",
+      port: 19022,
+      username: "zuigzm",
+      password: "yiwang13",
+    };
+
+    save(server);
   })
   .demandCommand(1).argv;

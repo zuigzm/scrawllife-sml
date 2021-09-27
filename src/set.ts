@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+import cryptoRandomString from "crypto-random-string";
 // import fs from "fs";
 import path from "path";
 import save from "./save";
@@ -10,31 +11,25 @@ const questions = [
   {
     type: "input",
     name: "name",
-    message: "设置服务器别名:",
-    default: "服务器名称",
+    message: "设置ssh-keygen名称:",
+    default: "sshkey",
   },
   {
     type: "input",
-    name: "server",
-    message: "请设置你的服务器:",
-    default: "192.168.1.1",
-  },
-  {
-    type: "input",
-    name: "port",
-    message: "请设置服务器端口号:",
-    default: "22",
-  },
-  {
-    type: "input",
-    name: "username",
-    message: "请选择服务器用户(尽可能不是用root权限登录):",
-    default: "root",
-  },
-  {
-    type: "password",
     name: "password",
-    message: "自动生成ssh-key(用以下次登录)",
+    message: "设置ssh-keygen密码:",
+    default: cryptoRandomString({ length: 12, type: "base64" }),
+  },
+  {
+    type: "input",
+    name: "comment",
+    message: "请提供新的注释",
+  },
+  {
+    type: "input",
+    name: "format",
+    message: "请指定要创建的密钥类型:",
+    default: "PEM",
   },
 ];
 

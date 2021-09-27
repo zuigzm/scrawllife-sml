@@ -1,41 +1,37 @@
 import { Client } from "ssh2";
 import ORA from "ora";
+import keygen from "ssh-keygen";
+import path from "path";
 
+const __dirname = path.resolve(path.dirname(""));
 interface SMLType {
-  server: string;
-  port: number;
-  username: string;
+  name: string;
   password: string;
+  comment: string;
+  format: string;
 }
 
 export default (sml: SMLType) => {
   // 使用ssh2 在服务端 生成 ssh
 
   const ora = ORA();
-  const conn = new Client();
   ora.start("获取服务器反馈中...");
-  conn
-    .on("ready", function () {
-      ora.succeed("ssh连接成功!");
-      conn.shell(function (err: any, stream: any) {
-        if (err) return false;
-        stream
-          .on("close", () => {
-            console.log("Stream :: close");
-            conn.end();
-          })
-          .on("data", (data: any) => {
-            console.log("OUTPUT: " + data);
-          });
 
-        stream.end("ssh-keygen");
-      });
-    })
-    .connect({
-      host: sml.server,
-      port: sml.port,
-      username: sml.username,
+  const location = path.join(__dirname, `/${sml.name}`);
+
+  keygen(
+    {
+      location: location,
+      comment: sml.comment,
       password: sml.password,
-      // tryKeyboard: true,
-    });
+      read: true,
+      format: sml.format,
+    },
+    function (err, out) {
+      if (err) return console.log("Something went wrong: " + err);
+      console.log("Keys created!");
+      console.log("private key: " + out.key);
+      console.log("public key: " + out.pubKey);
+    }
+  );
 };
