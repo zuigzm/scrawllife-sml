@@ -1,31 +1,26 @@
 import inquirer from "inquirer";
+import { Low, JSONFile } from 'lowdb'
 import fs from "fs";
 import path from "path";
 
-const __dirname = path.resolve(path.dirname(""));
-const json = path.join(__dirname, "../server.txt");
+import { KeysData } from "./save";
 
 export default () => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(json, "utf8", (err, data) => {
-      if (err) reject(err);
+  const __dirname = path.resolve(path.dirname(""));
+  const json = path.join(__dirname, "/.key/key.json");
+  const adapter = new JSONFile<KeysData>(json)
+  const db = new Low<KeysData>(adapter)
 
-      if (!data) {
+  return new Promise((resolve, reject) => {
+    db.read().then(() => {
+      const { keys = [] } =  db.data || {};
+      if(!keys.length) {
         reject("暂无保存的服务器列表");
       } else {
-        data = data
-          .split("-")
-          .filter((i) => i)
-          .map((item) => {
-            if (item.length > 0) {
-              return JSON.parse(Buffer.from(item, "base64").toString("utf8"));
-            }
-          });
-
-        resolve(data);
+        resolve(keys);
       }
-    });
-  }).then((data) => {
+    })
+  }).then((data: any) => {
     return inquirer
       .prompt([
         {
@@ -39,12 +34,7 @@ export default () => {
         },
       ])
       .then((answers) => {
-        const serverList = {};
-        data.map((item) => {
-          if (item.time === answers.time) {
-            Object.assign(serverList, item);
-          }
-        });
+        const serverList =  data.find((item:any) => item.time === answers.time);
         return {
           select: serverList,
           datas: data,

@@ -1,24 +1,23 @@
-import { Client } from "ssh2";
-import ORA from "ora";
 import keygen from "ssh-keygen";
 import path from "path";
 
 const __dirname = path.resolve(path.dirname(""));
-interface SMLType {
+export interface SMLType {
   name: string;
+  file: string;
   password: string;
   comment: string;
   format: string;
+  keyType:boolean;
 }
 
-export default (sml: SMLType) => {
+export interface KeysData {
+  keys: Array<SMLType>
+}
+
+export default (sml: SMLType,cb: ()=> void) => {
   // 使用ssh2 在服务端 生成 ssh
-
-  const ora = ORA();
-  ora.start("获取服务器反馈中...");
-
-  const location = path.join(__dirname, `/${sml.name}`);
-
+  const location = path.join(__dirname, `/.key/${sml.file}`);
   keygen(
     {
       location: location,
@@ -27,11 +26,15 @@ export default (sml: SMLType) => {
       read: true,
       format: sml.format,
     },
-    function (err, out) {
+    function (err:any, out:any) {
       if (err) return console.log("Something went wrong: " + err);
-      console.log("Keys created!");
-      console.log("private key: " + out.key);
-      console.log("public key: " + out.pubKey);
+      if(!sml.keyType) {
+        // 隐藏秘钥信息
+        console.log("Keys created!");
+        console.log("private key: " + out.key);
+        console.log("public key: " + out.pubKey);
+      }
+      cb && cb()
     }
   );
 };

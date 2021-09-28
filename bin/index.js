@@ -2260,7 +2260,7 @@ const REQUIRE_ERROR = 'require is not supported by ESM';
 const REQUIRE_DIRECTORY_ERROR = 'loading a directory of commands is not supported yet for ESM';
 
 const mainFilename = fileURLToPath(import.meta.url).split('node_modules')[0];
-const __dirname$4 = fileURLToPath(import.meta.url);
+const __dirname$2 = fileURLToPath(import.meta.url);
 
 var shim$1 = {
   assert: {
@@ -2305,7 +2305,7 @@ var shim$1 = {
     return [...str].length
   },
   y18n: y18n({
-    directory: resolve(__dirname$4, '../../../locales'),
+    directory: resolve(__dirname$2, '../../../locales'),
     updateFiles: false
   })
 };
@@ -4149,13 +4149,13 @@ function mergeDeep(config1, config2) {
     return target;
 }
 
-var __classPrivateFieldSet = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+var __classPrivateFieldSet$3 = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+var __classPrivateFieldGet$3 = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
@@ -4243,32 +4243,32 @@ class YargsInstance {
         _YargsInstance_usage.set(this, void 0);
         _YargsInstance_versionOpt.set(this, null);
         _YargsInstance_validation.set(this, void 0);
-        __classPrivateFieldSet(this, _YargsInstance_shim, shim, "f");
-        __classPrivateFieldSet(this, _YargsInstance_processArgs, processArgs, "f");
-        __classPrivateFieldSet(this, _YargsInstance_cwd, cwd, "f");
-        __classPrivateFieldSet(this, _YargsInstance_parentRequire, parentRequire, "f");
-        __classPrivateFieldSet(this, _YargsInstance_globalMiddleware, new GlobalMiddleware(this), "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_shim, shim, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_processArgs, processArgs, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_cwd, cwd, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_parentRequire, parentRequire, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_globalMiddleware, new GlobalMiddleware(this), "f");
         this.$0 = this[kGetDollarZero]();
         this[kReset]();
-        __classPrivateFieldSet(this, _YargsInstance_command, __classPrivateFieldGet(this, _YargsInstance_command, "f"), "f");
-        __classPrivateFieldSet(this, _YargsInstance_usage, __classPrivateFieldGet(this, _YargsInstance_usage, "f"), "f");
-        __classPrivateFieldSet(this, _YargsInstance_validation, __classPrivateFieldGet(this, _YargsInstance_validation, "f"), "f");
-        __classPrivateFieldSet(this, _YargsInstance_options, __classPrivateFieldGet(this, _YargsInstance_options, "f"), "f");
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").showHiddenOpt = __classPrivateFieldGet(this, _YargsInstance_defaultShowHiddenOpt, "f");
-        __classPrivateFieldSet(this, _YargsInstance_logger, this[kCreateLogger](), "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_command, __classPrivateFieldGet$3(this, _YargsInstance_command, "f"), "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_usage, __classPrivateFieldGet$3(this, _YargsInstance_usage, "f"), "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_validation, __classPrivateFieldGet$3(this, _YargsInstance_validation, "f"), "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_options, __classPrivateFieldGet$3(this, _YargsInstance_options, "f"), "f");
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").showHiddenOpt = __classPrivateFieldGet$3(this, _YargsInstance_defaultShowHiddenOpt, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_logger, this[kCreateLogger](), "f");
     }
     addHelpOpt(opt, msg) {
         const defaultHelpOpt = 'help';
         argsert('[string|boolean] [string]', [opt, msg], arguments.length);
-        if (__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f")) {
-            this[kDeleteFromParserHintObject](__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f"));
-            __classPrivateFieldSet(this, _YargsInstance_helpOpt, null, "f");
+        if (__classPrivateFieldGet$3(this, _YargsInstance_helpOpt, "f")) {
+            this[kDeleteFromParserHintObject](__classPrivateFieldGet$3(this, _YargsInstance_helpOpt, "f"));
+            __classPrivateFieldSet$3(this, _YargsInstance_helpOpt, null, "f");
         }
         if (opt === false && msg === undefined)
             return this;
-        __classPrivateFieldSet(this, _YargsInstance_helpOpt, typeof opt === 'string' ? opt : defaultHelpOpt, "f");
-        this.boolean(__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f"));
-        this.describe(__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f"), msg || __classPrivateFieldGet(this, _YargsInstance_usage, "f").deferY18nLookup('Show help'));
+        __classPrivateFieldSet$3(this, _YargsInstance_helpOpt, typeof opt === 'string' ? opt : defaultHelpOpt, "f");
+        this.boolean(__classPrivateFieldGet$3(this, _YargsInstance_helpOpt, "f"));
+        this.describe(__classPrivateFieldGet$3(this, _YargsInstance_helpOpt, "f"), msg || __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").deferY18nLookup('Show help'));
         return this;
     }
     help(opt, msg) {
@@ -4278,10 +4278,10 @@ class YargsInstance {
         argsert('[string|boolean] [string]', [opt, msg], arguments.length);
         if (opt === false && msg === undefined)
             return this;
-        const showHiddenOpt = typeof opt === 'string' ? opt : __classPrivateFieldGet(this, _YargsInstance_defaultShowHiddenOpt, "f");
+        const showHiddenOpt = typeof opt === 'string' ? opt : __classPrivateFieldGet$3(this, _YargsInstance_defaultShowHiddenOpt, "f");
         this.boolean(showHiddenOpt);
-        this.describe(showHiddenOpt, msg || __classPrivateFieldGet(this, _YargsInstance_usage, "f").deferY18nLookup('Show hidden options'));
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").showHiddenOpt = showHiddenOpt;
+        this.describe(showHiddenOpt, msg || __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").deferY18nLookup('Show hidden options'));
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").showHiddenOpt = showHiddenOpt;
         return this;
     }
     showHidden(opt, msg) {
@@ -4309,14 +4309,14 @@ class YargsInstance {
                 return f(argv);
             }, (result) => {
                 if (!result) {
-                    __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(__classPrivateFieldGet(this, _YargsInstance_shim, "f").y18n.__('Argument check failed: %s', f.toString()));
+                    __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").fail(__classPrivateFieldGet$3(this, _YargsInstance_shim, "f").y18n.__('Argument check failed: %s', f.toString()));
                 }
                 else if (typeof result === 'string' || result instanceof Error) {
-                    __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(result.toString(), result);
+                    __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").fail(result.toString(), result);
                 }
                 return argv;
             }, (err) => {
-                __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(err.message ? err.message : err.toString(), err);
+                __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").fail(err.message ? err.message : err.toString(), err);
                 return argv;
             });
         }, false, global);
@@ -4347,8 +4347,8 @@ class YargsInstance {
         if (!value) {
             throw new YError('coerce callback must be provided');
         }
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").key[keys] = true;
-        __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").addCoerceMiddleware((argv, yargs) => {
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").key[keys] = true;
+        __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f").addCoerceMiddleware((argv, yargs) => {
             let aliases;
             return maybeAsyncResult(() => {
                 aliases = yargs.getAliases();
@@ -4369,23 +4369,23 @@ class YargsInstance {
     }
     conflicts(key1, key2) {
         argsert('<string|object> [string|array]', [key1, key2], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_validation, "f").conflicts(key1, key2);
+        __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").conflicts(key1, key2);
         return this;
     }
     config(key = 'config', msg, parseFn) {
         argsert('[object|string] [string|function] [function]', [key, msg, parseFn], arguments.length);
         if (typeof key === 'object' && !Array.isArray(key)) {
-            key = applyExtends(key, __classPrivateFieldGet(this, _YargsInstance_cwd, "f"), this[kGetParserConfiguration]()['deep-merge-config'] || false, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects = (__classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects || []).concat(key);
+            key = applyExtends(key, __classPrivateFieldGet$3(this, _YargsInstance_cwd, "f"), this[kGetParserConfiguration]()['deep-merge-config'] || false, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f").configObjects = (__classPrivateFieldGet$3(this, _YargsInstance_options, "f").configObjects || []).concat(key);
             return this;
         }
         if (typeof msg === 'function') {
             parseFn = msg;
             msg = undefined;
         }
-        this.describe(key, msg || __classPrivateFieldGet(this, _YargsInstance_usage, "f").deferY18nLookup('Path to JSON config file'));
+        this.describe(key, msg || __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").deferY18nLookup('Path to JSON config file'));
         (Array.isArray(key) ? key : [key]).forEach(k => {
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").config[k] = parseFn || true;
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f").config[k] = parseFn || true;
         });
         return this;
     }
@@ -4395,18 +4395,18 @@ class YargsInstance {
             fn = desc;
             desc = undefined;
         }
-        __classPrivateFieldSet(this, _YargsInstance_completionCommand, cmd || __classPrivateFieldGet(this, _YargsInstance_completionCommand, "f") || 'completion', "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_completionCommand, cmd || __classPrivateFieldGet$3(this, _YargsInstance_completionCommand, "f") || 'completion', "f");
         if (!desc && desc !== false) {
             desc = 'generate completion script';
         }
-        this.command(__classPrivateFieldGet(this, _YargsInstance_completionCommand, "f"), desc);
+        this.command(__classPrivateFieldGet$3(this, _YargsInstance_completionCommand, "f"), desc);
         if (fn)
-            __classPrivateFieldGet(this, _YargsInstance_completion, "f").registerFunction(fn);
+            __classPrivateFieldGet$3(this, _YargsInstance_completion, "f").registerFunction(fn);
         return this;
     }
     command(cmd, description, builder, handler, middlewares, deprecated) {
         argsert('<string|array|object> [string|boolean] [function|object] [function] [array] [boolean|string]', [cmd, description, builder, handler, middlewares, deprecated], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_command, "f").addHandler(cmd, description, builder, handler, middlewares, deprecated);
+        __classPrivateFieldGet$3(this, _YargsInstance_command, "f").addHandler(cmd, description, builder, handler, middlewares, deprecated);
         return this;
     }
     commands(cmd, description, builder, handler, middlewares, deprecated) {
@@ -4414,8 +4414,8 @@ class YargsInstance {
     }
     commandDir(dir, opts) {
         argsert('<string> [object]', [dir, opts], arguments.length);
-        const req = __classPrivateFieldGet(this, _YargsInstance_parentRequire, "f") || __classPrivateFieldGet(this, _YargsInstance_shim, "f").require;
-        __classPrivateFieldGet(this, _YargsInstance_command, "f").addDirectory(dir, req, __classPrivateFieldGet(this, _YargsInstance_shim, "f").getCallerFile(), opts);
+        const req = __classPrivateFieldGet$3(this, _YargsInstance_parentRequire, "f") || __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").require;
+        __classPrivateFieldGet$3(this, _YargsInstance_command, "f").addDirectory(dir, req, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").getCallerFile(), opts);
         return this;
     }
     count(keys) {
@@ -4426,14 +4426,14 @@ class YargsInstance {
     default(key, value, defaultDescription) {
         argsert('<object|string|array> [*] [string]', [key, value, defaultDescription], arguments.length);
         if (defaultDescription) {
-            assertSingleKey(key, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key] = defaultDescription;
+            assertSingleKey(key, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f").defaultDescription[key] = defaultDescription;
         }
         if (typeof value === 'function') {
-            assertSingleKey(key, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-            if (!__classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key])
-                __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key] =
-                    __classPrivateFieldGet(this, _YargsInstance_usage, "f").functionDescription(value);
+            assertSingleKey(key, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
+            if (!__classPrivateFieldGet$3(this, _YargsInstance_options, "f").defaultDescription[key])
+                __classPrivateFieldGet$3(this, _YargsInstance_options, "f").defaultDescription[key] =
+                    __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").functionDescription(value);
             value = value.call();
         }
         this[kPopulateParserHintSingleValueDictionary](this.default.bind(this), 'default', key, value);
@@ -4449,7 +4449,7 @@ class YargsInstance {
             max = Infinity;
         }
         this.global('_', false);
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").demandedCommands._ = {
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").demandedCommands._ = {
             min,
             max,
             minMsg,
@@ -4460,7 +4460,7 @@ class YargsInstance {
     demand(keys, max, msg) {
         if (Array.isArray(max)) {
             max.forEach(key => {
-                assertNotStrictEqual(msg, true, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+                assertNotStrictEqual(msg, true, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
                 this.demandOption(key, msg);
             });
             max = Infinity;
@@ -4470,12 +4470,12 @@ class YargsInstance {
             max = Infinity;
         }
         if (typeof keys === 'number') {
-            assertNotStrictEqual(msg, true, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+            assertNotStrictEqual(msg, true, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
             this.demandCommand(keys, max, msg, msg);
         }
         else if (Array.isArray(keys)) {
             keys.forEach(key => {
-                assertNotStrictEqual(msg, true, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+                assertNotStrictEqual(msg, true, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
                 this.demandOption(key, msg);
             });
         }
@@ -4496,31 +4496,31 @@ class YargsInstance {
     }
     deprecateOption(option, message) {
         argsert('<string> [string|boolean]', [option, message], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").deprecatedOptions[option] = message;
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").deprecatedOptions[option] = message;
         return this;
     }
     describe(keys, description) {
         argsert('<object|string|array> [string]', [keys, description], arguments.length);
         this[kSetKey](keys, true);
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").describe(keys, description);
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").describe(keys, description);
         return this;
     }
     detectLocale(detect) {
         argsert('<boolean>', [detect], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_detectLocale, detect, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_detectLocale, detect, "f");
         return this;
     }
     env(prefix) {
         argsert('[string|boolean]', [prefix], arguments.length);
         if (prefix === false)
-            delete __classPrivateFieldGet(this, _YargsInstance_options, "f").envPrefix;
+            delete __classPrivateFieldGet$3(this, _YargsInstance_options, "f").envPrefix;
         else
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").envPrefix = prefix || '';
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f").envPrefix = prefix || '';
         return this;
     }
     epilogue(msg) {
         argsert('<string>', [msg], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").epilog(msg);
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").epilog(msg);
         return this;
     }
     epilog(msg) {
@@ -4532,19 +4532,19 @@ class YargsInstance {
             cmd.forEach(exampleParams => this.example(...exampleParams));
         }
         else {
-            __classPrivateFieldGet(this, _YargsInstance_usage, "f").example(cmd, description);
+            __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").example(cmd, description);
         }
         return this;
     }
     exit(code, err) {
-        __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
-        __classPrivateFieldSet(this, _YargsInstance_exitError, err, "f");
-        if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f"))
-            __classPrivateFieldGet(this, _YargsInstance_shim, "f").process.exit(code);
+        __classPrivateFieldSet$3(this, _YargsInstance_hasOutput, true, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_exitError, err, "f");
+        if (__classPrivateFieldGet$3(this, _YargsInstance_exitProcess, "f"))
+            __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").process.exit(code);
     }
     exitProcess(enabled = true) {
         argsert('[boolean]', [enabled], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_exitProcess, enabled, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_exitProcess, enabled, "f");
         return this;
     }
     fail(f) {
@@ -4552,7 +4552,7 @@ class YargsInstance {
         if (typeof f === 'boolean' && f !== false) {
             throw new YError("Invalid first argument. Expected function or boolean 'false'");
         }
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").failFn(f);
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").failFn(f);
         return this;
     }
     getAliases() {
@@ -4562,7 +4562,7 @@ class YargsInstance {
         argsert('<array> [function]', [args, done], arguments.length);
         if (!done) {
             return new Promise((resolve, reject) => {
-                __classPrivateFieldGet(this, _YargsInstance_completion, "f").getCompletion(args, (err, completions) => {
+                __classPrivateFieldGet$3(this, _YargsInstance_completion, "f").getCompletion(args, (err, completions) => {
                     if (err)
                         reject(err);
                     else
@@ -4571,84 +4571,84 @@ class YargsInstance {
             });
         }
         else {
-            return __classPrivateFieldGet(this, _YargsInstance_completion, "f").getCompletion(args, done);
+            return __classPrivateFieldGet$3(this, _YargsInstance_completion, "f").getCompletion(args, done);
         }
     }
     getDemandedOptions() {
         argsert([], 0);
-        return __classPrivateFieldGet(this, _YargsInstance_options, "f").demandedOptions;
+        return __classPrivateFieldGet$3(this, _YargsInstance_options, "f").demandedOptions;
     }
     getDemandedCommands() {
         argsert([], 0);
-        return __classPrivateFieldGet(this, _YargsInstance_options, "f").demandedCommands;
+        return __classPrivateFieldGet$3(this, _YargsInstance_options, "f").demandedCommands;
     }
     getDeprecatedOptions() {
         argsert([], 0);
-        return __classPrivateFieldGet(this, _YargsInstance_options, "f").deprecatedOptions;
+        return __classPrivateFieldGet$3(this, _YargsInstance_options, "f").deprecatedOptions;
     }
     getDetectLocale() {
-        return __classPrivateFieldGet(this, _YargsInstance_detectLocale, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_detectLocale, "f");
     }
     getExitProcess() {
-        return __classPrivateFieldGet(this, _YargsInstance_exitProcess, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_exitProcess, "f");
     }
     getGroups() {
-        return Object.assign({}, __classPrivateFieldGet(this, _YargsInstance_groups, "f"), __classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f"));
+        return Object.assign({}, __classPrivateFieldGet$3(this, _YargsInstance_groups, "f"), __classPrivateFieldGet$3(this, _YargsInstance_preservedGroups, "f"));
     }
     getHelp() {
-        __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
-        if (!__classPrivateFieldGet(this, _YargsInstance_usage, "f").hasCachedHelpMessage()) {
+        __classPrivateFieldSet$3(this, _YargsInstance_hasOutput, true, "f");
+        if (!__classPrivateFieldGet$3(this, _YargsInstance_usage, "f").hasCachedHelpMessage()) {
             if (!this.parsed) {
-                const parse = this[kRunYargsParserAndExecuteCommands](__classPrivateFieldGet(this, _YargsInstance_processArgs, "f"), undefined, undefined, 0, true);
+                const parse = this[kRunYargsParserAndExecuteCommands](__classPrivateFieldGet$3(this, _YargsInstance_processArgs, "f"), undefined, undefined, 0, true);
                 if (isPromise(parse)) {
                     return parse.then(() => {
-                        return __classPrivateFieldGet(this, _YargsInstance_usage, "f").help();
+                        return __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").help();
                     });
                 }
             }
-            const builderResponse = __classPrivateFieldGet(this, _YargsInstance_command, "f").runDefaultBuilderOn(this);
+            const builderResponse = __classPrivateFieldGet$3(this, _YargsInstance_command, "f").runDefaultBuilderOn(this);
             if (isPromise(builderResponse)) {
                 return builderResponse.then(() => {
-                    return __classPrivateFieldGet(this, _YargsInstance_usage, "f").help();
+                    return __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").help();
                 });
             }
         }
-        return Promise.resolve(__classPrivateFieldGet(this, _YargsInstance_usage, "f").help());
+        return Promise.resolve(__classPrivateFieldGet$3(this, _YargsInstance_usage, "f").help());
     }
     getOptions() {
-        return __classPrivateFieldGet(this, _YargsInstance_options, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_options, "f");
     }
     getStrict() {
-        return __classPrivateFieldGet(this, _YargsInstance_strict, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_strict, "f");
     }
     getStrictCommands() {
-        return __classPrivateFieldGet(this, _YargsInstance_strictCommands, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_strictCommands, "f");
     }
     getStrictOptions() {
-        return __classPrivateFieldGet(this, _YargsInstance_strictOptions, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_strictOptions, "f");
     }
     global(globals, global) {
         argsert('<string|array> [boolean]', [globals, global], arguments.length);
         globals = [].concat(globals);
         if (global !== false) {
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").local = __classPrivateFieldGet(this, _YargsInstance_options, "f").local.filter(l => globals.indexOf(l) === -1);
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f").local = __classPrivateFieldGet$3(this, _YargsInstance_options, "f").local.filter(l => globals.indexOf(l) === -1);
         }
         else {
             globals.forEach(g => {
-                if (!__classPrivateFieldGet(this, _YargsInstance_options, "f").local.includes(g))
-                    __classPrivateFieldGet(this, _YargsInstance_options, "f").local.push(g);
+                if (!__classPrivateFieldGet$3(this, _YargsInstance_options, "f").local.includes(g))
+                    __classPrivateFieldGet$3(this, _YargsInstance_options, "f").local.push(g);
             });
         }
         return this;
     }
     group(opts, groupName) {
         argsert('<string|array> <string>', [opts, groupName], arguments.length);
-        const existing = __classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f")[groupName] || __classPrivateFieldGet(this, _YargsInstance_groups, "f")[groupName];
-        if (__classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f")[groupName]) {
-            delete __classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f")[groupName];
+        const existing = __classPrivateFieldGet$3(this, _YargsInstance_preservedGroups, "f")[groupName] || __classPrivateFieldGet$3(this, _YargsInstance_groups, "f")[groupName];
+        if (__classPrivateFieldGet$3(this, _YargsInstance_preservedGroups, "f")[groupName]) {
+            delete __classPrivateFieldGet$3(this, _YargsInstance_preservedGroups, "f")[groupName];
         }
         const seen = {};
-        __classPrivateFieldGet(this, _YargsInstance_groups, "f")[groupName] = (existing || []).concat(opts).filter(key => {
+        __classPrivateFieldGet$3(this, _YargsInstance_groups, "f")[groupName] = (existing || []).concat(opts).filter(key => {
             if (seen[key])
                 return false;
             return (seen[key] = true);
@@ -4657,26 +4657,26 @@ class YargsInstance {
     }
     hide(key) {
         argsert('<string>', [key], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").hiddenOptions.push(key);
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").hiddenOptions.push(key);
         return this;
     }
     implies(key, value) {
         argsert('<string|object> [number|string|array]', [key, value], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_validation, "f").implies(key, value);
+        __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").implies(key, value);
         return this;
     }
     locale(locale) {
         argsert('[string]', [locale], arguments.length);
         if (!locale) {
             this[kGuessLocale]();
-            return __classPrivateFieldGet(this, _YargsInstance_shim, "f").y18n.getLocale();
+            return __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").y18n.getLocale();
         }
-        __classPrivateFieldSet(this, _YargsInstance_detectLocale, false, "f");
-        __classPrivateFieldGet(this, _YargsInstance_shim, "f").y18n.setLocale(locale);
+        __classPrivateFieldSet$3(this, _YargsInstance_detectLocale, false, "f");
+        __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").y18n.setLocale(locale);
         return this;
     }
     middleware(callback, applyBeforeValidation, global) {
-        return __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").addMiddleware(callback, !!applyBeforeValidation, global);
+        return __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f").addMiddleware(callback, !!applyBeforeValidation, global);
     }
     nargs(key, value) {
         argsert('<string|object|array> [number]', [key, value], arguments.length);
@@ -4704,7 +4704,7 @@ class YargsInstance {
             if (typeof opt !== 'object') {
                 opt = {};
             }
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").key[key] = true;
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f").key[key] = true;
             if (opt.alias)
                 this.alias(key, opt.alias);
             const deprecate = opt.deprecate || opt.deprecated;
@@ -4772,7 +4772,7 @@ class YargsInstance {
                 this.global(key, opt.global);
             }
             if (opt.defaultDescription) {
-                __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key] = opt.defaultDescription;
+                __classPrivateFieldGet$3(this, _YargsInstance_options, "f").defaultDescription[key] = opt.defaultDescription;
             }
             if (opt.skipValidation) {
                 this.skipValidation(key);
@@ -4795,33 +4795,33 @@ class YargsInstance {
         argsert('[string|array] [function|boolean|object] [function]', [args, shortCircuit, _parseFn], arguments.length);
         this[kFreeze]();
         if (typeof args === 'undefined') {
-            args = __classPrivateFieldGet(this, _YargsInstance_processArgs, "f");
+            args = __classPrivateFieldGet$3(this, _YargsInstance_processArgs, "f");
         }
         if (typeof shortCircuit === 'object') {
-            __classPrivateFieldSet(this, _YargsInstance_parseContext, shortCircuit, "f");
+            __classPrivateFieldSet$3(this, _YargsInstance_parseContext, shortCircuit, "f");
             shortCircuit = _parseFn;
         }
         if (typeof shortCircuit === 'function') {
-            __classPrivateFieldSet(this, _YargsInstance_parseFn, shortCircuit, "f");
+            __classPrivateFieldSet$3(this, _YargsInstance_parseFn, shortCircuit, "f");
             shortCircuit = false;
         }
         if (!shortCircuit)
-            __classPrivateFieldSet(this, _YargsInstance_processArgs, args, "f");
-        if (__classPrivateFieldGet(this, _YargsInstance_parseFn, "f"))
-            __classPrivateFieldSet(this, _YargsInstance_exitProcess, false, "f");
+            __classPrivateFieldSet$3(this, _YargsInstance_processArgs, args, "f");
+        if (__classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f"))
+            __classPrivateFieldSet$3(this, _YargsInstance_exitProcess, false, "f");
         const parsed = this[kRunYargsParserAndExecuteCommands](args, !!shortCircuit);
         const tmpParsed = this.parsed;
-        __classPrivateFieldGet(this, _YargsInstance_completion, "f").setParsed(this.parsed);
+        __classPrivateFieldGet$3(this, _YargsInstance_completion, "f").setParsed(this.parsed);
         if (isPromise(parsed)) {
             return parsed
                 .then(argv => {
-                if (__classPrivateFieldGet(this, _YargsInstance_parseFn, "f"))
-                    __classPrivateFieldGet(this, _YargsInstance_parseFn, "f").call(this, __classPrivateFieldGet(this, _YargsInstance_exitError, "f"), argv, __classPrivateFieldGet(this, _YargsInstance_output, "f"));
+                if (__classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f"))
+                    __classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f").call(this, __classPrivateFieldGet$3(this, _YargsInstance_exitError, "f"), argv, __classPrivateFieldGet$3(this, _YargsInstance_output, "f"));
                 return argv;
             })
                 .catch(err => {
-                if (__classPrivateFieldGet(this, _YargsInstance_parseFn, "f")) {
-                    __classPrivateFieldGet(this, _YargsInstance_parseFn, "f")(err, this.parsed.argv, __classPrivateFieldGet(this, _YargsInstance_output, "f"));
+                if (__classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f")) {
+                    __classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f")(err, this.parsed.argv, __classPrivateFieldGet$3(this, _YargsInstance_output, "f"));
                 }
                 throw err;
             })
@@ -4831,8 +4831,8 @@ class YargsInstance {
             });
         }
         else {
-            if (__classPrivateFieldGet(this, _YargsInstance_parseFn, "f"))
-                __classPrivateFieldGet(this, _YargsInstance_parseFn, "f").call(this, __classPrivateFieldGet(this, _YargsInstance_exitError, "f"), parsed, __classPrivateFieldGet(this, _YargsInstance_output, "f"));
+            if (__classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f"))
+                __classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f").call(this, __classPrivateFieldGet$3(this, _YargsInstance_exitError, "f"), parsed, __classPrivateFieldGet$3(this, _YargsInstance_output, "f"));
             this[kUnfreeze]();
             this.parsed = tmpParsed;
         }
@@ -4853,16 +4853,16 @@ class YargsInstance {
     }
     parserConfiguration(config) {
         argsert('<object>', [config], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_parserConfig, config, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_parserConfig, config, "f");
         return this;
     }
     pkgConf(key, rootPath) {
         argsert('<string> [string]', [key, rootPath], arguments.length);
         let conf = null;
-        const obj = this[kPkgUp](rootPath || __classPrivateFieldGet(this, _YargsInstance_cwd, "f"));
+        const obj = this[kPkgUp](rootPath || __classPrivateFieldGet$3(this, _YargsInstance_cwd, "f"));
         if (obj[key] && typeof obj[key] === 'object') {
-            conf = applyExtends(obj[key], rootPath || __classPrivateFieldGet(this, _YargsInstance_cwd, "f"), this[kGetParserConfiguration]()['deep-merge-config'] || false, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects = (__classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects || []).concat(conf);
+            conf = applyExtends(obj[key], rootPath || __classPrivateFieldGet$3(this, _YargsInstance_cwd, "f"), this[kGetParserConfiguration]()['deep-merge-config'] || false, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f").configObjects = (__classPrivateFieldGet$3(this, _YargsInstance_options, "f").configObjects || []).concat(conf);
         }
         return this;
     }
@@ -4887,9 +4887,9 @@ class YargsInstance {
                 return false;
             return supportedOpts.includes(k);
         });
-        const fullCommand = __classPrivateFieldGet(this, _YargsInstance_context, "f").fullCommands[__classPrivateFieldGet(this, _YargsInstance_context, "f").fullCommands.length - 1];
+        const fullCommand = __classPrivateFieldGet$3(this, _YargsInstance_context, "f").fullCommands[__classPrivateFieldGet$3(this, _YargsInstance_context, "f").fullCommands.length - 1];
         const parseOptions = fullCommand
-            ? __classPrivateFieldGet(this, _YargsInstance_command, "f").cmdToParseOptions(fullCommand)
+            ? __classPrivateFieldGet$3(this, _YargsInstance_command, "f").cmdToParseOptions(fullCommand)
             : {
                 array: [],
                 alias: {},
@@ -4907,12 +4907,12 @@ class YargsInstance {
                     opts[pk] = parseOption[key];
             }
         });
-        this.group(key, __classPrivateFieldGet(this, _YargsInstance_usage, "f").getPositionalGroupName());
+        this.group(key, __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").getPositionalGroupName());
         return this.option(key, opts);
     }
     recommendCommands(recommend = true) {
         argsert('[boolean]', [recommend], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_recommendCommands, recommend, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_recommendCommands, recommend, "f");
         return this;
     }
     required(keys, max, msg) {
@@ -4923,7 +4923,7 @@ class YargsInstance {
     }
     requiresArg(keys) {
         argsert('<array|string|object> [number]', [keys], arguments.length);
-        if (typeof keys === 'string' && __classPrivateFieldGet(this, _YargsInstance_options, "f").narg[keys]) {
+        if (typeof keys === 'string' && __classPrivateFieldGet$3(this, _YargsInstance_options, "f").narg[keys]) {
             return this;
         }
         else {
@@ -4934,31 +4934,31 @@ class YargsInstance {
     showCompletionScript($0, cmd) {
         argsert('[string] [string]', [$0, cmd], arguments.length);
         $0 = $0 || this.$0;
-        __classPrivateFieldGet(this, _YargsInstance_logger, "f").log(__classPrivateFieldGet(this, _YargsInstance_completion, "f").generateCompletionScript($0, cmd || __classPrivateFieldGet(this, _YargsInstance_completionCommand, "f") || 'completion'));
+        __classPrivateFieldGet$3(this, _YargsInstance_logger, "f").log(__classPrivateFieldGet$3(this, _YargsInstance_completion, "f").generateCompletionScript($0, cmd || __classPrivateFieldGet$3(this, _YargsInstance_completionCommand, "f") || 'completion'));
         return this;
     }
     showHelp(level) {
         argsert('[string|function]', [level], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
-        if (!__classPrivateFieldGet(this, _YargsInstance_usage, "f").hasCachedHelpMessage()) {
+        __classPrivateFieldSet$3(this, _YargsInstance_hasOutput, true, "f");
+        if (!__classPrivateFieldGet$3(this, _YargsInstance_usage, "f").hasCachedHelpMessage()) {
             if (!this.parsed) {
-                const parse = this[kRunYargsParserAndExecuteCommands](__classPrivateFieldGet(this, _YargsInstance_processArgs, "f"), undefined, undefined, 0, true);
+                const parse = this[kRunYargsParserAndExecuteCommands](__classPrivateFieldGet$3(this, _YargsInstance_processArgs, "f"), undefined, undefined, 0, true);
                 if (isPromise(parse)) {
                     parse.then(() => {
-                        __classPrivateFieldGet(this, _YargsInstance_usage, "f").showHelp(level);
+                        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").showHelp(level);
                     });
                     return this;
                 }
             }
-            const builderResponse = __classPrivateFieldGet(this, _YargsInstance_command, "f").runDefaultBuilderOn(this);
+            const builderResponse = __classPrivateFieldGet$3(this, _YargsInstance_command, "f").runDefaultBuilderOn(this);
             if (isPromise(builderResponse)) {
                 builderResponse.then(() => {
-                    __classPrivateFieldGet(this, _YargsInstance_usage, "f").showHelp(level);
+                    __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").showHelp(level);
                 });
                 return this;
             }
         }
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").showHelp(level);
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").showHelp(level);
         return this;
     }
     scriptName(scriptName) {
@@ -4968,12 +4968,12 @@ class YargsInstance {
     }
     showHelpOnFail(enabled, message) {
         argsert('[boolean|string] [string]', [enabled, message], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").showHelpOnFail(enabled, message);
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").showHelpOnFail(enabled, message);
         return this;
     }
     showVersion(level) {
         argsert('[string|function]', [level], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").showVersion(level);
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").showVersion(level);
         return this;
     }
     skipValidation(keys) {
@@ -4983,17 +4983,17 @@ class YargsInstance {
     }
     strict(enabled) {
         argsert('[boolean]', [enabled], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_strict, enabled !== false, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_strict, enabled !== false, "f");
         return this;
     }
     strictCommands(enabled) {
         argsert('[boolean]', [enabled], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_strictCommands, enabled !== false, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_strictCommands, enabled !== false, "f");
         return this;
     }
     strictOptions(enabled) {
         argsert('[boolean]', [enabled], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_strictOptions, enabled !== false, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_strictOptions, enabled !== false, "f");
         return this;
     }
     string(key) {
@@ -5003,21 +5003,21 @@ class YargsInstance {
     }
     terminalWidth() {
         argsert([], 0);
-        return __classPrivateFieldGet(this, _YargsInstance_shim, "f").process.stdColumns;
+        return __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").process.stdColumns;
     }
     updateLocale(obj) {
         return this.updateStrings(obj);
     }
     updateStrings(obj) {
         argsert('<object>', [obj], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_detectLocale, false, "f");
-        __classPrivateFieldGet(this, _YargsInstance_shim, "f").y18n.updateLocale(obj);
+        __classPrivateFieldSet$3(this, _YargsInstance_detectLocale, false, "f");
+        __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").y18n.updateLocale(obj);
         return this;
     }
     usage(msg, description, builder, handler) {
         argsert('<string|null|undefined> [string|boolean] [function|object] [function]', [msg, description, builder, handler], arguments.length);
         if (description !== undefined) {
-            assertNotStrictEqual(msg, null, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+            assertNotStrictEqual(msg, null, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
             if ((msg || '').match(/^\$0( |$)/)) {
                 return this.command(msg, description, builder, handler);
             }
@@ -5026,17 +5026,17 @@ class YargsInstance {
             }
         }
         else {
-            __classPrivateFieldGet(this, _YargsInstance_usage, "f").usage(msg);
+            __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").usage(msg);
             return this;
         }
     }
     version(opt, msg, ver) {
         const defaultVersionOpt = 'version';
         argsert('[boolean|string] [string] [string]', [opt, msg, ver], arguments.length);
-        if (__classPrivateFieldGet(this, _YargsInstance_versionOpt, "f")) {
-            this[kDeleteFromParserHintObject](__classPrivateFieldGet(this, _YargsInstance_versionOpt, "f"));
-            __classPrivateFieldGet(this, _YargsInstance_usage, "f").version(undefined);
-            __classPrivateFieldSet(this, _YargsInstance_versionOpt, null, "f");
+        if (__classPrivateFieldGet$3(this, _YargsInstance_versionOpt, "f")) {
+            this[kDeleteFromParserHintObject](__classPrivateFieldGet$3(this, _YargsInstance_versionOpt, "f"));
+            __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").version(undefined);
+            __classPrivateFieldSet$3(this, _YargsInstance_versionOpt, null, "f");
         }
         if (arguments.length === 0) {
             ver = this[kGuessVersion]();
@@ -5053,16 +5053,16 @@ class YargsInstance {
             ver = msg;
             msg = undefined;
         }
-        __classPrivateFieldSet(this, _YargsInstance_versionOpt, typeof opt === 'string' ? opt : defaultVersionOpt, "f");
-        msg = msg || __classPrivateFieldGet(this, _YargsInstance_usage, "f").deferY18nLookup('Show version number');
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").version(ver || undefined);
-        this.boolean(__classPrivateFieldGet(this, _YargsInstance_versionOpt, "f"));
-        this.describe(__classPrivateFieldGet(this, _YargsInstance_versionOpt, "f"), msg);
+        __classPrivateFieldSet$3(this, _YargsInstance_versionOpt, typeof opt === 'string' ? opt : defaultVersionOpt, "f");
+        msg = msg || __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").deferY18nLookup('Show version number');
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").version(ver || undefined);
+        this.boolean(__classPrivateFieldGet$3(this, _YargsInstance_versionOpt, "f"));
+        this.describe(__classPrivateFieldGet$3(this, _YargsInstance_versionOpt, "f"), msg);
         return this;
     }
     wrap(cols) {
         argsert('<number|null|undefined>', [cols], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").wrap(cols);
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").wrap(cols);
         return this;
     }
     [(_YargsInstance_command = new WeakMap(), _YargsInstance_cwd = new WeakMap(), _YargsInstance_context = new WeakMap(), _YargsInstance_completion = new WeakMap(), _YargsInstance_completionCommand = new WeakMap(), _YargsInstance_defaultShowHiddenOpt = new WeakMap(), _YargsInstance_exitError = new WeakMap(), _YargsInstance_detectLocale = new WeakMap(), _YargsInstance_exitProcess = new WeakMap(), _YargsInstance_frozens = new WeakMap(), _YargsInstance_globalMiddleware = new WeakMap(), _YargsInstance_groups = new WeakMap(), _YargsInstance_hasOutput = new WeakMap(), _YargsInstance_helpOpt = new WeakMap(), _YargsInstance_logger = new WeakMap(), _YargsInstance_output = new WeakMap(), _YargsInstance_options = new WeakMap(), _YargsInstance_parentRequire = new WeakMap(), _YargsInstance_parserConfig = new WeakMap(), _YargsInstance_parseFn = new WeakMap(), _YargsInstance_parseContext = new WeakMap(), _YargsInstance_pkgs = new WeakMap(), _YargsInstance_preservedGroups = new WeakMap(), _YargsInstance_processArgs = new WeakMap(), _YargsInstance_recommendCommands = new WeakMap(), _YargsInstance_shim = new WeakMap(), _YargsInstance_strict = new WeakMap(), _YargsInstance_strictCommands = new WeakMap(), _YargsInstance_strictOptions = new WeakMap(), _YargsInstance_usage = new WeakMap(), _YargsInstance_versionOpt = new WeakMap(), _YargsInstance_validation = new WeakMap(), kCopyDoubleDash)](argv) {
@@ -5080,26 +5080,26 @@ class YargsInstance {
             log: (...args) => {
                 if (!this[kHasParseCallback]())
                     console.log(...args);
-                __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
-                if (__classPrivateFieldGet(this, _YargsInstance_output, "f").length)
-                    __classPrivateFieldSet(this, _YargsInstance_output, __classPrivateFieldGet(this, _YargsInstance_output, "f") + '\n', "f");
-                __classPrivateFieldSet(this, _YargsInstance_output, __classPrivateFieldGet(this, _YargsInstance_output, "f") + args.join(' '), "f");
+                __classPrivateFieldSet$3(this, _YargsInstance_hasOutput, true, "f");
+                if (__classPrivateFieldGet$3(this, _YargsInstance_output, "f").length)
+                    __classPrivateFieldSet$3(this, _YargsInstance_output, __classPrivateFieldGet$3(this, _YargsInstance_output, "f") + '\n', "f");
+                __classPrivateFieldSet$3(this, _YargsInstance_output, __classPrivateFieldGet$3(this, _YargsInstance_output, "f") + args.join(' '), "f");
             },
             error: (...args) => {
                 if (!this[kHasParseCallback]())
                     console.error(...args);
-                __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
-                if (__classPrivateFieldGet(this, _YargsInstance_output, "f").length)
-                    __classPrivateFieldSet(this, _YargsInstance_output, __classPrivateFieldGet(this, _YargsInstance_output, "f") + '\n', "f");
-                __classPrivateFieldSet(this, _YargsInstance_output, __classPrivateFieldGet(this, _YargsInstance_output, "f") + args.join(' '), "f");
+                __classPrivateFieldSet$3(this, _YargsInstance_hasOutput, true, "f");
+                if (__classPrivateFieldGet$3(this, _YargsInstance_output, "f").length)
+                    __classPrivateFieldSet$3(this, _YargsInstance_output, __classPrivateFieldGet$3(this, _YargsInstance_output, "f") + '\n', "f");
+                __classPrivateFieldSet$3(this, _YargsInstance_output, __classPrivateFieldGet$3(this, _YargsInstance_output, "f") + args.join(' '), "f");
             },
         };
     }
     [kDeleteFromParserHintObject](optionKey) {
-        objectKeys(__classPrivateFieldGet(this, _YargsInstance_options, "f")).forEach((hintKey) => {
+        objectKeys(__classPrivateFieldGet$3(this, _YargsInstance_options, "f")).forEach((hintKey) => {
             if (((key) => key === 'configObjects')(hintKey))
                 return;
-            const hint = __classPrivateFieldGet(this, _YargsInstance_options, "f")[hintKey];
+            const hint = __classPrivateFieldGet$3(this, _YargsInstance_options, "f")[hintKey];
             if (Array.isArray(hint)) {
                 if (hint.includes(optionKey))
                     hint.splice(hint.indexOf(optionKey), 1);
@@ -5108,64 +5108,64 @@ class YargsInstance {
                 delete hint[optionKey];
             }
         });
-        delete __classPrivateFieldGet(this, _YargsInstance_usage, "f").getDescriptions()[optionKey];
+        delete __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").getDescriptions()[optionKey];
     }
     [kFreeze]() {
-        __classPrivateFieldGet(this, _YargsInstance_frozens, "f").push({
-            options: __classPrivateFieldGet(this, _YargsInstance_options, "f"),
-            configObjects: __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects.slice(0),
-            exitProcess: __classPrivateFieldGet(this, _YargsInstance_exitProcess, "f"),
-            groups: __classPrivateFieldGet(this, _YargsInstance_groups, "f"),
-            strict: __classPrivateFieldGet(this, _YargsInstance_strict, "f"),
-            strictCommands: __classPrivateFieldGet(this, _YargsInstance_strictCommands, "f"),
-            strictOptions: __classPrivateFieldGet(this, _YargsInstance_strictOptions, "f"),
-            completionCommand: __classPrivateFieldGet(this, _YargsInstance_completionCommand, "f"),
-            output: __classPrivateFieldGet(this, _YargsInstance_output, "f"),
-            exitError: __classPrivateFieldGet(this, _YargsInstance_exitError, "f"),
-            hasOutput: __classPrivateFieldGet(this, _YargsInstance_hasOutput, "f"),
+        __classPrivateFieldGet$3(this, _YargsInstance_frozens, "f").push({
+            options: __classPrivateFieldGet$3(this, _YargsInstance_options, "f"),
+            configObjects: __classPrivateFieldGet$3(this, _YargsInstance_options, "f").configObjects.slice(0),
+            exitProcess: __classPrivateFieldGet$3(this, _YargsInstance_exitProcess, "f"),
+            groups: __classPrivateFieldGet$3(this, _YargsInstance_groups, "f"),
+            strict: __classPrivateFieldGet$3(this, _YargsInstance_strict, "f"),
+            strictCommands: __classPrivateFieldGet$3(this, _YargsInstance_strictCommands, "f"),
+            strictOptions: __classPrivateFieldGet$3(this, _YargsInstance_strictOptions, "f"),
+            completionCommand: __classPrivateFieldGet$3(this, _YargsInstance_completionCommand, "f"),
+            output: __classPrivateFieldGet$3(this, _YargsInstance_output, "f"),
+            exitError: __classPrivateFieldGet$3(this, _YargsInstance_exitError, "f"),
+            hasOutput: __classPrivateFieldGet$3(this, _YargsInstance_hasOutput, "f"),
             parsed: this.parsed,
-            parseFn: __classPrivateFieldGet(this, _YargsInstance_parseFn, "f"),
-            parseContext: __classPrivateFieldGet(this, _YargsInstance_parseContext, "f"),
+            parseFn: __classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f"),
+            parseContext: __classPrivateFieldGet$3(this, _YargsInstance_parseContext, "f"),
         });
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").freeze();
-        __classPrivateFieldGet(this, _YargsInstance_validation, "f").freeze();
-        __classPrivateFieldGet(this, _YargsInstance_command, "f").freeze();
-        __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").freeze();
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").freeze();
+        __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").freeze();
+        __classPrivateFieldGet$3(this, _YargsInstance_command, "f").freeze();
+        __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f").freeze();
     }
     [kGetDollarZero]() {
         let $0 = '';
         let default$0;
-        if (/\b(node|iojs|electron)(\.exe)?$/.test(__classPrivateFieldGet(this, _YargsInstance_shim, "f").process.argv()[0])) {
-            default$0 = __classPrivateFieldGet(this, _YargsInstance_shim, "f").process.argv().slice(1, 2);
+        if (/\b(node|iojs|electron)(\.exe)?$/.test(__classPrivateFieldGet$3(this, _YargsInstance_shim, "f").process.argv()[0])) {
+            default$0 = __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").process.argv().slice(1, 2);
         }
         else {
-            default$0 = __classPrivateFieldGet(this, _YargsInstance_shim, "f").process.argv().slice(0, 1);
+            default$0 = __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").process.argv().slice(0, 1);
         }
         $0 = default$0
             .map(x => {
-            const b = this[kRebase](__classPrivateFieldGet(this, _YargsInstance_cwd, "f"), x);
+            const b = this[kRebase](__classPrivateFieldGet$3(this, _YargsInstance_cwd, "f"), x);
             return x.match(/^(\/|([a-zA-Z]:)?\\)/) && b.length < x.length ? b : x;
         })
             .join(' ')
             .trim();
-        if (__classPrivateFieldGet(this, _YargsInstance_shim, "f").getEnv('_') &&
-            __classPrivateFieldGet(this, _YargsInstance_shim, "f").getProcessArgvBin() === __classPrivateFieldGet(this, _YargsInstance_shim, "f").getEnv('_')) {
-            $0 = __classPrivateFieldGet(this, _YargsInstance_shim, "f")
+        if (__classPrivateFieldGet$3(this, _YargsInstance_shim, "f").getEnv('_') &&
+            __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").getProcessArgvBin() === __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").getEnv('_')) {
+            $0 = __classPrivateFieldGet$3(this, _YargsInstance_shim, "f")
                 .getEnv('_')
-                .replace(`${__classPrivateFieldGet(this, _YargsInstance_shim, "f").path.dirname(__classPrivateFieldGet(this, _YargsInstance_shim, "f").process.execPath())}/`, '');
+                .replace(`${__classPrivateFieldGet$3(this, _YargsInstance_shim, "f").path.dirname(__classPrivateFieldGet$3(this, _YargsInstance_shim, "f").process.execPath())}/`, '');
         }
         return $0;
     }
     [kGetParserConfiguration]() {
-        return __classPrivateFieldGet(this, _YargsInstance_parserConfig, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_parserConfig, "f");
     }
     [kGuessLocale]() {
-        if (!__classPrivateFieldGet(this, _YargsInstance_detectLocale, "f"))
+        if (!__classPrivateFieldGet$3(this, _YargsInstance_detectLocale, "f"))
             return;
-        const locale = __classPrivateFieldGet(this, _YargsInstance_shim, "f").getEnv('LC_ALL') ||
-            __classPrivateFieldGet(this, _YargsInstance_shim, "f").getEnv('LC_MESSAGES') ||
-            __classPrivateFieldGet(this, _YargsInstance_shim, "f").getEnv('LANG') ||
-            __classPrivateFieldGet(this, _YargsInstance_shim, "f").getEnv('LANGUAGE') ||
+        const locale = __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").getEnv('LC_ALL') ||
+            __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").getEnv('LC_MESSAGES') ||
+            __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").getEnv('LANG') ||
+            __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").getEnv('LANGUAGE') ||
             'en_US';
         this.locale(locale.replace(/[.:].*/, ''));
     }
@@ -5176,7 +5176,7 @@ class YargsInstance {
     [kParsePositionalNumbers](argv) {
         const args = argv['--'] ? argv['--'] : argv._;
         for (let i = 0, arg; (arg = args[i]) !== undefined; i++) {
-            if (__classPrivateFieldGet(this, _YargsInstance_shim, "f").Parser.looksLikeNumber(arg) &&
+            if (__classPrivateFieldGet$3(this, _YargsInstance_shim, "f").Parser.looksLikeNumber(arg) &&
                 Number.isSafeInteger(Math.floor(parseFloat(`${arg}`)))) {
                 args[i] = Number(arg);
             }
@@ -5185,15 +5185,15 @@ class YargsInstance {
     }
     [kPkgUp](rootPath) {
         const npath = rootPath || '*';
-        if (__classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath])
-            return __classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath];
+        if (__classPrivateFieldGet$3(this, _YargsInstance_pkgs, "f")[npath])
+            return __classPrivateFieldGet$3(this, _YargsInstance_pkgs, "f")[npath];
         let obj = {};
         try {
-            let startDir = rootPath || __classPrivateFieldGet(this, _YargsInstance_shim, "f").mainFilename;
-            if (!rootPath && __classPrivateFieldGet(this, _YargsInstance_shim, "f").path.extname(startDir)) {
-                startDir = __classPrivateFieldGet(this, _YargsInstance_shim, "f").path.dirname(startDir);
+            let startDir = rootPath || __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").mainFilename;
+            if (!rootPath && __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").path.extname(startDir)) {
+                startDir = __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").path.dirname(startDir);
             }
-            const pkgJsonPath = __classPrivateFieldGet(this, _YargsInstance_shim, "f").findUp(startDir, (dir, names) => {
+            const pkgJsonPath = __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").findUp(startDir, (dir, names) => {
                 if (names.includes('package.json')) {
                     return 'package.json';
                 }
@@ -5201,28 +5201,28 @@ class YargsInstance {
                     return undefined;
                 }
             });
-            assertNotStrictEqual(pkgJsonPath, undefined, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-            obj = JSON.parse(__classPrivateFieldGet(this, _YargsInstance_shim, "f").readFileSync(pkgJsonPath, 'utf8'));
+            assertNotStrictEqual(pkgJsonPath, undefined, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
+            obj = JSON.parse(__classPrivateFieldGet$3(this, _YargsInstance_shim, "f").readFileSync(pkgJsonPath, 'utf8'));
         }
         catch (_noop) { }
-        __classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath] = obj || {};
-        return __classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath];
+        __classPrivateFieldGet$3(this, _YargsInstance_pkgs, "f")[npath] = obj || {};
+        return __classPrivateFieldGet$3(this, _YargsInstance_pkgs, "f")[npath];
     }
     [kPopulateParserHintArray](type, keys) {
         keys = [].concat(keys);
         keys.forEach(key => {
             key = this[kSanitizeKey](key);
-            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type].push(key);
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f")[type].push(key);
         });
     }
     [kPopulateParserHintSingleValueDictionary](builder, type, key, value) {
         this[kPopulateParserHintDictionary](builder, type, key, value, (type, key, value) => {
-            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key] = value;
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f")[type][key] = value;
         });
     }
     [kPopulateParserHintArrayDictionary](builder, type, key, value) {
         this[kPopulateParserHintDictionary](builder, type, key, value, (type, key, value) => {
-            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key] = (__classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key] || []).concat(value);
+            __classPrivateFieldGet$3(this, _YargsInstance_options, "f")[type][key] = (__classPrivateFieldGet$3(this, _YargsInstance_options, "f")[type][key] || []).concat(value);
         });
     }
     [kPopulateParserHintDictionary](builder, type, key, value, singleKeyHandler) {
@@ -5251,30 +5251,30 @@ class YargsInstance {
     }
     [kUnfreeze]() {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-        const frozen = __classPrivateFieldGet(this, _YargsInstance_frozens, "f").pop();
-        assertNotStrictEqual(frozen, undefined, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+        const frozen = __classPrivateFieldGet$3(this, _YargsInstance_frozens, "f").pop();
+        assertNotStrictEqual(frozen, undefined, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f"));
         let configObjects;
         (_a = this, _b = this, _c = this, _d = this, _e = this, _f = this, _g = this, _h = this, _j = this, _k = this, _l = this, _m = this, {
-            options: ({ set value(_o) { __classPrivateFieldSet(_a, _YargsInstance_options, _o, "f"); } }).value,
+            options: ({ set value(_o) { __classPrivateFieldSet$3(_a, _YargsInstance_options, _o, "f"); } }).value,
             configObjects,
-            exitProcess: ({ set value(_o) { __classPrivateFieldSet(_b, _YargsInstance_exitProcess, _o, "f"); } }).value,
-            groups: ({ set value(_o) { __classPrivateFieldSet(_c, _YargsInstance_groups, _o, "f"); } }).value,
-            output: ({ set value(_o) { __classPrivateFieldSet(_d, _YargsInstance_output, _o, "f"); } }).value,
-            exitError: ({ set value(_o) { __classPrivateFieldSet(_e, _YargsInstance_exitError, _o, "f"); } }).value,
-            hasOutput: ({ set value(_o) { __classPrivateFieldSet(_f, _YargsInstance_hasOutput, _o, "f"); } }).value,
+            exitProcess: ({ set value(_o) { __classPrivateFieldSet$3(_b, _YargsInstance_exitProcess, _o, "f"); } }).value,
+            groups: ({ set value(_o) { __classPrivateFieldSet$3(_c, _YargsInstance_groups, _o, "f"); } }).value,
+            output: ({ set value(_o) { __classPrivateFieldSet$3(_d, _YargsInstance_output, _o, "f"); } }).value,
+            exitError: ({ set value(_o) { __classPrivateFieldSet$3(_e, _YargsInstance_exitError, _o, "f"); } }).value,
+            hasOutput: ({ set value(_o) { __classPrivateFieldSet$3(_f, _YargsInstance_hasOutput, _o, "f"); } }).value,
             parsed: this.parsed,
-            strict: ({ set value(_o) { __classPrivateFieldSet(_g, _YargsInstance_strict, _o, "f"); } }).value,
-            strictCommands: ({ set value(_o) { __classPrivateFieldSet(_h, _YargsInstance_strictCommands, _o, "f"); } }).value,
-            strictOptions: ({ set value(_o) { __classPrivateFieldSet(_j, _YargsInstance_strictOptions, _o, "f"); } }).value,
-            completionCommand: ({ set value(_o) { __classPrivateFieldSet(_k, _YargsInstance_completionCommand, _o, "f"); } }).value,
-            parseFn: ({ set value(_o) { __classPrivateFieldSet(_l, _YargsInstance_parseFn, _o, "f"); } }).value,
-            parseContext: ({ set value(_o) { __classPrivateFieldSet(_m, _YargsInstance_parseContext, _o, "f"); } }).value,
+            strict: ({ set value(_o) { __classPrivateFieldSet$3(_g, _YargsInstance_strict, _o, "f"); } }).value,
+            strictCommands: ({ set value(_o) { __classPrivateFieldSet$3(_h, _YargsInstance_strictCommands, _o, "f"); } }).value,
+            strictOptions: ({ set value(_o) { __classPrivateFieldSet$3(_j, _YargsInstance_strictOptions, _o, "f"); } }).value,
+            completionCommand: ({ set value(_o) { __classPrivateFieldSet$3(_k, _YargsInstance_completionCommand, _o, "f"); } }).value,
+            parseFn: ({ set value(_o) { __classPrivateFieldSet$3(_l, _YargsInstance_parseFn, _o, "f"); } }).value,
+            parseContext: ({ set value(_o) { __classPrivateFieldSet$3(_m, _YargsInstance_parseContext, _o, "f"); } }).value,
         } = frozen);
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects = configObjects;
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").unfreeze();
-        __classPrivateFieldGet(this, _YargsInstance_validation, "f").unfreeze();
-        __classPrivateFieldGet(this, _YargsInstance_command, "f").unfreeze();
-        __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").unfreeze();
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").configObjects = configObjects;
+        __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").unfreeze();
+        __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").unfreeze();
+        __classPrivateFieldGet$3(this, _YargsInstance_command, "f").unfreeze();
+        __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f").unfreeze();
     }
     [kValidateAsync](validation, argv) {
         return maybeAsyncResult(argv, result => {
@@ -5301,28 +5301,28 @@ class YargsInstance {
         };
     }
     [kGetCommandInstance]() {
-        return __classPrivateFieldGet(this, _YargsInstance_command, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_command, "f");
     }
     [kGetContext]() {
-        return __classPrivateFieldGet(this, _YargsInstance_context, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_context, "f");
     }
     [kGetHasOutput]() {
-        return __classPrivateFieldGet(this, _YargsInstance_hasOutput, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_hasOutput, "f");
     }
     [kGetLoggerInstance]() {
-        return __classPrivateFieldGet(this, _YargsInstance_logger, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_logger, "f");
     }
     [kGetParseContext]() {
-        return __classPrivateFieldGet(this, _YargsInstance_parseContext, "f") || {};
+        return __classPrivateFieldGet$3(this, _YargsInstance_parseContext, "f") || {};
     }
     [kGetUsageInstance]() {
-        return __classPrivateFieldGet(this, _YargsInstance_usage, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_usage, "f");
     }
     [kGetValidationInstance]() {
-        return __classPrivateFieldGet(this, _YargsInstance_validation, "f");
+        return __classPrivateFieldGet$3(this, _YargsInstance_validation, "f");
     }
     [kHasParseCallback]() {
-        return !!__classPrivateFieldGet(this, _YargsInstance_parseFn, "f");
+        return !!__classPrivateFieldGet$3(this, _YargsInstance_parseFn, "f");
     }
     [kPostProcess](argv, populateDoubleDash, calledFromCommand, runGlobalMiddleware) {
         if (calledFromCommand)
@@ -5338,15 +5338,15 @@ class YargsInstance {
             argv = this[kParsePositionalNumbers](argv);
         }
         if (runGlobalMiddleware) {
-            argv = applyMiddleware(argv, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), false);
+            argv = applyMiddleware(argv, this, __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), false);
         }
         return argv;
     }
     [kReset](aliases = {}) {
-        __classPrivateFieldSet(this, _YargsInstance_options, __classPrivateFieldGet(this, _YargsInstance_options, "f") || {}, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_options, __classPrivateFieldGet$3(this, _YargsInstance_options, "f") || {}, "f");
         const tmpOptions = {};
-        tmpOptions.local = __classPrivateFieldGet(this, _YargsInstance_options, "f").local || [];
-        tmpOptions.configObjects = __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects || [];
+        tmpOptions.local = __classPrivateFieldGet$3(this, _YargsInstance_options, "f").local || [];
+        tmpOptions.configObjects = __classPrivateFieldGet$3(this, _YargsInstance_options, "f").configObjects || [];
         const localLookup = {};
         tmpOptions.local.forEach(l => {
             localLookup[l] = true;
@@ -5354,14 +5354,14 @@ class YargsInstance {
                 localLookup[a] = true;
             });
         });
-        Object.assign(__classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f"), Object.keys(__classPrivateFieldGet(this, _YargsInstance_groups, "f")).reduce((acc, groupName) => {
-            const keys = __classPrivateFieldGet(this, _YargsInstance_groups, "f")[groupName].filter(key => !(key in localLookup));
+        Object.assign(__classPrivateFieldGet$3(this, _YargsInstance_preservedGroups, "f"), Object.keys(__classPrivateFieldGet$3(this, _YargsInstance_groups, "f")).reduce((acc, groupName) => {
+            const keys = __classPrivateFieldGet$3(this, _YargsInstance_groups, "f")[groupName].filter(key => !(key in localLookup));
             if (keys.length > 0) {
                 acc[groupName] = keys;
             }
             return acc;
         }, {}));
-        __classPrivateFieldSet(this, _YargsInstance_groups, {}, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_groups, {}, "f");
         const arrayOptions = [
             'array',
             'boolean',
@@ -5385,150 +5385,150 @@ class YargsInstance {
             'deprecatedOptions',
         ];
         arrayOptions.forEach(k => {
-            tmpOptions[k] = (__classPrivateFieldGet(this, _YargsInstance_options, "f")[k] || []).filter((k) => !localLookup[k]);
+            tmpOptions[k] = (__classPrivateFieldGet$3(this, _YargsInstance_options, "f")[k] || []).filter((k) => !localLookup[k]);
         });
         objectOptions.forEach((k) => {
-            tmpOptions[k] = objFilter(__classPrivateFieldGet(this, _YargsInstance_options, "f")[k], k => !localLookup[k]);
+            tmpOptions[k] = objFilter(__classPrivateFieldGet$3(this, _YargsInstance_options, "f")[k], k => !localLookup[k]);
         });
-        tmpOptions.envPrefix = __classPrivateFieldGet(this, _YargsInstance_options, "f").envPrefix;
-        __classPrivateFieldSet(this, _YargsInstance_options, tmpOptions, "f");
-        __classPrivateFieldSet(this, _YargsInstance_usage, __classPrivateFieldGet(this, _YargsInstance_usage, "f")
-            ? __classPrivateFieldGet(this, _YargsInstance_usage, "f").reset(localLookup)
-            : usage(this, __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
-        __classPrivateFieldSet(this, _YargsInstance_validation, __classPrivateFieldGet(this, _YargsInstance_validation, "f")
-            ? __classPrivateFieldGet(this, _YargsInstance_validation, "f").reset(localLookup)
-            : validation(this, __classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
-        __classPrivateFieldSet(this, _YargsInstance_command, __classPrivateFieldGet(this, _YargsInstance_command, "f")
-            ? __classPrivateFieldGet(this, _YargsInstance_command, "f").reset()
-            : command(__classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_validation, "f"), __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
-        if (!__classPrivateFieldGet(this, _YargsInstance_completion, "f"))
-            __classPrivateFieldSet(this, _YargsInstance_completion, completion(this, __classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_command, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
-        __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").reset();
-        __classPrivateFieldSet(this, _YargsInstance_completionCommand, null, "f");
-        __classPrivateFieldSet(this, _YargsInstance_output, '', "f");
-        __classPrivateFieldSet(this, _YargsInstance_exitError, null, "f");
-        __classPrivateFieldSet(this, _YargsInstance_hasOutput, false, "f");
+        tmpOptions.envPrefix = __classPrivateFieldGet$3(this, _YargsInstance_options, "f").envPrefix;
+        __classPrivateFieldSet$3(this, _YargsInstance_options, tmpOptions, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_usage, __classPrivateFieldGet$3(this, _YargsInstance_usage, "f")
+            ? __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").reset(localLookup)
+            : usage(this, __classPrivateFieldGet$3(this, _YargsInstance_shim, "f")), "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_validation, __classPrivateFieldGet$3(this, _YargsInstance_validation, "f")
+            ? __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").reset(localLookup)
+            : validation(this, __classPrivateFieldGet$3(this, _YargsInstance_usage, "f"), __classPrivateFieldGet$3(this, _YargsInstance_shim, "f")), "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_command, __classPrivateFieldGet$3(this, _YargsInstance_command, "f")
+            ? __classPrivateFieldGet$3(this, _YargsInstance_command, "f").reset()
+            : command(__classPrivateFieldGet$3(this, _YargsInstance_usage, "f"), __classPrivateFieldGet$3(this, _YargsInstance_validation, "f"), __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f"), __classPrivateFieldGet$3(this, _YargsInstance_shim, "f")), "f");
+        if (!__classPrivateFieldGet$3(this, _YargsInstance_completion, "f"))
+            __classPrivateFieldSet$3(this, _YargsInstance_completion, completion(this, __classPrivateFieldGet$3(this, _YargsInstance_usage, "f"), __classPrivateFieldGet$3(this, _YargsInstance_command, "f"), __classPrivateFieldGet$3(this, _YargsInstance_shim, "f")), "f");
+        __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f").reset();
+        __classPrivateFieldSet$3(this, _YargsInstance_completionCommand, null, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_output, '', "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_exitError, null, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_hasOutput, false, "f");
         this.parsed = false;
         return this;
     }
     [kRebase](base, dir) {
-        return __classPrivateFieldGet(this, _YargsInstance_shim, "f").path.relative(base, dir);
+        return __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").path.relative(base, dir);
     }
     [kRunYargsParserAndExecuteCommands](args, shortCircuit, calledFromCommand, commandIndex = 0, helpOnly = false) {
         let skipValidation = !!calledFromCommand || helpOnly;
-        args = args || __classPrivateFieldGet(this, _YargsInstance_processArgs, "f");
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").__ = __classPrivateFieldGet(this, _YargsInstance_shim, "f").y18n.__;
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").configuration = this[kGetParserConfiguration]();
-        const populateDoubleDash = !!__classPrivateFieldGet(this, _YargsInstance_options, "f").configuration['populate--'];
-        const config = Object.assign({}, __classPrivateFieldGet(this, _YargsInstance_options, "f").configuration, {
+        args = args || __classPrivateFieldGet$3(this, _YargsInstance_processArgs, "f");
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").__ = __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").y18n.__;
+        __classPrivateFieldGet$3(this, _YargsInstance_options, "f").configuration = this[kGetParserConfiguration]();
+        const populateDoubleDash = !!__classPrivateFieldGet$3(this, _YargsInstance_options, "f").configuration['populate--'];
+        const config = Object.assign({}, __classPrivateFieldGet$3(this, _YargsInstance_options, "f").configuration, {
             'populate--': true,
         });
-        const parsed = __classPrivateFieldGet(this, _YargsInstance_shim, "f").Parser.detailed(args, Object.assign({}, __classPrivateFieldGet(this, _YargsInstance_options, "f"), {
+        const parsed = __classPrivateFieldGet$3(this, _YargsInstance_shim, "f").Parser.detailed(args, Object.assign({}, __classPrivateFieldGet$3(this, _YargsInstance_options, "f"), {
             configuration: { 'parse-positional-numbers': false, ...config },
         }));
-        const argv = Object.assign(parsed.argv, __classPrivateFieldGet(this, _YargsInstance_parseContext, "f"));
+        const argv = Object.assign(parsed.argv, __classPrivateFieldGet$3(this, _YargsInstance_parseContext, "f"));
         let argvPromise = undefined;
         const aliases = parsed.aliases;
         let helpOptSet = false;
         let versionOptSet = false;
         Object.keys(argv).forEach(key => {
-            if (key === __classPrivateFieldGet(this, _YargsInstance_helpOpt, "f") && argv[key]) {
+            if (key === __classPrivateFieldGet$3(this, _YargsInstance_helpOpt, "f") && argv[key]) {
                 helpOptSet = true;
             }
-            else if (key === __classPrivateFieldGet(this, _YargsInstance_versionOpt, "f") && argv[key]) {
+            else if (key === __classPrivateFieldGet$3(this, _YargsInstance_versionOpt, "f") && argv[key]) {
                 versionOptSet = true;
             }
         });
         argv.$0 = this.$0;
         this.parsed = parsed;
         if (commandIndex === 0) {
-            __classPrivateFieldGet(this, _YargsInstance_usage, "f").clearCachedHelpMessage();
+            __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").clearCachedHelpMessage();
         }
         try {
             this[kGuessLocale]();
             if (shortCircuit) {
                 return this[kPostProcess](argv, populateDoubleDash, !!calledFromCommand, false);
             }
-            if (__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f")) {
-                const helpCmds = [__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f")]
-                    .concat(aliases[__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f")] || [])
+            if (__classPrivateFieldGet$3(this, _YargsInstance_helpOpt, "f")) {
+                const helpCmds = [__classPrivateFieldGet$3(this, _YargsInstance_helpOpt, "f")]
+                    .concat(aliases[__classPrivateFieldGet$3(this, _YargsInstance_helpOpt, "f")] || [])
                     .filter(k => k.length > 1);
                 if (helpCmds.includes('' + argv._[argv._.length - 1])) {
                     argv._.pop();
                     helpOptSet = true;
                 }
             }
-            const handlerKeys = __classPrivateFieldGet(this, _YargsInstance_command, "f").getCommands();
-            const requestCompletions = __classPrivateFieldGet(this, _YargsInstance_completion, "f").completionKey in argv;
+            const handlerKeys = __classPrivateFieldGet$3(this, _YargsInstance_command, "f").getCommands();
+            const requestCompletions = __classPrivateFieldGet$3(this, _YargsInstance_completion, "f").completionKey in argv;
             const skipRecommendation = helpOptSet || requestCompletions || helpOnly;
             if (argv._.length) {
                 if (handlerKeys.length) {
                     let firstUnknownCommand;
                     for (let i = commandIndex || 0, cmd; argv._[i] !== undefined; i++) {
                         cmd = String(argv._[i]);
-                        if (handlerKeys.includes(cmd) && cmd !== __classPrivateFieldGet(this, _YargsInstance_completionCommand, "f")) {
-                            const innerArgv = __classPrivateFieldGet(this, _YargsInstance_command, "f").runCommand(cmd, this, parsed, i + 1, helpOnly, helpOptSet || versionOptSet || helpOnly);
+                        if (handlerKeys.includes(cmd) && cmd !== __classPrivateFieldGet$3(this, _YargsInstance_completionCommand, "f")) {
+                            const innerArgv = __classPrivateFieldGet$3(this, _YargsInstance_command, "f").runCommand(cmd, this, parsed, i + 1, helpOnly, helpOptSet || versionOptSet || helpOnly);
                             return this[kPostProcess](innerArgv, populateDoubleDash, !!calledFromCommand, false);
                         }
                         else if (!firstUnknownCommand &&
-                            cmd !== __classPrivateFieldGet(this, _YargsInstance_completionCommand, "f")) {
+                            cmd !== __classPrivateFieldGet$3(this, _YargsInstance_completionCommand, "f")) {
                             firstUnknownCommand = cmd;
                             break;
                         }
                     }
-                    if (!__classPrivateFieldGet(this, _YargsInstance_command, "f").hasDefaultCommand() &&
-                        __classPrivateFieldGet(this, _YargsInstance_recommendCommands, "f") &&
+                    if (!__classPrivateFieldGet$3(this, _YargsInstance_command, "f").hasDefaultCommand() &&
+                        __classPrivateFieldGet$3(this, _YargsInstance_recommendCommands, "f") &&
                         firstUnknownCommand &&
                         !skipRecommendation) {
-                        __classPrivateFieldGet(this, _YargsInstance_validation, "f").recommendCommands(firstUnknownCommand, handlerKeys);
+                        __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").recommendCommands(firstUnknownCommand, handlerKeys);
                     }
                 }
-                if (__classPrivateFieldGet(this, _YargsInstance_completionCommand, "f") &&
-                    argv._.includes(__classPrivateFieldGet(this, _YargsInstance_completionCommand, "f")) &&
+                if (__classPrivateFieldGet$3(this, _YargsInstance_completionCommand, "f") &&
+                    argv._.includes(__classPrivateFieldGet$3(this, _YargsInstance_completionCommand, "f")) &&
                     !requestCompletions) {
-                    if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f"))
+                    if (__classPrivateFieldGet$3(this, _YargsInstance_exitProcess, "f"))
                         setBlocking(true);
                     this.showCompletionScript();
                     this.exit(0);
                 }
             }
-            if (__classPrivateFieldGet(this, _YargsInstance_command, "f").hasDefaultCommand() && !skipRecommendation) {
-                const innerArgv = __classPrivateFieldGet(this, _YargsInstance_command, "f").runCommand(null, this, parsed, 0, helpOnly, helpOptSet || versionOptSet || helpOnly);
+            if (__classPrivateFieldGet$3(this, _YargsInstance_command, "f").hasDefaultCommand() && !skipRecommendation) {
+                const innerArgv = __classPrivateFieldGet$3(this, _YargsInstance_command, "f").runCommand(null, this, parsed, 0, helpOnly, helpOptSet || versionOptSet || helpOnly);
                 return this[kPostProcess](innerArgv, populateDoubleDash, !!calledFromCommand, false);
             }
             if (requestCompletions) {
-                if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f"))
+                if (__classPrivateFieldGet$3(this, _YargsInstance_exitProcess, "f"))
                     setBlocking(true);
                 args = [].concat(args);
-                const completionArgs = args.slice(args.indexOf(`--${__classPrivateFieldGet(this, _YargsInstance_completion, "f").completionKey}`) + 1);
-                __classPrivateFieldGet(this, _YargsInstance_completion, "f").getCompletion(completionArgs, (err, completions) => {
+                const completionArgs = args.slice(args.indexOf(`--${__classPrivateFieldGet$3(this, _YargsInstance_completion, "f").completionKey}`) + 1);
+                __classPrivateFieldGet$3(this, _YargsInstance_completion, "f").getCompletion(completionArgs, (err, completions) => {
                     if (err)
                         throw new YError(err.message);
                     (completions || []).forEach(completion => {
-                        __classPrivateFieldGet(this, _YargsInstance_logger, "f").log(completion);
+                        __classPrivateFieldGet$3(this, _YargsInstance_logger, "f").log(completion);
                     });
                     this.exit(0);
                 });
                 return this[kPostProcess](argv, !populateDoubleDash, !!calledFromCommand, false);
             }
-            if (!__classPrivateFieldGet(this, _YargsInstance_hasOutput, "f")) {
+            if (!__classPrivateFieldGet$3(this, _YargsInstance_hasOutput, "f")) {
                 if (helpOptSet) {
-                    if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f"))
+                    if (__classPrivateFieldGet$3(this, _YargsInstance_exitProcess, "f"))
                         setBlocking(true);
                     skipValidation = true;
                     this.showHelp('log');
                     this.exit(0);
                 }
                 else if (versionOptSet) {
-                    if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f"))
+                    if (__classPrivateFieldGet$3(this, _YargsInstance_exitProcess, "f"))
                         setBlocking(true);
                     skipValidation = true;
-                    __classPrivateFieldGet(this, _YargsInstance_usage, "f").showVersion('log');
+                    __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").showVersion('log');
                     this.exit(0);
                 }
             }
-            if (!skipValidation && __classPrivateFieldGet(this, _YargsInstance_options, "f").skipValidation.length > 0) {
-                skipValidation = Object.keys(argv).some(key => __classPrivateFieldGet(this, _YargsInstance_options, "f").skipValidation.indexOf(key) >= 0 && argv[key] === true);
+            if (!skipValidation && __classPrivateFieldGet$3(this, _YargsInstance_options, "f").skipValidation.length > 0) {
+                skipValidation = Object.keys(argv).some(key => __classPrivateFieldGet$3(this, _YargsInstance_options, "f").skipValidation.indexOf(key) >= 0 && argv[key] === true);
             }
             if (!skipValidation) {
                 if (parsed.error)
@@ -5536,12 +5536,12 @@ class YargsInstance {
                 if (!requestCompletions) {
                     const validation = this[kRunValidation](aliases, {}, parsed.error);
                     if (!calledFromCommand) {
-                        argvPromise = applyMiddleware(argv, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), true);
+                        argvPromise = applyMiddleware(argv, this, __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), true);
                     }
                     argvPromise = this[kValidateAsync](validation, argvPromise !== null && argvPromise !== void 0 ? argvPromise : argv);
                     if (isPromise(argvPromise) && !calledFromCommand) {
                         argvPromise = argvPromise.then(() => {
-                            return applyMiddleware(argv, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), false);
+                            return applyMiddleware(argv, this, __classPrivateFieldGet$3(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), false);
                         });
                     }
                 }
@@ -5549,7 +5549,7 @@ class YargsInstance {
         }
         catch (err) {
             if (err instanceof YError)
-                __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(err.message, err);
+                __classPrivateFieldGet$3(this, _YargsInstance_usage, "f").fail(err.message, err);
             else
                 throw err;
         }
@@ -5560,25 +5560,25 @@ class YargsInstance {
         return (argv) => {
             if (parseErrors)
                 throw new YError(parseErrors.message);
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").nonOptionCount(argv);
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").requiredArguments(argv, demandedOptions);
+            __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").nonOptionCount(argv);
+            __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").requiredArguments(argv, demandedOptions);
             let failedStrictCommands = false;
-            if (__classPrivateFieldGet(this, _YargsInstance_strictCommands, "f")) {
-                failedStrictCommands = __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownCommands(argv);
+            if (__classPrivateFieldGet$3(this, _YargsInstance_strictCommands, "f")) {
+                failedStrictCommands = __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").unknownCommands(argv);
             }
-            if (__classPrivateFieldGet(this, _YargsInstance_strict, "f") && !failedStrictCommands) {
-                __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownArguments(argv, aliases, positionalMap, !!isDefaultCommand);
+            if (__classPrivateFieldGet$3(this, _YargsInstance_strict, "f") && !failedStrictCommands) {
+                __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").unknownArguments(argv, aliases, positionalMap, !!isDefaultCommand);
             }
-            else if (__classPrivateFieldGet(this, _YargsInstance_strictOptions, "f")) {
-                __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownArguments(argv, aliases, {}, false, false);
+            else if (__classPrivateFieldGet$3(this, _YargsInstance_strictOptions, "f")) {
+                __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").unknownArguments(argv, aliases, {}, false, false);
             }
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").limitedChoices(argv);
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").implications(argv);
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").conflicting(argv);
+            __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").limitedChoices(argv);
+            __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").implications(argv);
+            __classPrivateFieldGet$3(this, _YargsInstance_validation, "f").conflicting(argv);
         };
     }
     [kSetHasOutput]() {
-        __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
+        __classPrivateFieldSet$3(this, _YargsInstance_hasOutput, true, "f");
     }
 }
 function isYargsInstance(y) {
@@ -5586,6 +5586,59 @@ function isYargsInstance(y) {
 }
 
 const Yargs = YargsFactory(shim$1);
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+
+    if (enumerableOnly) {
+      symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    }
+
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
@@ -5731,13 +5784,258 @@ const cryptoRandomString = createGenerator(generateForCustomCharacters, generate
 
 cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, generateRandomBytesAsync);
 
-var __dirname$3 = path.resolve(path.dirname(""));
+var __classPrivateFieldSet$2 = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet$2 = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _Writer_instances, _Writer_filename, _Writer_tempFilename, _Writer_locked, _Writer_prev, _Writer_next, _Writer_nextPromise, _Writer_nextData, _Writer_add, _Writer_write;
+// Returns a temporary file
+// Example: for /some/file will return /some/.file.tmp
+function getTempFilename(file) {
+    return path.join(path.dirname(file), '.' + path.basename(file) + '.tmp');
+}
+class Writer {
+    constructor(filename) {
+        _Writer_instances.add(this);
+        _Writer_filename.set(this, void 0);
+        _Writer_tempFilename.set(this, void 0);
+        _Writer_locked.set(this, false);
+        _Writer_prev.set(this, null);
+        _Writer_next.set(this, null);
+        _Writer_nextPromise.set(this, null);
+        _Writer_nextData.set(this, null
+        // File is locked, add data for later
+        );
+        __classPrivateFieldSet$2(this, _Writer_filename, filename, "f");
+        __classPrivateFieldSet$2(this, _Writer_tempFilename, getTempFilename(filename), "f");
+    }
+    async write(data) {
+        return __classPrivateFieldGet$2(this, _Writer_locked, "f") ? __classPrivateFieldGet$2(this, _Writer_instances, "m", _Writer_add).call(this, data) : __classPrivateFieldGet$2(this, _Writer_instances, "m", _Writer_write).call(this, data);
+    }
+}
+_Writer_filename = new WeakMap(), _Writer_tempFilename = new WeakMap(), _Writer_locked = new WeakMap(), _Writer_prev = new WeakMap(), _Writer_next = new WeakMap(), _Writer_nextPromise = new WeakMap(), _Writer_nextData = new WeakMap(), _Writer_instances = new WeakSet(), _Writer_add = function _Writer_add(data) {
+    // Only keep most recent data
+    __classPrivateFieldSet$2(this, _Writer_nextData, data, "f");
+    // Create a singleton promise to resolve all next promises once next data is written
+    __classPrivateFieldSet$2(this, _Writer_nextPromise, __classPrivateFieldGet$2(this, _Writer_nextPromise, "f") || new Promise((resolve, reject) => {
+        __classPrivateFieldSet$2(this, _Writer_next, [resolve, reject], "f");
+    }), "f");
+    // Return a promise that will resolve at the same time as next promise
+    return new Promise((resolve, reject) => {
+        var _a;
+        (_a = __classPrivateFieldGet$2(this, _Writer_nextPromise, "f")) === null || _a === void 0 ? void 0 : _a.then(resolve).catch(reject);
+    });
+}, _Writer_write = 
+// File isn't locked, write data
+async function _Writer_write(data) {
+    var _a, _b;
+    // Lock file
+    __classPrivateFieldSet$2(this, _Writer_locked, true, "f");
+    try {
+        // Atomic write
+        await fs.promises.writeFile(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), data, 'utf-8');
+        await fs.promises.rename(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), __classPrivateFieldGet$2(this, _Writer_filename, "f"));
+        // Call resolve
+        (_a = __classPrivateFieldGet$2(this, _Writer_prev, "f")) === null || _a === void 0 ? void 0 : _a[0]();
+    }
+    catch (err) {
+        // Call reject
+        (_b = __classPrivateFieldGet$2(this, _Writer_prev, "f")) === null || _b === void 0 ? void 0 : _b[1](err);
+        throw err;
+    }
+    finally {
+        // Unlock file
+        __classPrivateFieldSet$2(this, _Writer_locked, false, "f");
+        __classPrivateFieldSet$2(this, _Writer_prev, __classPrivateFieldGet$2(this, _Writer_next, "f"), "f");
+        __classPrivateFieldSet$2(this, _Writer_next, __classPrivateFieldSet$2(this, _Writer_nextPromise, null, "f"), "f");
+        if (__classPrivateFieldGet$2(this, _Writer_nextData, "f") !== null) {
+            const nextData = __classPrivateFieldGet$2(this, _Writer_nextData, "f");
+            __classPrivateFieldSet$2(this, _Writer_nextData, null, "f");
+            await this.write(nextData);
+        }
+    }
+};
 
-var save = (function (sml) {
+var __classPrivateFieldSet$1 = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet$1 = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _TextFile_filename, _TextFile_writer;
+class TextFile {
+    constructor(filename) {
+        _TextFile_filename.set(this, void 0);
+        _TextFile_writer.set(this, void 0);
+        __classPrivateFieldSet$1(this, _TextFile_filename, filename, "f");
+        __classPrivateFieldSet$1(this, _TextFile_writer, new Writer(filename), "f");
+    }
+    async read() {
+        let data;
+        try {
+            data = await fs.promises.readFile(__classPrivateFieldGet$1(this, _TextFile_filename, "f"), 'utf-8');
+        }
+        catch (e) {
+            if (e.code === 'ENOENT') {
+                return null;
+            }
+            throw e;
+        }
+        return data;
+    }
+    write(str) {
+        return __classPrivateFieldGet$1(this, _TextFile_writer, "f").write(str);
+    }
+}
+_TextFile_filename = new WeakMap(), _TextFile_writer = new WeakMap();
+
+var __classPrivateFieldSet = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _JSONFile_adapter;
+class JSONFile {
+    constructor(filename) {
+        _JSONFile_adapter.set(this, void 0);
+        __classPrivateFieldSet(this, _JSONFile_adapter, new TextFile(filename), "f");
+    }
+    async read() {
+        const data = await __classPrivateFieldGet(this, _JSONFile_adapter, "f").read();
+        if (data === null) {
+            return null;
+        }
+        else {
+            return JSON.parse(data);
+        }
+    }
+    write(obj) {
+        return __classPrivateFieldGet(this, _JSONFile_adapter, "f").write(JSON.stringify(obj, null, 2));
+    }
+}
+_JSONFile_adapter = new WeakMap();
+
+(undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+(undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+(undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+(undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+(undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+(undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+(undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+(undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+
+(undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+(undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+
+class MissingAdapterError extends Error {
+    constructor() {
+        super();
+        this.message = 'Missing Adapter';
+    }
+}
+
+class Low {
+    constructor(adapter) {
+        Object.defineProperty(this, "adapter", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "data", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: null
+        });
+        if (adapter) {
+            this.adapter = adapter;
+        }
+        else {
+            throw new MissingAdapterError();
+        }
+    }
+    async read() {
+        this.data = await this.adapter.read();
+    }
+    async write() {
+        if (this.data) {
+            await this.adapter.write(this.data);
+        }
+    }
+}
+
+var __dirname$1 = path.resolve(path.dirname(""));
+
+var save = (function (sml, cb) {
   // 使用ssh2 在服务端 生成 ssh
-  var ora = ora$1();
-  ora.start("获取服务器反馈中...");
-  var location = path.join(__dirname$3, "/".concat(sml.name));
+  var location = path.join(__dirname$1, "/.key/".concat(sml.file));
   keygen({
     location: location,
     comment: sml.comment,
@@ -5746,18 +6044,31 @@ var save = (function (sml) {
     format: sml.format
   }, function (err, out) {
     if (err) return console.log("Something went wrong: " + err);
-    console.log("Keys created!");
-    console.log("private key: " + out.key);
-    console.log("public key: " + out.pubKey);
+
+    if (!sml.keyType) {
+      // 隐藏秘钥信息
+      console.log("Keys created!");
+      console.log("private key: " + out.key);
+      console.log("public key: " + out.pubKey);
+    }
+
+    cb && cb();
   });
 });
 
-var __dirname$2 = path.resolve(path.dirname(""));
-
-path.join(__dirname$2, "../server.txt");
 var questions = [{
+  type: 'input',
+  name: 'name',
+  message: '设置服务器名称:',
+  "default": '服务器名称'
+}, {
+  type: 'input',
+  name: 'address',
+  message: '设置服务器:',
+  "default": '192.168.1.1'
+}, {
   type: "input",
-  name: "name",
+  name: "file",
   message: "设置ssh-keygen名称:",
   "default": "sshkey"
 }, {
@@ -5771,14 +6082,23 @@ var questions = [{
 }, {
   type: "input",
   name: "comment",
-  message: "请提供新的注释"
+  message: "请提供新的注释:"
 }, {
   type: "input",
   name: "format",
   message: "请指定要创建的密钥类型:",
   "default": "PEM"
+}, {
+  type: 'confirm',
+  name: 'keyType',
+  message: '是否隐藏秘钥信息反馈?'
 }];
 var set = (function () {
+  var ora = ora$1();
+
+  var __dirname = path.resolve(path.dirname(""));
+
+  var json = path.join(__dirname, "/.key/key.json");
   return inquirer.prompt(questions).then(function (answers) {
     return inquirer.prompt({
       type: "confirm",
@@ -5786,56 +6106,60 @@ var set = (function () {
       message: "\u8BF7\u786E\u5B9A\u4F60\u7684\u4FE1\u606F!"
     }).then(function (ft) {
       if (ft.type) {
-        // 给每个账号设置一个时间戳，来区分
-        // const params = {
-        //   time: Date.now(),
-        //   ...answers,
-        // };
-        // console.log(answers);
-        var a = save(answers);
-        console.log(a); // const base64 = Buffer.from(JSON.stringify(params), "utf8").toString(
-        //   "base64"
-        // );
-        // // 在文件后面插入新的数据用base64没有值去分割
-        // fs.appendFile(json, `${base64}-`, "utf8", (err) => {
-        //   if (err) throw err;
-        // });
-        // // 读取文件
-        // fs.readFile(json, "utf8", (err, data) => {
-        //   if (err) throw err;
-        //   if (!data) data = JSON.stringify([]);
-        //   data = JSON.parse(data);
-        //   // 每次读取的并且写入的时候，都生成一个唯一id
-        //   data.push(answers);
-        //   // 简单解决直接覆盖
-        //   // fs.writeFile(json, JSON.stringify(data), 'utf8', err => {
-        //   // 	if (err) throw err
-        //   // })
-        // });
+        ora.start("生成ssh-keygen中..."); // todo: https://github.com/typicode/lowdb/issues/380
+
+        var adapter = new JSONFile(json);
+        var db = new Low(adapter);
+        db.read().then(function () {
+          var _ref = db.data || {},
+              _ref$keys = _ref.keys,
+              keys = _ref$keys === void 0 ? [] : _ref$keys;
+
+          var find = keys.find(function (i) {
+            return i.name === answers.name;
+          });
+
+          if (find) {
+            return ora.fail('重复的ssk-keygen');
+          } // 给每个账号设置一个时间戳，来区分
+
+
+          var params = _objectSpread2({
+            time: Date.now()
+          }, answers);
+
+          save(params, function () {
+            db.data || (db.data = {
+              keys: []
+            });
+            db.data.keys.push(params);
+            db.write();
+            ora.succeed('生成秘钥成功');
+          });
+        })["catch"](function (err) {
+          ora.fail('错误了');
+        });
       }
     });
   });
 });
 
-var __dirname$1 = path.resolve(path.dirname(""));
-
-var json$1 = path.join(__dirname$1, "../server.txt");
 var serverList = (function () {
-  return new Promise(function (resolve, reject) {
-    fs.readFile(json$1, "utf8", function (err, data) {
-      if (err) reject(err);
+  var __dirname = path.resolve(path.dirname(""));
 
-      if (!data) {
+  var json = path.join(__dirname, "/.key/key.json");
+  var adapter = new JSONFile(json);
+  var db = new Low(adapter);
+  return new Promise(function (resolve, reject) {
+    db.read().then(function () {
+      var _ref = db.data || {},
+          _ref$keys = _ref.keys,
+          keys = _ref$keys === void 0 ? [] : _ref$keys;
+
+      if (!keys.length) {
         reject("暂无保存的服务器列表");
       } else {
-        data = data.split("-").filter(function (i) {
-          return i;
-        }).map(function (item) {
-          if (item.length > 0) {
-            return JSON.parse(Buffer.from(item, "base64").toString("utf8"));
-          }
-        });
-        resolve(data);
+        resolve(keys);
       }
     });
   }).then(function (data) {
@@ -5850,11 +6174,8 @@ var serverList = (function () {
         };
       })
     }]).then(function (answers) {
-      var serverList = {};
-      data.map(function (item) {
-        if (item.time === answers.time) {
-          Object.assign(serverList, item);
-        }
+      var serverList = data.find(function (item) {
+        return item.time === answers.time;
       });
       return {
         select: serverList,
@@ -5896,24 +6217,6 @@ var del = (function () {
   });
 });
 
-//   const child = spawn(
-//     // `ssh ${sml.username}@${sml.server} -p ${sml.port}`,
-//     "ssh",
-//     ["-tt", `${sml.username}@${sml.server}`, "-p", `${sml.port}`],
-//     {
-//       stdio: ["ignore", "pipe", "pipe"],
-//     }
-//   );
-//   // child.stdout.pipe(sml.password);
-//   child.stdout.on("data", function (data) {
-//     console.log("stdout: " + data);
-//     // child.send();
-//   });
-//   child.stderr.on("data", function (data) {
-//     console.log("stderr: " + data);
-//   });
-// };
-
 var ssh = (function (sml) {
   var ora = ora$1();
   var conn = new Client();
@@ -5922,22 +6225,9 @@ var ssh = (function (sml) {
     ora.succeed("ssh连接成功!");
     conn.shell(function (err, stream) {
       if (err) throw err;
-      process.stdin.setEncoding("utf8");
-      var command = false;
-      process.stdin.on("readable", function () {
-        var chunk = process.stdin.read();
-
-        if (chunk !== null) {
-          command = true;
-          stream.write(chunk);
-        }
-      });
       stream.on("close", function () {
         console.log("关闭shell");
         conn.end();
-      }).on("data", function (data) {
-        if (!command) process.stdout.write(data);
-        command = false;
       }).on("error", function (data) {
         console.log("err: " + data);
       }).stderr.on("data", function (data) {
@@ -5947,8 +6237,7 @@ var ssh = (function (sml) {
   }).connect({
     host: sml.server,
     port: sml.port,
-    username: sml.username,
-    password: sml.password // tryKeyboard: true,
+    username: sml.username // tryKeyboard: true,
 
   });
 });
@@ -5990,12 +6279,4 @@ Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务�
       ora.warn(chalk.yellow("暂时未获取到服务器信息"));
     }
   });
-}).command("test", "测试", function () {
-  var server = {
-    server: "211.159.175.227",
-    port: 19022,
-    username: "zuigzm",
-    password: "yiwang13"
-  };
-  save(server);
 }).demandCommand(1).argv;

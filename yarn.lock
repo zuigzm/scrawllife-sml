@@ -1571,6 +1571,13 @@ log-symbols@^5.0.0:
     chalk "^4.1.0"
     is-unicode-supported "^1.0.0"
 
+lowdb@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/lowdb/-/lowdb-3.0.0.tgz#c10ab4e7eb86f1cbe255e35e60ffb0c6f42049e0"
+  integrity sha512-9KZRulmIcU8fZuWiaM0d5e2/nPnrFyXkeXVpqT+MJS+vgbgOf1EbtvgQmba8HwUFgDl1oeZR6XqEJnkJmQdKmg==
+  dependencies:
+    steno "^2.1.0"
+
 magic-string@^0.25.7:
   version "0.25.7"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.7.tgz#3f497d6fd34c669c6798dcb821f2ef31f5445051"
@@ -1863,6 +1870,11 @@ ssh2@^1.4.0:
   optionalDependencies:
     cpu-features "0.0.2"
     nan "^2.15.0"
+
+steno@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/steno/-/steno-2.1.0.tgz#05a9c378ce42ed04f642cda6fcb41787a10e4e33"
+  integrity sha512-mauOsiaqTNGFkWqIfwcm3y/fq+qKKaIWf1vf3ocOuTdco9XoHCO2AGF1gFYXuZFSWuP38Q8LBHBGJv2KnJSXyA==
 
 string-width@^4.1.0, string-width@^4.2.0:
   version "4.2.2"

@@ -56,14 +56,4 @@ Yargs(hideBin(process.argv))
       }
     });
   })
-  .command("test", "测试", () => {
-    const server = {
-      server: "211.159.175.227",
-      port: 19022,
-      username: "zuigzm",
-      password: "yiwang13",
-    };
-
-    save(server);
-  })
   .demandCommand(1).argv;
