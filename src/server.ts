@@ -27,7 +27,7 @@ export default () => {
           type: "list",
           name: "time",
           message: "请选择服务器",
-          choices: data.map((i) => ({
+          choices: data.map((i:any) => ({
             name: i.name,
             value: i.time,
           })),

@@ -7,6 +7,7 @@ import del from "./del";
 import serverList from "./server";
 import ssh from "./ssh";
 import save from "./save";
+import db from './db'
 
 const ora = ORA();
 
@@ -40,7 +41,9 @@ Yargs(hideBin(process.argv))
     serverList()
       .then(({ select }) => {
         if (select) {
-          ssh(select);
+          db.get(select.time).then((data) => {
+            ssh(data)
+          })
         }
       })
       .catch((err) => {

@@ -4,6 +4,7 @@ import path from "path";
 import { Low, JSONFile } from 'lowdb'
 import ORA from "ora";
 import save, { KeysData } from "./save";
+import db from './db'
 
 const questions = [
   {
@@ -63,28 +64,42 @@ export default () => {
         if (ft.type) {
           ora.start("生成ssh-keygen中...");
           // todo: https://github.com/typicode/lowdb/issues/380
-          const adapter = new JSONFile<KeysData>(json)
-          const db = new Low<KeysData>(adapter)
-          db.read().then(() => {
-            const { keys = []} = db.data || {}
-            const find = keys.find((i) => i.name === answers.name)
-            if(find) {
-              return ora.fail('重复的ssk-keygen')
-            }
-            // 给每个账号设置一个时间戳，来区分
+          // const adapter = new JSONFile<KeysData>(json)
+             // 给每个账号设置一个时间戳，来区分
             const params = {
               time: Date.now(),
               ...answers,
             };
-            save(params, () => {
-              db.data ||= { keys: []}
-              db.data.keys.push(params) 
-              db.write()
-              ora.succeed('生成秘钥成功')
-            })
+          db.save(params).then((data) => {
+            console.log(data)
+            //   save(params, () => {
+            //       ora.succeed('生成秘钥成功')
+            //   ora.succeed('生成秘钥成功')
+            // })
           }).catch(err => {
             ora.fail('错误了')
-          });
+          })
+          // const db = new Low<KeysData>(adapter)
+          // db.read().then(() => {
+          //   const { keys = []} = db.data || {}
+          //   const find = keys.find((i) => i.name === answers.name)
+          //   if(find) {
+          //     return ora.fail('重复的ssk-keygen')
+          //   }
+          //   // 给每个账号设置一个时间戳，来区分
+          //   const params = {
+          //     time: Date.now(),
+          //     ...answers,
+          //   };
+          //   save(params, () => {
+          //     db.data ||= { keys: []}
+          //     db.data.keys.push(params) 
+          //     db.write()
+          //     ora.succeed('生成秘钥成功')
+          //   })
+          // }).catch(err => {
+          //   ora.fail('错误了')
+          // });
         }
       });
   });

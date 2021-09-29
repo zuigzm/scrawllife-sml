@@ -1,19 +1,22 @@
 import inquirer from "inquirer";
-import fs from "fs";
 import path from "path";
+import { Low, JSONFile } from 'lowdb'
+import { KeysData } from "./save";
 import serverList from "./server";
 
-const __dirname = path.resolve(path.dirname(""));
-const json = path.join(__dirname, "../server.txt");
 
 // 删除指定服务器
 export default () => {
+  const __dirname = path.resolve(path.dirname(""));
+  const json = path.join(__dirname, "/.key/key.json");
+  const adapter = new JSONFile<KeysData>(json)
+  const db = new Low<KeysData>(adapter)
+
   return serverList()
     .then(({ select, datas }) => {
       // 获取指定的服务器 answers
       const d = datas
         .filter((i) => i.time !== select.time)
-        .map((i) => Buffer.from(JSON.stringify(i), "utf8").toString("base64"));
 
       // 直接复写数据
       return d;

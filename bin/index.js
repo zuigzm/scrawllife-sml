@@ -9,12 +9,12 @@ import wcwidth from 'wcwidth';
 import { BufferListStream } from 'bl';
 import { notStrictEqual, strictEqual } from 'assert';
 import path, { resolve, dirname, normalize, basename, extname, relative } from 'path';
-import fs, { statSync, readdirSync, readFileSync, writeFile } from 'fs';
+import fs$1, { statSync, readdirSync, readFileSync, writeFile } from 'fs';
 import { format, inspect, promisify } from 'util';
 import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
 import crypto from 'crypto';
-import keygen from 'ssh-keygen';
+import lodash from 'lodash';
 import { Client } from 'ssh2';
 
 const restoreCursor = onetime(() => {
@@ -2260,7 +2260,7 @@ const REQUIRE_ERROR = 'require is not supported by ESM';
 const REQUIRE_DIRECTORY_ERROR = 'loading a directory of commands is not supported yet for ESM';
 
 const mainFilename = fileURLToPath(import.meta.url).split('node_modules')[0];
-const __dirname$2 = fileURLToPath(import.meta.url);
+const __dirname$1 = fileURLToPath(import.meta.url);
 
 var shim$1 = {
   assert: {
@@ -2305,7 +2305,7 @@ var shim$1 = {
     return [...str].length
   },
   y18n: y18n({
-    directory: resolve(__dirname$2, '../../../locales'),
+    directory: resolve(__dirname$1, '../../../locales'),
     updateFiles: false
   })
 };
@@ -5840,8 +5840,8 @@ async function _Writer_write(data) {
     __classPrivateFieldSet$2(this, _Writer_locked, true, "f");
     try {
         // Atomic write
-        await fs.promises.writeFile(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), data, 'utf-8');
-        await fs.promises.rename(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), __classPrivateFieldGet$2(this, _Writer_filename, "f"));
+        await fs$1.promises.writeFile(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), data, 'utf-8');
+        await fs$1.promises.rename(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), __classPrivateFieldGet$2(this, _Writer_filename, "f"));
         // Call resolve
         (_a = __classPrivateFieldGet$2(this, _Writer_prev, "f")) === null || _a === void 0 ? void 0 : _a[0]();
     }
@@ -5885,7 +5885,7 @@ class TextFile {
     async read() {
         let data;
         try {
-            data = await fs.promises.readFile(__classPrivateFieldGet$1(this, _TextFile_filename, "f"), 'utf-8');
+            data = await fs$1.promises.readFile(__classPrivateFieldGet$1(this, _TextFile_filename, "f"), 'utf-8');
         }
         catch (e) {
             if (e.code === 'ENOENT') {
@@ -6031,30 +6031,60 @@ class Low {
     }
 }
 
-var __dirname$1 = path.resolve(path.dirname(""));
+var __dirname = path.resolve(path.dirname(""));
 
-var save = (function (sml, cb) {
-  // 使用ssh2 在服务端 生成 ssh
-  var location = path.join(__dirname$1, "/.key/".concat(sml.file));
-  keygen({
-    location: location,
-    comment: sml.comment,
-    password: sml.password,
-    read: true,
-    format: sml.format
-  }, function (err, out) {
-    if (err) return console.log("Something went wrong: " + err);
+var location = path.join(__dirname, "/.key/key.json");
+var adapter = new JSONFile(location);
+var db = new Low(adapter);
+var obj = {
+  save: function save(params) {
+    var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    return new Promise(function (resolve, reject) {
+      var data = lodash.chain(db.data).get('keys');
+      var filterData = {};
 
-    if (!sml.keyType) {
-      // 隐藏秘钥信息
-      console.log("Keys created!");
-      console.log("private key: " + out.key);
-      console.log("public key: " + out.pubKey);
-    }
+      if (opt.filter) {
+        lodash.map(opt.filter, function (i) {
+          filterData[i] = params[i];
+        });
+      }
 
-    cb && cb();
-  });
-});
+      var findData = data.find(filterData).value();
+      console.log(findData);
+
+      if (findData) {
+        reject('有相同的值');
+      } else {
+        var result = data.set(params).value();
+        resolve(result);
+      }
+    });
+  },
+  "delete": function _delete(time) {
+    return new Promise(function (resolve, reject) {
+      db.read().then(function () {
+        var data = lodash.chain(db.data).get('keys').remove({
+          time: time
+        }).value();
+        db.write(); // 返回删除的数据
+
+        resolve(data);
+      });
+    });
+  },
+  get: function get(time) {
+    return new Promise(function (resolve, reject) {
+      db.read().then(function () {
+        var data = lodash.chain(db.data).get('keys').find({
+          time: time
+        }).value();
+        resolve(data);
+      })["catch"](function (err) {
+        reject(err);
+      });
+    });
+  }
+};
 
 var questions = [{
   type: 'input',
@@ -6098,7 +6128,7 @@ var set = (function () {
 
   var __dirname = path.resolve(path.dirname(""));
 
-  var json = path.join(__dirname, "/.key/key.json");
+  path.join(__dirname, "/.key/key.json");
   return inquirer.prompt(questions).then(function (answers) {
     return inquirer.prompt({
       type: "confirm",
@@ -6107,38 +6137,41 @@ var set = (function () {
     }).then(function (ft) {
       if (ft.type) {
         ora.start("生成ssh-keygen中..."); // todo: https://github.com/typicode/lowdb/issues/380
+        // const adapter = new JSONFile<KeysData>(json)
+        // 给每个账号设置一个时间戳，来区分
 
-        var adapter = new JSONFile(json);
-        var db = new Low(adapter);
-        db.read().then(function () {
-          var _ref = db.data || {},
-              _ref$keys = _ref.keys,
-              keys = _ref$keys === void 0 ? [] : _ref$keys;
+        var params = _objectSpread2({
+          time: Date.now()
+        }, answers);
 
-          var find = keys.find(function (i) {
-            return i.name === answers.name;
-          });
-
-          if (find) {
-            return ora.fail('重复的ssk-keygen');
-          } // 给每个账号设置一个时间戳，来区分
-
-
-          var params = _objectSpread2({
-            time: Date.now()
-          }, answers);
-
-          save(params, function () {
-            db.data || (db.data = {
-              keys: []
-            });
-            db.data.keys.push(params);
-            db.write();
-            ora.succeed('生成秘钥成功');
-          });
+        obj.save(params).then(function (data) {
+          console.log(data); //   save(params, () => {
+          //       ora.succeed('生成秘钥成功')
+          //   ora.succeed('生成秘钥成功')
+          // })
         })["catch"](function (err) {
           ora.fail('错误了');
-        });
+        }); // const db = new Low<KeysData>(adapter)
+        // db.read().then(() => {
+        //   const { keys = []} = db.data || {}
+        //   const find = keys.find((i) => i.name === answers.name)
+        //   if(find) {
+        //     return ora.fail('重复的ssk-keygen')
+        //   }
+        //   // 给每个账号设置一个时间戳，来区分
+        //   const params = {
+        //     time: Date.now(),
+        //     ...answers,
+        //   };
+        //   save(params, () => {
+        //     db.data ||= { keys: []}
+        //     db.data.keys.push(params) 
+        //     db.write()
+        //     ora.succeed('生成秘钥成功')
+        //   })
+        // }).catch(err => {
+        //   ora.fail('错误了')
+        // });
       }
     });
   });
@@ -6185,19 +6218,18 @@ var serverList = (function () {
   });
 });
 
-var __dirname = path.resolve(path.dirname(""));
-
-var json = path.join(__dirname, "../server.txt"); // 删除指定服务器
-
 var del = (function () {
+  var __dirname = path.resolve(path.dirname(""));
+
+  var json = path.join(__dirname, "/.key/key.json");
+  var adapter = new JSONFile(json);
+  new Low(adapter);
   return serverList().then(function (_ref) {
     var select = _ref.select,
         datas = _ref.datas;
     // 获取指定的服务器 answers
     var d = datas.filter(function (i) {
       return i.time !== select.time;
-    }).map(function (i) {
-      return Buffer.from(JSON.stringify(i), "utf8").toString("base64");
     }); // 直接复写数据
 
     return d;
@@ -6266,7 +6298,9 @@ Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务�
     var select = _ref.select;
 
     if (select) {
-      ssh(select);
+      obj.get(select.time).then(function (data) {
+        ssh(data);
+      });
     }
   })["catch"](function (err) {
     if (err) {
