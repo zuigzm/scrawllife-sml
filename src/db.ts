@@ -37,7 +37,8 @@ const db = new Low<KeysData>(adapter)
         if(findData) {
           reject('有相同的值')
         } else {
-          const result = data.set(params).value()
+          db.data?.keys.push(params)
+          const result = data.value()
           resolve(result)
         }
     })

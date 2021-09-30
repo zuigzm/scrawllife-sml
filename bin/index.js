@@ -6055,7 +6055,10 @@ var obj = {
       if (findData) {
         reject('有相同的值');
       } else {
-        var result = data.set(params).value();
+        var _db$data;
+
+        (_db$data = db.data) === null || _db$data === void 0 ? void 0 : _db$data.keys.push(params);
+        var result = data.value();
         resolve(result);
       }
     });
