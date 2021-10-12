@@ -1,23 +1,23 @@
 import inquirer from "inquirer";
 import cryptoRandomString from "crypto-random-string";
 import path from "path";
-import { Low, JSONFile } from 'lowdb'
+import { Low, JSONFile } from "lowdb";
 import ORA from "ora";
 import save, { KeysData } from "./save";
-import db from './db'
+import db from "./db";
 
 const questions = [
   {
-    type: 'input',
-    name: 'name',
-    message: '设置服务器名称:',
-    default: '服务器名称'
+    type: "input",
+    name: "name",
+    message: "设置服务器名称:",
+    default: "服务器名称",
   },
   {
-    type: 'input',
-    name: 'address',
-    message: '设置服务器:',
-    default: '192.168.1.1'
+    type: "input",
+    name: "address",
+    message: "设置服务器:",
+    default: "192.168.1.1",
   },
   {
     type: "input",
@@ -43,10 +43,10 @@ const questions = [
     default: "PEM",
   },
   {
-    type: 'confirm',
-    name: 'keyType',
-    message: '是否隐藏秘钥信息反馈?'
-  }
+    type: "confirm",
+    name: "keyType",
+    message: "是否隐藏秘钥信息反馈?",
+  },
 ];
 
 export default () => {
@@ -60,46 +60,27 @@ export default () => {
         name: "type",
         message: `请确定你的信息!`,
       })
-      .then( (ft) => {
+      .then((ft) => {
         if (ft.type) {
           ora.start("生成ssh-keygen中...");
           // todo: https://github.com/typicode/lowdb/issues/380
           // const adapter = new JSONFile<KeysData>(json)
-             // 给每个账号设置一个时间戳，来区分
-            const params = {
-              time: Date.now(),
-              ...answers,
-            };
-          db.save(params).then((data) => {
-            console.log(data)
-            //   save(params, () => {
-            //       ora.succeed('生成秘钥成功')
-            //   ora.succeed('生成秘钥成功')
-            // })
-          }).catch(err => {
-            ora.fail('错误了')
-          })
-          // const db = new Low<KeysData>(adapter)
-          // db.read().then(() => {
-          //   const { keys = []} = db.data || {}
-          //   const find = keys.find((i) => i.name === answers.name)
-          //   if(find) {
-          //     return ora.fail('重复的ssk-keygen')
-          //   }
-          //   // 给每个账号设置一个时间戳，来区分
-          //   const params = {
-          //     time: Date.now(),
-          //     ...answers,
-          //   };
-          //   save(params, () => {
-          //     db.data ||= { keys: []}
-          //     db.data.keys.push(params) 
-          //     db.write()
-          //     ora.succeed('生成秘钥成功')
-          //   })
-          // }).catch(err => {
-          //   ora.fail('错误了')
-          // });
+          // 给每个账号设置一个时间戳，来区分
+          const params = {
+            time: Date.now(),
+            ...answers,
+          };
+          db.save(params)
+            .then((data) => {
+              console.log(data);
+              save(params, () => {
+                ora.succeed("生成秘钥成功");
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+              ora.fail("错误了");
+            });
         }
       });
   });

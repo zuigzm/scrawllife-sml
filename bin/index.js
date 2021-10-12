@@ -14,6 +14,7 @@ import { format, inspect, promisify } from 'util';
 import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
 import crypto from 'crypto';
+import keygen from 'ssh-keygen';
 import lodash from 'lodash';
 import { Client } from 'ssh2';
 
@@ -2260,7 +2261,7 @@ const REQUIRE_ERROR = 'require is not supported by ESM';
 const REQUIRE_DIRECTORY_ERROR = 'loading a directory of commands is not supported yet for ESM';
 
 const mainFilename = fileURLToPath(import.meta.url).split('node_modules')[0];
-const __dirname$1 = fileURLToPath(import.meta.url);
+const __dirname$2 = fileURLToPath(import.meta.url);
 
 var shim$1 = {
   assert: {
@@ -2305,7 +2306,7 @@ var shim$1 = {
     return [...str].length
   },
   y18n: y18n({
-    directory: resolve(__dirname$1, '../../../locales'),
+    directory: resolve(__dirname$2, '../../../locales'),
     updateFiles: false
   })
 };
@@ -5625,6 +5626,42 @@ function _objectSpread2(target) {
   return target;
 }
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -5783,6 +5820,31 @@ const createGenerator = (generateForCustomCharacters, generateRandomBytes) => ({
 const cryptoRandomString = createGenerator(generateForCustomCharacters, generateRandomBytes);
 
 cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, generateRandomBytesAsync);
+
+var __dirname$1 = path.resolve(path.dirname(""));
+
+var save = (function (sml, cb) {
+  // 使用ssh2 在服务端 生成 ssh
+  var location = path.join(__dirname$1, "/.key/".concat(sml.file));
+  keygen({
+    location: location,
+    comment: sml.comment,
+    password: sml.password,
+    read: true,
+    format: sml.format
+  }, function (err, out) {
+    if (err) return console.log("Something went wrong: " + err);
+
+    if (!sml.keyType) {
+      // 隐藏秘钥信息
+      console.log("Keys created!");
+      console.log("private key: " + out.key);
+      console.log("public key: " + out.pubKey);
+    }
+
+    cb && cb();
+  });
+});
 
 var __classPrivateFieldSet$2 = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
@@ -6037,36 +6099,66 @@ var location = path.join(__dirname, "/.key/key.json");
 var adapter = new JSONFile(location);
 var db = new Low(adapter);
 var obj = {
-  save: function save(params) {
-    var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    return new Promise(function (resolve, reject) {
-      var data = lodash.chain(db.data).get('keys');
-      var filterData = {};
+  save: function () {
+    var _save = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(params) {
+      var opt,
+          filterData,
+          findData,
+          _db$data,
+          result,
+          _args = arguments;
 
-      if (opt.filter) {
-        lodash.map(opt.filter, function (i) {
-          filterData[i] = params[i];
-        });
-      }
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              opt = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
+              filterData = {};
 
-      var findData = data.find(filterData).value();
-      console.log(findData);
+              if (opt.filter) {
+                lodash.map(opt.filter, function (i) {
+                  filterData[i] = params[i];
+                });
+              }
 
-      if (findData) {
-        reject('有相同的值');
-      } else {
-        var _db$data;
+              _context.next = 5;
+              return obj.get(filterData);
 
-        (_db$data = db.data) === null || _db$data === void 0 ? void 0 : _db$data.keys.push(params);
-        var result = data.value();
-        resolve(result);
-      }
-    });
-  },
+            case 5:
+              findData = _context.sent;
+              console.log("--------", findData);
+
+              if (!findData) {
+                _context.next = 11;
+                break;
+              }
+
+              throw "有相同的值";
+
+            case 11:
+              (_db$data = db.data) === null || _db$data === void 0 ? void 0 : _db$data.keys.push(params);
+              db.write();
+              result = obj.get();
+              return _context.abrupt("return", result);
+
+            case 15:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    function save(_x) {
+      return _save.apply(this, arguments);
+    }
+
+    return save;
+  }(),
   "delete": function _delete(time) {
     return new Promise(function (resolve, reject) {
       db.read().then(function () {
-        var data = lodash.chain(db.data).get('keys').remove({
+        var data = lodash.chain(db.data).get("keys").remove({
           time: time
         }).value();
         db.write(); // 返回删除的数据
@@ -6075,30 +6167,46 @@ var obj = {
       });
     });
   },
-  get: function get(time) {
-    return new Promise(function (resolve, reject) {
-      db.read().then(function () {
-        var data = lodash.chain(db.data).get('keys').find({
-          time: time
-        }).value();
-        resolve(data);
-      })["catch"](function (err) {
-        reject(err);
-      });
-    });
-  }
+  get: function () {
+    var _get = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(parmas) {
+      var data;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return db.read();
+
+            case 2:
+              data = lodash.chain(db.data).get("keys").find(parmas).value();
+              return _context2.abrupt("return", data);
+
+            case 4:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    function get(_x2) {
+      return _get.apply(this, arguments);
+    }
+
+    return get;
+  }()
 };
 
 var questions = [{
-  type: 'input',
-  name: 'name',
-  message: '设置服务器名称:',
-  "default": '服务器名称'
+  type: "input",
+  name: "name",
+  message: "设置服务器名称:",
+  "default": "服务器名称"
 }, {
-  type: 'input',
-  name: 'address',
-  message: '设置服务器:',
-  "default": '192.168.1.1'
+  type: "input",
+  name: "address",
+  message: "设置服务器:",
+  "default": "192.168.1.1"
 }, {
   type: "input",
   name: "file",
@@ -6122,9 +6230,9 @@ var questions = [{
   message: "请指定要创建的密钥类型:",
   "default": "PEM"
 }, {
-  type: 'confirm',
-  name: 'keyType',
-  message: '是否隐藏秘钥信息反馈?'
+  type: "confirm",
+  name: "keyType",
+  message: "是否隐藏秘钥信息反馈?"
 }];
 var set = (function () {
   var ora = ora$1();
@@ -6148,33 +6256,14 @@ var set = (function () {
         }, answers);
 
         obj.save(params).then(function (data) {
-          console.log(data); //   save(params, () => {
-          //       ora.succeed('生成秘钥成功')
-          //   ora.succeed('生成秘钥成功')
-          // })
+          console.log(data);
+          save(params, function () {
+            ora.succeed("生成秘钥成功");
+          });
         })["catch"](function (err) {
-          ora.fail('错误了');
-        }); // const db = new Low<KeysData>(adapter)
-        // db.read().then(() => {
-        //   const { keys = []} = db.data || {}
-        //   const find = keys.find((i) => i.name === answers.name)
-        //   if(find) {
-        //     return ora.fail('重复的ssk-keygen')
-        //   }
-        //   // 给每个账号设置一个时间戳，来区分
-        //   const params = {
-        //     time: Date.now(),
-        //     ...answers,
-        //   };
-        //   save(params, () => {
-        //     db.data ||= { keys: []}
-        //     db.data.keys.push(params) 
-        //     db.write()
-        //     ora.succeed('生成秘钥成功')
-        //   })
-        // }).catch(err => {
-        //   ora.fail('错误了')
-        // });
+          console.log(err);
+          ora.fail("错误了");
+        });
       }
     });
   });
@@ -6301,7 +6390,9 @@ Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务�
     var select = _ref.select;
 
     if (select) {
-      obj.get(select.time).then(function (data) {
+      obj.get({
+        time: select.time
+      }).then(function (data) {
         ssh(data);
       });
     }
