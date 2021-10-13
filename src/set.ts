@@ -72,7 +72,7 @@ export default () => {
           };
           db.save(params)
             .then((data) => {
-              console.log(data);
+              console.log("-------", data);
               save(params, () => {
                 ora.succeed("生成秘钥成功");
               });

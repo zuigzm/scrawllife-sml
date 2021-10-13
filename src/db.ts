@@ -31,13 +31,11 @@ const obj = {
     }
 
     const findData = await obj.get(filterData);
-    console.log("--------", findData);
     if (findData) {
-      throw "有相同的值";
+      throw "已经生成相同的服务器信息";
     } else {
-      db.data?.keys.push(params);
-      db.write();
-      const result = obj.get();
+      obj.set(params);
+      const result = await obj.get();
       return result;
     }
   },
@@ -51,10 +49,17 @@ const obj = {
       });
     });
   },
-  get: async (parmas?: { [key: string]: any }) => {
+  get: async (params?: { [key: string]: any }) => {
+    console.log("----get", params);
     await db.read();
-    const data = lodash.chain(db.data).get("keys").find(parmas).value();
+    const data = lodash.chain(db.data).get("keys").find(params).value();
     return data;
+  },
+  set: async (params: any) => {
+    console.log("----set", params);
+    db.data ||= { keys: [] };
+    db.data?.keys.push(params);
+    await db.write();
   },
 };
 export default obj;

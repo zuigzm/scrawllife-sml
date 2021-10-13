@@ -15,6 +15,7 @@ import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
 import crypto from 'crypto';
 import keygen from 'ssh-keygen';
+import _regeneratorRuntime from '@babel/runtime/regenerator';
 import lodash from 'lodash';
 import { Client } from 'ssh2';
 
@@ -5588,80 +5589,6 @@ function isYargsInstance(y) {
 
 const Yargs = YargsFactory(shim$1);
 
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-
-    if (enumerableOnly) {
-      symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-    }
-
-    keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
-}
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -5845,6 +5772,42 @@ var save = (function (sml, cb) {
     cb && cb();
   });
 });
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
 
 var __classPrivateFieldSet$2 = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
@@ -6100,15 +6063,13 @@ var adapter = new JSONFile(location);
 var db = new Low(adapter);
 var obj = {
   save: function () {
-    var _save = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(params) {
+    var _save = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee(params) {
       var opt,
           filterData,
           findData,
-          _db$data,
           result,
           _args = arguments;
-
-      return regeneratorRuntime.wrap(function _callee$(_context) {
+      return _regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
@@ -6126,19 +6087,21 @@ var obj = {
 
             case 5:
               findData = _context.sent;
-              console.log("--------", findData);
 
               if (!findData) {
-                _context.next = 11;
+                _context.next = 10;
                 break;
               }
 
-              throw "有相同的值";
+              throw "已经生成相同的服务器信息";
 
-            case 11:
-              (_db$data = db.data) === null || _db$data === void 0 ? void 0 : _db$data.keys.push(params);
-              db.write();
-              result = obj.get();
+            case 10:
+              obj.set(params);
+              _context.next = 13;
+              return obj.get();
+
+            case 13:
+              result = _context.sent;
               return _context.abrupt("return", result);
 
             case 15:
@@ -6168,20 +6131,21 @@ var obj = {
     });
   },
   get: function () {
-    var _get = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(parmas) {
+    var _get = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee2(params) {
       var data;
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return _regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              _context2.next = 2;
+              console.log("----get", params);
+              _context2.next = 3;
               return db.read();
 
-            case 2:
-              data = lodash.chain(db.data).get("keys").find(parmas).value();
+            case 3:
+              data = lodash.chain(db.data).get("keys").find(params).value();
               return _context2.abrupt("return", data);
 
-            case 4:
+            case 5:
             case "end":
               return _context2.stop();
           }
@@ -6194,9 +6158,42 @@ var obj = {
     }
 
     return get;
+  }(),
+  set: function () {
+    var _set = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee3(params) {
+      var _db$data;
+
+      return _regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              console.log("----set", params);
+              db.data || (db.data = {
+                keys: []
+              });
+              (_db$data = db.data) === null || _db$data === void 0 ? void 0 : _db$data.keys.push(params);
+              _context3.next = 5;
+              return db.write();
+
+            case 5:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+
+    function set(_x3) {
+      return _set.apply(this, arguments);
+    }
+
+    return set;
   }()
 };
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var questions = [{
   type: "input",
   name: "name",
@@ -6251,12 +6248,12 @@ var set = (function () {
         // const adapter = new JSONFile<KeysData>(json)
         // 给每个账号设置一个时间戳，来区分
 
-        var params = _objectSpread2({
+        var params = _objectSpread({
           time: Date.now()
         }, answers);
 
         obj.save(params).then(function (data) {
-          console.log(data);
+          console.log("-------", data);
           save(params, function () {
             ora.succeed("生成秘钥成功");
           });
