@@ -42,7 +42,7 @@ Yargs(hideBin(process.argv))
       .then(({ select }) => {
         if (select) {
           db.get({ time: select.time }).then((data) => {
-            ssh(data);
+            // ssh(data);
           });
         }
       })

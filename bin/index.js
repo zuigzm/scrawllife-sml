@@ -17,7 +17,6 @@ import crypto from 'crypto';
 import keygen from 'ssh-keygen';
 import _regeneratorRuntime from '@babel/runtime/regenerator';
 import lodash from 'lodash';
-import { Client } from 'ssh2';
 
 const restoreCursor = onetime(() => {
 	signalExit(() => {
@@ -6137,12 +6136,12 @@ var obj = {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              console.log("----get", params);
-              _context2.next = 3;
+              _context2.next = 2;
               return db.read();
 
-            case 3:
+            case 2:
               data = lodash.chain(db.data).get("keys").find(params).value();
+              console.log("----get", params, data);
               return _context2.abrupt("return", data);
 
             case 5:
@@ -6253,7 +6252,6 @@ var set = (function () {
         }, answers);
 
         obj.save(params).then(function (data) {
-          console.log("-------", data);
           save(params, function () {
             ora.succeed("生成秘钥成功");
           });
@@ -6338,31 +6336,6 @@ var del = (function () {
   });
 });
 
-var ssh = (function (sml) {
-  var ora = ora$1();
-  var conn = new Client();
-  ora.start("ssh连接中");
-  conn.on("ready", function () {
-    ora.succeed("ssh连接成功!");
-    conn.shell(function (err, stream) {
-      if (err) throw err;
-      stream.on("close", function () {
-        console.log("关闭shell");
-        conn.end();
-      }).on("error", function (data) {
-        console.log("err: " + data);
-      }).stderr.on("data", function (data) {
-        console.log("STDERR: " + data);
-      });
-    });
-  }).connect({
-    host: sml.server,
-    port: sml.port,
-    username: sml.username // tryKeyboard: true,
-
-  });
-});
-
 var ora = ora$1();
 Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务器配置", function (yargs) {
   ora.start("Loading...");
@@ -6389,8 +6362,7 @@ Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务�
     if (select) {
       obj.get({
         time: select.time
-      }).then(function (data) {
-        ssh(data);
+      }).then(function (data) {// ssh(data);
       });
     }
   })["catch"](function (err) {

@@ -50,9 +50,9 @@ const obj = {
     });
   },
   get: async (params?: { [key: string]: any }) => {
-    console.log("----get", params);
     await db.read();
     const data = lodash.chain(db.data).get("keys").find(params).value();
+    console.log("----get", params, data);
     return data;
   },
   set: async (params: any) => {
