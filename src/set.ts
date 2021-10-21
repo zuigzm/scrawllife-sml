@@ -20,6 +20,12 @@ const questions = [
     default: "192.168.1.1",
   },
   {
+    type: 'input',
+    name: 'port',
+    message: '设置端口号',
+    default: 22
+  },
+  {
     type: "input",
     name: "file",
     message: "设置ssh-keygen名称:",
@@ -72,8 +78,8 @@ export default () => {
           };
           db.save(params)
             .then((data) => {
-              save(params, () => {
-                ora.succeed("生成秘钥成功");
+              return save(params).then(() => {
+                ora.succeed("设置秘钥成功");
               });
             })
             .catch((err) => {

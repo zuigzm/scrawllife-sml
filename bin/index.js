@@ -15,6 +15,7 @@ import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
 import crypto from 'crypto';
 import keygen from 'ssh-keygen';
+import { spawn } from 'child_process';
 import _regeneratorRuntime from '@babel/runtime/regenerator';
 import lodash from 'lodash';
 
@@ -5749,28 +5750,55 @@ cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, gen
 
 var __dirname$1 = path.resolve(path.dirname(""));
 
-var save = (function (sml, cb) {
+var save = (function (sml) {
   // 使用ssh2 在服务端 生成 ssh
   var location = path.join(__dirname$1, "/.key/".concat(sml.file));
-  keygen({
-    location: location,
-    comment: sml.comment,
-    password: sml.password,
-    read: true,
-    format: sml.format
-  }, function (err, out) {
-    if (err) return console.log("Something went wrong: " + err);
+  return new Promise(function (resolve, reject) {
+    keygen({
+      location: location,
+      comment: sml.comment,
+      password: sml.password,
+      read: true,
+      format: sml.format
+    }, function (err, out) {
+      if (err) {
+        reject(err);
+      } else {
+        if (!sml.keyType) {
+          // 隐藏秘钥信息
+          console.log("Keys created!");
+          console.log("private key: " + out.key);
+          console.log("public key: " + out.pubKey);
+        }
 
-    if (!sml.keyType) {
-      // 隐藏秘钥信息
-      console.log("Keys created!");
-      console.log("private key: " + out.key);
-      console.log("public key: " + out.pubKey);
-    }
-
-    cb && cb();
+        resolve(out);
+      }
+    });
+  }).then(function () {
+    return sshCopyId(location, sml.port, "".concat(sml.name, "@").concat(sml.address)).then(function (code) {
+      return code;
+    });
   });
 });
+
+function sshCopyId(file, port, username) {
+  return new Promise(function (resolve, reject) {
+    var ls = spawn('ssh-copy-id', ['-i', file, '-p', port, username], {
+      stdio: 'inherit',
+      shell: true
+    });
+    ls.on('close', function (code) {
+      if (code === 0) {
+        resolve(code);
+      } else {
+        reject(new Error('copy fail, error code：' + code));
+      }
+    });
+    ls.on('error', function (error) {
+      reject(error);
+    });
+  });
+}
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -6204,6 +6232,11 @@ var questions = [{
   message: "设置服务器:",
   "default": "192.168.1.1"
 }, {
+  type: 'input',
+  name: 'port',
+  message: '设置端口号',
+  "default": 22
+}, {
   type: "input",
   name: "file",
   message: "设置ssh-keygen名称:",
@@ -6252,8 +6285,8 @@ var set = (function () {
         }, answers);
 
         obj.save(params).then(function (data) {
-          save(params, function () {
-            ora.succeed("生成秘钥成功");
+          return save(params).then(function () {
+            ora.succeed("设置秘钥成功");
           });
         })["catch"](function (err) {
           console.log(err);
