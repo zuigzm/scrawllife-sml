@@ -15,7 +15,8 @@ import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
 import crypto from 'crypto';
 import keygen from 'ssh-keygen';
-import { spawn } from 'child_process';
+import { exec } from 'child_process';
+import os from 'os';
 import _regeneratorRuntime from '@babel/runtime/regenerator';
 import lodash from 'lodash';
 
@@ -5752,10 +5753,14 @@ var __dirname$1 = path.resolve(path.dirname(""));
 
 var save = (function (sml) {
   // 使用ssh2 在服务端 生成 ssh
-  var location = path.join(__dirname$1, "/.key/".concat(sml.file));
+  var location = function location(suffix) {
+    suffix = suffix ? ".".concat(suffix) : "";
+    return path.join(__dirname$1, "/.key/".concat(sml.file).concat(suffix));
+  };
+
   return new Promise(function (resolve, reject) {
     keygen({
-      location: location,
+      location: location(),
       comment: sml.comment,
       password: sml.password,
       read: true,
@@ -5769,9 +5774,10 @@ var save = (function (sml) {
           console.log("Keys created!");
           console.log("private key: " + out.key);
           console.log("public key: " + out.pubKey);
-        }
+        } // exec(`chmod 600 ${location()}`, () => {
 
-        resolve(out);
+
+        resolve(out); // });
       }
     });
   }).then(function () {
@@ -5783,20 +5789,29 @@ var save = (function (sml) {
 
 function sshCopyId(file, port, username) {
   return new Promise(function (resolve, reject) {
-    var ls = spawn('ssh-copy-id', ['-i', file, '-p', port, username], {
-      stdio: 'inherit',
-      shell: true
-    });
-    ls.on('close', function (code) {
-      if (code === 0) {
-        resolve(code);
-      } else {
-        reject(new Error('copy fail, error code：' + code));
-      }
-    });
-    ls.on('error', function (error) {
-      reject(error);
-    });
+    var fn = function fn() {
+      exec("ssh-copy-id -i ".concat(file("pub"), " -p ").concat(port, " ").concat(username), function (error, stdout, stderr) {
+        if (error || stderr) {
+          console.log("----sshCopyId----");
+          reject(error || stderr);
+        } else {
+          resolve(stdout);
+        }
+      });
+    };
+
+    if (os.platform() === "darwin") {
+      exec("ssh-add ".concat(file()), function (error, stdout, stderr) {
+        if (error || stderr) {
+          console.log("----ssh-add----");
+          reject(error || stderr);
+        } else {
+          console.log("stdout", stdout); // fn();
+        }
+      });
+    } else {
+      fn();
+    }
   });
 }
 
