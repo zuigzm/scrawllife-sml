@@ -1,9 +1,7 @@
 import inquirer from "inquirer";
 import cryptoRandomString from "crypto-random-string";
-import path from "path";
-import { Low, JSONFile } from "lowdb";
 import ORA from "ora";
-import save, { KeysData } from "./save";
+import save from "./save";
 import db from "./db";
 
 const questions = [
@@ -57,8 +55,6 @@ const questions = [
 
 export default () => {
   const ora = ORA();
-  const __dirname = path.resolve(path.dirname(""));
-  const json = path.join(__dirname, "/.key/key.json");
   return inquirer.prompt(questions).then((answers) => {
     return inquirer
       .prompt({

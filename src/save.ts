@@ -1,6 +1,6 @@
 import keygen from "ssh-keygen";
 import path from "path";
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import os from "os";
 
 const __dirname = path.resolve(path.dirname(""));
@@ -75,15 +75,34 @@ function sshCopyId(file: any, port: number, username: string) {
       );
     };
     if (os.platform() === "darwin") {
-      exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
-        if (error || stderr) {
-          console.log("----ssh-add----");
-          reject(error || stderr);
+      console.log('file', file())
+      const ls = spawn('ssh-add', [file()] ,{
+        shell: true
+      })
+
+      ls.on("data", (a,b) => {
+        console.log(a,b)
+      })
+
+      ls.on('close', (code) => {
+        if (code === 0) {
+            resolve(code);
         } else {
-          console.log("stdout", stdout);
-          // fn();
+            reject(new Error('copy fail, error code：' + code))
         }
-      });
+    });
+    ls.on('error', (error) => {
+        reject(error)
+    });
+      // exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
+      //   if (error || stderr) {
+      //     console.log("----ssh-add----");
+      //     reject(error || stderr);
+      //   } else {
+      //     console.log("stdout", stdout);
+      //     // fn();
+      //   }
+      // });
     } else {
       fn();
     }

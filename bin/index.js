@@ -15,7 +15,7 @@ import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
 import crypto from 'crypto';
 import keygen from 'ssh-keygen';
-import { exec } from 'child_process';
+import { spawn, exec } from 'child_process';
 import os from 'os';
 import _regeneratorRuntime from '@babel/runtime/regenerator';
 import lodash from 'lodash';
@@ -5801,14 +5801,31 @@ function sshCopyId(file, port, username) {
     };
 
     if (os.platform() === "darwin") {
-      exec("ssh-add ".concat(file()), function (error, stdout, stderr) {
-        if (error || stderr) {
-          console.log("----ssh-add----");
-          reject(error || stderr);
+      console.log('file', file());
+      var ls = spawn('ssh-add', [file()], {
+        shell: true
+      });
+      ls.on("data", function (a, b) {
+        console.log(a, b);
+      });
+      ls.on('close', function (code) {
+        if (code === 0) {
+          resolve(code);
         } else {
-          console.log("stdout", stdout); // fn();
+          reject(new Error('copy fail, error code：' + code));
         }
       });
+      ls.on('error', function (error) {
+        reject(error);
+      }); // exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
+      //   if (error || stderr) {
+      //     console.log("----ssh-add----");
+      //     reject(error || stderr);
+      //   } else {
+      //     console.log("stdout", stdout);
+      //     // fn();
+      //   }
+      // });
     } else {
       fn();
     }
@@ -6280,10 +6297,6 @@ var questions = [{
 }];
 var set = (function () {
   var ora = ora$1();
-
-  var __dirname = path.resolve(path.dirname(""));
-
-  path.join(__dirname, "/.key/key.json");
   return inquirer.prompt(questions).then(function (answers) {
     return inquirer.prompt({
       type: "confirm",
