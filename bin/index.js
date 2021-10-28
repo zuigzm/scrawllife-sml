@@ -1,28 +1,50 @@
 #!/usr/bin/env node
-import process$1 from 'node:process';
-import readline from 'node:readline';
-import chalk from 'chalk';
-import onetime from 'onetime';
-import signalExit from 'signal-exit';
-import cliSpinners from 'cli-spinners';
-import wcwidth from 'wcwidth';
-import { BufferListStream } from 'bl';
-import { notStrictEqual, strictEqual } from 'assert';
-import path, { resolve, dirname, normalize, basename, extname, relative } from 'path';
-import fs$1, { statSync, readdirSync, readFileSync, writeFile } from 'fs';
-import { format, inspect, promisify } from 'util';
-import { fileURLToPath } from 'url';
-import inquirer from 'inquirer';
-import crypto from 'crypto';
-import keygen from 'ssh-keygen';
-import { spawn, exec } from 'child_process';
-import os from 'os';
-import _regeneratorRuntime from '@babel/runtime/regenerator';
-import lodash from 'lodash';
+'use strict';
 
-const restoreCursor = onetime(() => {
-	signalExit(() => {
-		process$1.stderr.write('\u001B[?25h');
+var process$1 = require('node:process');
+var readline = require('node:readline');
+var chalk = require('chalk');
+var onetime = require('onetime');
+var signalExit = require('signal-exit');
+var cliSpinners = require('cli-spinners');
+var wcwidth = require('wcwidth');
+var bl = require('bl');
+var assert = require('assert');
+var path = require('path');
+var fs$1 = require('fs');
+var util = require('util');
+var url = require('url');
+var process$2 = require('process');
+var inquirer = require('inquirer');
+var crypto = require('crypto');
+var keygen = require('ssh-keygen');
+var child_process = require('child_process');
+var os = require('os');
+var _regeneratorRuntime = require('@babel/runtime/regenerator');
+var lodash = require('lodash');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var process__default = /*#__PURE__*/_interopDefaultLegacy(process$1);
+var readline__default = /*#__PURE__*/_interopDefaultLegacy(readline);
+var chalk__default = /*#__PURE__*/_interopDefaultLegacy(chalk);
+var onetime__default = /*#__PURE__*/_interopDefaultLegacy(onetime);
+var signalExit__default = /*#__PURE__*/_interopDefaultLegacy(signalExit);
+var cliSpinners__default = /*#__PURE__*/_interopDefaultLegacy(cliSpinners);
+var wcwidth__default = /*#__PURE__*/_interopDefaultLegacy(wcwidth);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs$1);
+var process__default$1 = /*#__PURE__*/_interopDefaultLegacy(process$2);
+var inquirer__default = /*#__PURE__*/_interopDefaultLegacy(inquirer);
+var crypto__default = /*#__PURE__*/_interopDefaultLegacy(crypto);
+var keygen__default = /*#__PURE__*/_interopDefaultLegacy(keygen);
+var os__default = /*#__PURE__*/_interopDefaultLegacy(os);
+var _regeneratorRuntime__default = /*#__PURE__*/_interopDefaultLegacy(_regeneratorRuntime);
+var lodash__default = /*#__PURE__*/_interopDefaultLegacy(lodash);
+
+const restoreCursor = onetime__default['default'](() => {
+	signalExit__default['default'](() => {
+		process__default['default'].stderr.write('\u001B[?25h');
 	}, {alwaysLast: true});
 });
 
@@ -30,7 +52,7 @@ let isHidden = false;
 
 const cliCursor = {};
 
-cliCursor.show = (writableStream = process$1.stderr) => {
+cliCursor.show = (writableStream = process__default['default'].stderr) => {
 	if (!writableStream.isTTY) {
 		return;
 	}
@@ -39,7 +61,7 @@ cliCursor.show = (writableStream = process$1.stderr) => {
 	writableStream.write('\u001B[?25h');
 };
 
-cliCursor.hide = (writableStream = process$1.stderr) => {
+cliCursor.hide = (writableStream = process__default['default'].stderr) => {
 	if (!writableStream.isTTY) {
 		return;
 	}
@@ -116,24 +138,24 @@ class StdinDiscarder {
 	constructor() {
 		this.requests = 0;
 
-		this.mutedStream = new BufferListStream();
-		this.mutedStream.pipe(process$1.stdout);
+		this.mutedStream = new bl.BufferListStream();
+		this.mutedStream.pipe(process__default['default'].stdout);
 
 		const self = this; // eslint-disable-line unicorn/no-this-assignment
 		this.ourEmit = function (event, data, ...args) {
-			const {stdin} = process$1;
+			const {stdin} = process__default['default'];
 			if (self.requests > 0 || stdin.emit === self.ourEmit) {
 				if (event === 'keypress') { // Fixes readline behavior
 					return;
 				}
 
 				if (event === 'data' && data.includes(ASCII_ETX_CODE)) {
-					process$1.emit('SIGINT');
+					process__default['default'].emit('SIGINT');
 				}
 
 				Reflect.apply(self.oldEmit, this, [event, data, ...args]);
 			} else {
-				Reflect.apply(process$1.stdin.emit, this, [event, data, ...args]);
+				Reflect.apply(process__default['default'].stdin.emit, this, [event, data, ...args]);
 			}
 		};
 	}
@@ -160,27 +182,27 @@ class StdinDiscarder {
 
 	realStart() {
 		// No known way to make it work reliably on Windows
-		if (process$1.platform === 'win32') {
+		if (process__default['default'].platform === 'win32') {
 			return;
 		}
 
-		this.rl = readline.createInterface({
-			input: process$1.stdin,
+		this.rl = readline__default['default'].createInterface({
+			input: process__default['default'].stdin,
 			output: this.mutedStream,
 		});
 
 		this.rl.on('SIGINT', () => {
-			if (process$1.listenerCount('SIGINT') === 0) {
-				process$1.emit('SIGINT');
+			if (process__default['default'].listenerCount('SIGINT') === 0) {
+				process__default['default'].emit('SIGINT');
 			} else {
 				this.rl.close();
-				process$1.kill(process$1.pid, 'SIGINT');
+				process__default['default'].kill(process__default['default'].pid, 'SIGINT');
 			}
 		});
 	}
 
 	realStop() {
-		if (process$1.platform === 'win32') {
+		if (process__default['default'].platform === 'win32') {
 			return;
 		}
 
@@ -206,7 +228,7 @@ class Ora {
 		this.options = {
 			text: '',
 			color: 'cyan',
-			stream: process$1.stderr,
+			stream: process__default['default'].stderr,
 			discardStdin: true,
 			...options,
 		};
@@ -263,12 +285,12 @@ class Ora {
 
 			this._spinner = spinner;
 		} else if (!isUnicodeSupported()) {
-			this._spinner = cliSpinners.line;
+			this._spinner = cliSpinners__default['default'].line;
 		} else if (spinner === undefined) {
 			// Set default spinner
-			this._spinner = cliSpinners.dots;
-		} else if (spinner !== 'default' && cliSpinners[spinner]) {
-			this._spinner = cliSpinners[spinner];
+			this._spinner = cliSpinners__default['default'].dots;
+		} else if (spinner !== 'default' && cliSpinners__default['default'][spinner]) {
+			this._spinner = cliSpinners__default['default'][spinner];
 		} else {
 			throw new Error(`There is no built-in spinner named '${spinner}'. See https://github.com/sindresorhus/cli-spinners/blob/main/spinners.json for a full list.`);
 		}
@@ -315,7 +337,7 @@ class Ora {
 		const fullPrefixText = this.getFullPrefixText(this.prefixText, '-');
 		this.lineCount = 0;
 		for (const line of stripAnsi$1(' '.repeat(this.indent) + fullPrefixText + '--' + this[TEXT]).split('\n')) {
-			this.lineCount += Math.max(1, Math.ceil(wcwidth(line) / columns));
+			this.lineCount += Math.max(1, Math.ceil(wcwidth__default['default'](line) / columns));
 		}
 	}
 
@@ -348,7 +370,7 @@ class Ora {
 		let frame = frames[this.frameIndex];
 
 		if (this.color) {
-			frame = chalk[this.color](frame);
+			frame = chalk__default['default'][this.color](frame);
 		}
 
 		this.frameIndex = ++this.frameIndex % frames.length;
@@ -420,7 +442,7 @@ class Ora {
 			cliCursor.hide(this.stream);
 		}
 
-		if (this.discardStdin && process$1.stdin.isTTY) {
+		if (this.discardStdin && process__default['default'].stdin.isTTY) {
 			this.isDiscardingStdin = true;
 			stdinDiscarder.start();
 		}
@@ -444,7 +466,7 @@ class Ora {
 			cliCursor.show(this.stream);
 		}
 
-		if (this.discardStdin && process$1.stdin.isTTY && this.isDiscardingStdin) {
+		if (this.discardStdin && process__default['default'].stdin.isTTY && this.isDiscardingStdin) {
 			stdinDiscarder.stop();
 			this.isDiscardingStdin = false;
 		}
@@ -816,17 +838,17 @@ function ui (opts) {
 }
 
 function escalade (start, callback) {
-	let dir = resolve('.', start);
-	let tmp, stats = statSync(dir);
+	let dir = path.resolve('.', start);
+	let tmp, stats = fs$1.statSync(dir);
 
 	if (!stats.isDirectory()) {
-		dir = dirname(dir);
+		dir = path.dirname(dir);
 	}
 
 	while (true) {
-		tmp = callback(dir, readdirSync(dir));
-		if (tmp) return resolve(dir, tmp);
-		dir = dirname(tmp = dir);
+		tmp = callback(dir, fs$1.readdirSync(dir));
+		if (tmp) return path.resolve(dir, tmp);
+		dir = path.dirname(tmp = dir);
 		if (tmp === dir) break;
 	}
 }
@@ -2009,9 +2031,9 @@ const parser = new YargsParser({
     env: () => {
         return env;
     },
-    format,
-    normalize,
-    resolve,
+    format: util.format,
+    normalize: path.normalize,
+    resolve: path.resolve,
     // TODO: figure  out a  way to combine ESM and CJS coverage, such  that
     // we can exercise all the lines below:
     require: (path) => {
@@ -2019,7 +2041,7 @@ const parser = new YargsParser({
             return require(path);
         }
         else if (path.match(/\.json$/)) {
-            return readFileSync(path, 'utf8');
+            return fs$1.readFileSync(path, 'utf8');
         }
         else {
             throw Error('only .json config files are supported in ESM');
@@ -2065,14 +2087,14 @@ class YError extends Error {
 
 var shim$3 = {
     fs: {
-        readFileSync,
-        writeFile
+        readFileSync: fs$1.readFileSync,
+        writeFile: fs$1.writeFile
     },
-    format,
-    resolve,
+    format: util.format,
+    resolve: path.resolve,
     exists: (file) => {
         try {
-            return statSync(file).isFile();
+            return fs$1.statSync(file).isFile();
         }
         catch (err) {
             return false;
@@ -2262,20 +2284,20 @@ const y18n = (opts) => {
 const REQUIRE_ERROR = 'require is not supported by ESM';
 const REQUIRE_DIRECTORY_ERROR = 'loading a directory of commands is not supported yet for ESM';
 
-const mainFilename = fileURLToPath(import.meta.url).split('node_modules')[0];
-const __dirname$2 = fileURLToPath(import.meta.url);
+const mainFilename = url.fileURLToPath((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('index.js', document.baseURI).href))).split('node_modules')[0];
+const __dirname$3 = url.fileURLToPath((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('index.js', document.baseURI).href)));
 
 var shim$1 = {
   assert: {
-    notStrictEqual,
-    strictEqual
+    notStrictEqual: assert.notStrictEqual,
+    strictEqual: assert.strictEqual
   },
   cliui: ui,
   findUp: escalade,
   getEnv: (key) => {
     return process.env[key]
   },
-  inspect,
+  inspect: util.inspect,
   getCallerFile: () => {
     throw new YError(REQUIRE_DIRECTORY_ERROR)
   },
@@ -2283,11 +2305,11 @@ var shim$1 = {
   mainFilename: mainFilename || process.cwd(),
   Parser: yargsParser,
   path: {
-    basename,
-    dirname,
-    extname,
-    relative,
-    resolve
+    basename: path.basename,
+    dirname: path.dirname,
+    extname: path.extname,
+    relative: path.relative,
+    resolve: path.resolve
   },
   process: {
     argv: () => process.argv,
@@ -2297,7 +2319,7 @@ var shim$1 = {
     nextTick: process.nextTick,
     stdColumns: typeof process.stdout.columns !== 'undefined' ? process.stdout.columns : null
   },
-  readFileSync,
+  readFileSync: fs$1.readFileSync,
   require: () => {
     throw new YError(REQUIRE_ERROR)
   },
@@ -2308,7 +2330,7 @@ var shim$1 = {
     return [...str].length
   },
   y18n: y18n({
-    directory: resolve(__dirname$2, '../../../locales'),
+    directory: path.resolve(__dirname$3, '../../../locales'),
     updateFiles: false
   })
 };
@@ -5605,7 +5627,7 @@ function _defineProperty(obj, key, value) {
   return obj;
 }
 
-const randomBytesAsync = promisify(crypto.randomBytes);
+const randomBytesAsync = util.promisify(crypto__default['default'].randomBytes);
 
 const urlSafeCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~'.split('');
 const numericCharacters = '0123456789'.split('');
@@ -5622,7 +5644,7 @@ const generateForCustomCharacters = (length, characters) => {
 	let stringLength = 0;
 
 	while (stringLength < length) { // In case we had many bad values, which may happen for character sets of size above 0x8000 but close to it
-		const entropy = crypto.randomBytes(entropyLength);
+		const entropy = crypto__default['default'].randomBytes(entropyLength);
 		let entropyPosition = 0;
 
 		while (entropyPosition < entropyLength && stringLength < length) {
@@ -5667,7 +5689,7 @@ const generateForCustomCharactersAsync = async (length, characters) => {
 	return string;
 };
 
-const generateRandomBytes = (byteLength, type, length) => crypto.randomBytes(byteLength).toString(type).slice(0, length);
+const generateRandomBytes = (byteLength, type, length) => crypto__default['default'].randomBytes(byteLength).toString(type).slice(0, length);
 
 const generateRandomBytesAsync = async (byteLength, type, length) => {
 	const buffer = await randomBytesAsync(byteLength);
@@ -5749,50 +5771,16 @@ const cryptoRandomString = createGenerator(generateForCustomCharacters, generate
 
 cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, generateRandomBytesAsync);
 
-var __dirname$1 = path.resolve(path.dirname(""));
+/* eslint-disable @typescript-eslint/naming-convention */
 
-var save = (function (sml) {
-  // 使用ssh2 在服务端 生成 ssh
-  var location = function location(suffix) {
-    suffix = suffix ? ".".concat(suffix) : "";
-    return path.join(__dirname$1, "/.key/".concat(sml.file).concat(suffix));
-  };
-
-  return new Promise(function (resolve, reject) {
-    keygen({
-      location: location(),
-      comment: sml.comment,
-      password: sml.password,
-      read: true,
-      format: sml.format
-    }, function (err, out) {
-      if (err) {
-        reject(err);
-      } else {
-        if (!sml.keyType) {
-          // 隐藏秘钥信息
-          console.log("Keys created!");
-          console.log("private key: " + out.key);
-          console.log("public key: " + out.pubKey);
-        } // exec(`chmod 600 ${location()}`, () => {
-
-
-        resolve(out); // });
-      }
-    });
-  }).then(function () {
-    return sshCopyId(location, sml.port, "".concat(sml.name, "@").concat(sml.address)).then(function (code) {
-      return code;
-    });
-  });
-});
+var __dirname$2 = path__default['default'].resolve(path__default['default'].dirname(''));
 
 function sshCopyId(file, port, username) {
   return new Promise(function (resolve, reject) {
     var fn = function fn() {
-      exec("ssh-copy-id -i ".concat(file("pub"), " -p ").concat(port, " ").concat(username), function (error, stdout, stderr) {
+      child_process.exec("ssh-copy-id -i ".concat(file('pub'), " -p ").concat(port, " ").concat(username), function (error, stdout, stderr) {
         if (error || stderr) {
-          console.log("----sshCopyId----");
+          console.log('----sshCopyId----');
           reject(error || stderr);
         } else {
           resolve(stdout);
@@ -5800,24 +5788,25 @@ function sshCopyId(file, port, username) {
       });
     };
 
-    if (os.platform() === "darwin") {
-      console.log('file', file());
-      var ls = spawn('ssh-add', [file()], {
-        shell: true
-      });
-      ls.on("data", function (a, b) {
-        console.log(a, b);
-      });
-      ls.on('close', function (code) {
-        if (code === 0) {
-          resolve(code);
-        } else {
-          reject(new Error('copy fail, error code：' + code));
-        }
-      });
-      ls.on('error', function (error) {
-        reject(error);
-      }); // exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
+    if (os__default['default'].platform() === 'darwin') {
+      var ls = child_process.spawnSync('ssh-add', [file()]);
+      console.log(ls.pid, ls.output, ls.stdout, ls.stderr, ls.status); // ls.stdout.on('data', (data) => {
+      //   console.log('stdout', data);
+      // });
+      // ls.stderr.on('data', (data) => {
+      //   console.log('stderr', data);
+      // });
+      // ls.on('close', (code) => {
+      //   if (code === 0) {
+      //     resolve(code);
+      //   } else {
+      //     reject(new Error(`copy fail, error code：${code}`));
+      //   }
+      // });
+      // ls.on('error', (error) => {
+      //   reject(error);
+      // });
+      // exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
       //   if (error || stderr) {
       //     console.log("----ssh-add----");
       //     reject(error || stderr);
@@ -5831,6 +5820,42 @@ function sshCopyId(file, port, username) {
     }
   });
 }
+
+var save = (function (sml) {
+  // 使用ssh2 在服务端 生成 ssh
+  var location = function location(suffix) {
+    suffix = suffix ? ".".concat(suffix) : '';
+    return path__default['default'].join(__dirname$2, "/.key/".concat(sml.file).concat(suffix));
+  };
+
+  return new Promise(function (resolve, reject) {
+    keygen__default['default']({
+      location: location(),
+      comment: sml.comment,
+      password: sml.password,
+      read: true,
+      format: sml.format
+    }, function (err, out) {
+      if (err) {
+        reject(err);
+      } else {
+        if (!sml.keyType) {
+          // 隐藏秘钥信息
+          console.log('Keys created!');
+          console.log("private key: ".concat(out.key));
+          console.log("public key: ".concat(out.pubKey));
+        } // exec(`chmod 600 ${location()}`, () => {
+
+
+        resolve(out); // });
+      }
+    });
+  }).then(function () {
+    return sshCopyId(location, sml.port, "".concat(sml.name, "@").concat(sml.address)).then(function (code) {
+      return code;
+    });
+  });
+});
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -5883,7 +5908,7 @@ var _Writer_instances, _Writer_filename, _Writer_tempFilename, _Writer_locked, _
 // Returns a temporary file
 // Example: for /some/file will return /some/.file.tmp
 function getTempFilename(file) {
-    return path.join(path.dirname(file), '.' + path.basename(file) + '.tmp');
+    return path__default['default'].join(path__default['default'].dirname(file), '.' + path__default['default'].basename(file) + '.tmp');
 }
 class Writer {
     constructor(filename) {
@@ -5924,8 +5949,8 @@ async function _Writer_write(data) {
     __classPrivateFieldSet$2(this, _Writer_locked, true, "f");
     try {
         // Atomic write
-        await fs$1.promises.writeFile(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), data, 'utf-8');
-        await fs$1.promises.rename(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), __classPrivateFieldGet$2(this, _Writer_filename, "f"));
+        await fs__default['default'].promises.writeFile(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), data, 'utf-8');
+        await fs__default['default'].promises.rename(__classPrivateFieldGet$2(this, _Writer_tempFilename, "f"), __classPrivateFieldGet$2(this, _Writer_filename, "f"));
         // Call resolve
         (_a = __classPrivateFieldGet$2(this, _Writer_prev, "f")) === null || _a === void 0 ? void 0 : _a[0]();
     }
@@ -5969,7 +5994,7 @@ class TextFile {
     async read() {
         let data;
         try {
-            data = await fs$1.promises.readFile(__classPrivateFieldGet$1(this, _TextFile_filename, "f"), 'utf-8');
+            data = await fs__default['default'].promises.readFile(__classPrivateFieldGet$1(this, _TextFile_filename, "f"), 'utf-8');
         }
         catch (e) {
             if (e.code === 'ENOENT') {
@@ -6115,20 +6140,20 @@ class Low {
     }
 }
 
-var __dirname = path.resolve(path.dirname(""));
+var __dirname$1 = path__default['default'].resolve(path__default['default'].dirname(''));
 
-var location = path.join(__dirname, "/.key/key.json");
+var location = path__default['default'].join(__dirname$1, "/.key/key.json");
 var adapter = new JSONFile(location);
 var db = new Low(adapter);
 var obj = {
   save: function () {
-    var _save = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee(params) {
+    var _save = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime__default['default'].mark(function _callee(params) {
       var opt,
           filterData,
           findData,
           result,
           _args = arguments;
-      return _regeneratorRuntime.wrap(function _callee$(_context) {
+      return _regeneratorRuntime__default['default'].wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
@@ -6136,7 +6161,7 @@ var obj = {
               filterData = {};
 
               if (opt.filter) {
-                lodash.map(opt.filter, function (i) {
+                lodash__default['default'].map(opt.filter, function (i) {
                   filterData[i] = params[i];
                 });
               }
@@ -6152,7 +6177,7 @@ var obj = {
                 break;
               }
 
-              throw "已经生成相同的服务器信息";
+              throw '已经生成相同的服务器信息';
 
             case 10:
               obj.set(params);
@@ -6180,7 +6205,7 @@ var obj = {
   "delete": function _delete(time) {
     return new Promise(function (resolve, reject) {
       db.read().then(function () {
-        var data = lodash.chain(db.data).get("keys").remove({
+        var data = lodash__default['default'].chain(db.data).get('keys').remove({
           time: time
         }).value();
         db.write(); // 返回删除的数据
@@ -6190,9 +6215,9 @@ var obj = {
     });
   },
   get: function () {
-    var _get = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee2(params) {
+    var _get = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime__default['default'].mark(function _callee2(params) {
       var data;
-      return _regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return _regeneratorRuntime__default['default'].wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
@@ -6200,8 +6225,8 @@ var obj = {
               return db.read();
 
             case 2:
-              data = lodash.chain(db.data).get("keys").find(params).value();
-              console.log("----get", params, data);
+              data = lodash__default['default'].chain(db.data).get('keys').find(params).value();
+              console.log('----get', params, data);
               return _context2.abrupt("return", data);
 
             case 5:
@@ -6219,14 +6244,14 @@ var obj = {
     return get;
   }(),
   set: function () {
-    var _set = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee3(params) {
+    var _set = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime__default['default'].mark(function _callee3(params) {
       var _db$data;
 
-      return _regeneratorRuntime.wrap(function _callee3$(_context3) {
+      return _regeneratorRuntime__default['default'].wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              console.log("----set", params);
+              console.log('----set', params);
               db.data || (db.data = {
                 keys: []
               });
@@ -6254,57 +6279,57 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var questions = [{
-  type: "input",
-  name: "name",
-  message: "设置服务器名称:",
-  "default": "服务器名称"
+  type: 'input',
+  name: 'name',
+  message: '设置服务器名称:',
+  "default": '服务器名称'
 }, {
-  type: "input",
-  name: "address",
-  message: "设置服务器:",
-  "default": "192.168.1.1"
+  type: 'input',
+  name: 'address',
+  message: '设置服务器:',
+  "default": '192.168.1.1'
 }, {
   type: 'input',
   name: 'port',
   message: '设置端口号',
   "default": 22
 }, {
-  type: "input",
-  name: "file",
-  message: "设置ssh-keygen名称:",
-  "default": "sshkey"
+  type: 'input',
+  name: 'file',
+  message: '设置ssh-keygen名称:',
+  "default": 'sshkey'
 }, {
-  type: "input",
-  name: "password",
-  message: "设置ssh-keygen密码:",
+  type: 'input',
+  name: 'password',
+  message: '设置ssh-keygen密码:',
   "default": cryptoRandomString({
     length: 12,
-    type: "base64"
+    type: 'base64'
   })
 }, {
-  type: "input",
-  name: "comment",
-  message: "请提供新的注释:"
+  type: 'input',
+  name: 'comment',
+  message: '请提供新的注释:'
 }, {
-  type: "input",
-  name: "format",
-  message: "请指定要创建的密钥类型:",
-  "default": "PEM"
+  type: 'input',
+  name: 'format',
+  message: '请指定要创建的密钥类型:',
+  "default": 'PEM'
 }, {
-  type: "confirm",
-  name: "keyType",
-  message: "是否隐藏秘钥信息反馈?"
+  type: 'confirm',
+  name: 'keyType',
+  message: '是否隐藏秘钥信息反馈?'
 }];
 var set = (function () {
   var ora = ora$1();
-  return inquirer.prompt(questions).then(function (answers) {
-    return inquirer.prompt({
-      type: "confirm",
-      name: "type",
+  return inquirer__default['default'].prompt(questions).then(function (answers) {
+    return inquirer__default['default'].prompt({
+      type: 'confirm',
+      name: 'type',
       message: "\u8BF7\u786E\u5B9A\u4F60\u7684\u4FE1\u606F!"
     }).then(function (ft) {
       if (ft.type) {
-        ora.start("生成ssh-keygen中..."); // todo: https://github.com/typicode/lowdb/issues/380
+        ora.start('生成ssh-keygen中...'); // todo: https://github.com/typicode/lowdb/issues/380
         // const adapter = new JSONFile<KeysData>(json)
         // 给每个账号设置一个时间戳，来区分
 
@@ -6314,11 +6339,11 @@ var set = (function () {
 
         obj.save(params).then(function (data) {
           return save(params).then(function () {
-            ora.succeed("设置秘钥成功");
+            ora.succeed('设置秘钥成功');
           });
         })["catch"](function (err) {
           console.log(err);
-          ora.fail("错误了");
+          ora.fail('错误了');
         });
       }
     });
@@ -6326,9 +6351,9 @@ var set = (function () {
 });
 
 var serverList = (function () {
-  var __dirname = path.resolve(path.dirname(""));
+  var __dirname = path__default['default'].resolve(path__default['default'].dirname(''));
 
-  var json = path.join(__dirname, "/.key/key.json");
+  var json = path__default['default'].join(__dirname, '/.key/key.json');
   var adapter = new JSONFile(json);
   var db = new Low(adapter);
   return new Promise(function (resolve, reject) {
@@ -6338,16 +6363,16 @@ var serverList = (function () {
           keys = _ref$keys === void 0 ? [] : _ref$keys;
 
       if (!keys.length) {
-        reject("暂无保存的服务器列表");
+        reject('暂无保存的服务器列表');
       } else {
         resolve(keys);
       }
     });
   }).then(function (data) {
-    return inquirer.prompt([{
-      type: "list",
-      name: "time",
-      message: "请选择服务器",
+    return inquirer__default['default'].prompt([{
+      type: 'list',
+      name: 'time',
+      message: '请选择服务器',
       choices: data.map(function (i) {
         return {
           name: i.name,
@@ -6367,9 +6392,9 @@ var serverList = (function () {
 });
 
 var del = (function () {
-  var __dirname = path.resolve(path.dirname(""));
+  var __dirname = path__default['default'].resolve(path__default['default'].dirname(''));
 
-  var json = path.join(__dirname, "/.key/key.json");
+  var json = path__default['default'].join(__dirname, '/.key/key.json');
   var adapter = new JSONFile(json);
   new Low(adapter);
   return serverList().then(function (_ref) {
@@ -6382,13 +6407,13 @@ var del = (function () {
 
     return d;
   }).then(function (data) {
-    return inquirer.prompt({
-      type: "confirm",
-      name: "type",
+    return inquirer__default['default'].prompt({
+      type: 'confirm',
+      name: 'type',
       message: "\u786E\u8BA4\u5220\u9664\u8BE5\u670D\u52A1\u5668\uFF1F"
     }).then(function (ft) {
       if (ft.type) {
-        fs.writeFile(json, data.join("-"), "utf8", function (err) {
+        fs.writeFile(json, data.join('-'), 'utf8', function (err) {
           if (err) throw err;
         });
         return ft.type;
@@ -6398,11 +6423,11 @@ var del = (function () {
 });
 
 var ora = ora$1();
-Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务器配置", function (yargs) {
-  ora.start("Loading...");
-  return yargs.option("server", {
-    alias: "S",
-    describe: "请设置正确的服务器配置"
+Yargs(hideBin(process__default$1['default'].argv)).command('set [server]', '添加一台新的服务器配置', function (yargs) {
+  ora.start('Loading...');
+  return yargs.option('server', {
+    alias: 'S',
+    describe: '请设置正确的服务器配置'
   });
 }, function (argv) {
   ora.stop();
@@ -6410,13 +6435,13 @@ Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务�
   if (argv.server) {
     set().then(function (answers) {
       if (answers) {
-        ora.succeed(chalk.green("设置服务器信息成功!"));
+        ora.succeed(chalk__default['default'].green('设置服务器信息成功!'));
       }
-    })["catch"](function (err) {
-      console.log("错误");
+    })["catch"](function () {
+      console.log('错误');
     });
   }
-}).command("list", "服务器选择列表", function (argv) {
+}).command('list', '服务器选择列表', function (argv) {
   serverList().then(function (_ref) {
     var select = _ref.select;
 
@@ -6428,13 +6453,13 @@ Yargs(hideBin(process.argv)).command("set [server]", "添加一台新的服务�
     }
   })["catch"](function (err) {
     if (err) {
-      ora.warn(chalk.yellow("暂时未获取到服务器信息"));
+      ora.warn(chalk__default['default'].yellow('暂时未获取到服务器信息'));
     }
   });
-}).command("del", "删除服务器", function (argv) {
+}).command('del', '删除服务器', function (argv) {
   del()["catch"](function (err) {
     if (err) {
-      ora.warn(chalk.yellow("暂时未获取到服务器信息"));
+      ora.warn(chalk__default['default'].yellow('暂时未获取到服务器信息'));
     }
   });
 }).demandCommand(1).argv;

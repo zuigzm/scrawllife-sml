@@ -1,9 +1,61 @@
-import keygen from "ssh-keygen";
-import path from "path";
-import { exec, spawn } from "child_process";
-import os from "os";
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-underscore-dangle */
+import keygen from 'ssh-keygen';
+import path from 'path';
+import { exec, spawnSync } from 'child_process';
+import os from 'os';
 
-const __dirname = path.resolve(path.dirname(""));
+const __dirname = path.resolve(path.dirname(''));
+
+function sshCopyId(file: any, port: number, username: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const fn = () => {
+      exec(`ssh-copy-id -i ${file('pub')} -p ${port} ${username}`, (error, stdout, stderr) => {
+        if (error || stderr) {
+          console.log('----sshCopyId----');
+          reject(error || stderr);
+        } else {
+          resolve(stdout);
+        }
+      });
+    };
+    if (os.platform() === 'darwin') {
+      const ls = spawnSync('ssh-add', [file()]);
+
+      console.log(ls.pid, ls.output, ls.stdout, ls.stderr, ls.status);
+      // ls.stdout.on('data', (data) => {
+      //   console.log('stdout', data);
+      // });
+
+      // ls.stderr.on('data', (data) => {
+      //   console.log('stderr', data);
+      // });
+
+      // ls.on('close', (code) => {
+      //   if (code === 0) {
+      //     resolve(code);
+      //   } else {
+      //     reject(new Error(`copy fail, error code：${code}`));
+      //   }
+      // });
+      // ls.on('error', (error) => {
+      //   reject(error);
+      // });
+      // exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
+      //   if (error || stderr) {
+      //     console.log("----ssh-add----");
+      //     reject(error || stderr);
+      //   } else {
+      //     console.log("stdout", stdout);
+      //     // fn();
+      //   }
+      // });
+    } else {
+      fn();
+    }
+  });
+}
+
 export interface SMLType {
   name: string;
   file: string;
@@ -22,7 +74,7 @@ export interface KeysData {
 export default (sml: SMLType) => {
   // 使用ssh2 在服务端 生成 ssh
   const location = (suffix?: string) => {
-    suffix = suffix ? `.${suffix}` : "";
+    suffix = suffix ? `.${suffix}` : '';
     return path.join(__dirname, `/.key/${sml.file}${suffix}`);
   };
   return new Promise((resolve, reject) => {
@@ -34,77 +86,25 @@ export default (sml: SMLType) => {
         read: true,
         format: sml.format,
       },
-      function (err: any, out: any) {
+      (err: any, out: any) => {
         if (err) {
           reject(err);
         } else {
           if (!sml.keyType) {
             // 隐藏秘钥信息
-            console.log("Keys created!");
-            console.log("private key: " + out.key);
-            console.log("public key: " + out.pubKey);
+            console.log('Keys created!');
+            console.log(`private key: ${out.key}`);
+            console.log(`public key: ${out.pubKey}`);
           }
           // exec(`chmod 600 ${location()}`, () => {
           resolve(out);
           // });
         }
-      }
+      },
     );
   }).then(() => {
-    return sshCopyId(location, sml.port, `${sml.name}@${sml.address}`).then(
-      (code) => {
-        return code;
-      }
-    );
+    return sshCopyId(location, sml.port, `${sml.name}@${sml.address}`).then((code) => {
+      return code;
+    });
   });
 };
-
-function sshCopyId(file: any, port: number, username: string) {
-  return new Promise((resolve, reject) => {
-    const fn = () => {
-      exec(
-        `ssh-copy-id -i ${file("pub")} -p ${port} ${username}`,
-        (error, stdout, stderr) => {
-          if (error || stderr) {
-            console.log("----sshCopyId----");
-            reject(error || stderr);
-          } else {
-            resolve(stdout);
-          }
-        }
-      );
-    };
-    if (os.platform() === "darwin") {
-      console.log('file', file())
-      const ls = spawn('ssh-add', [file()] ,{
-        shell: true
-      })
-
-      ls.on("data", (a,b) => {
-        console.log(a,b)
-      })
-
-      ls.on('close', (code) => {
-        if (code === 0) {
-            resolve(code);
-        } else {
-            reject(new Error('copy fail, error code：' + code))
-        }
-    });
-    ls.on('error', (error) => {
-        reject(error)
-    });
-      // exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
-      //   if (error || stderr) {
-      //     console.log("----ssh-add----");
-      //     reject(error || stderr);
-      //   } else {
-      //     console.log("stdout", stdout);
-      //     // fn();
-      //   }
-      // });
-    } else {
-      fn();
-    }
-  });
-}

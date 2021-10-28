@@ -5,15 +5,16 @@
   "author": "zuigzm <zuigzm@gmail.com>",
   "repository": "https://github.com/zuigzm/scrawllife-sml.git",
   "license": "MIT",
-  "type": "module",
   "bin": {
     "sml": "./bin/index.js"
   },
   "scripts": {
     "start": "node ./bin/index.js",
-    "test": "yarn start",
+    "test": "yarn rm && yarn start",
     "build": "rollup -c -w",
     "mkdir": "mkdirp ./.key",
+    "fix": "eslint --fix",
+    "rm": "rm -rf ./.key/*",
     "postinstall": "yarn mkdir"
   },
   "dependencies": {
@@ -36,9 +37,11 @@
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
+    "@scrawllife/fabric": "^1.0.11",
     "@types/inquirer": "^7.3.3",
     "@types/lodash": "^4.14.175",
     "@types/yargs": "^17.0.2",
+    "prettier": "^2.4.1",
     "rollup": "^2.56.3",
     "typescript": "^4.4.2"
   }

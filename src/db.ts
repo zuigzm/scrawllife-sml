@@ -1,6 +1,6 @@
-import { Low, JSONFile } from "lowdb";
-import path from "path";
-import lodash from "lodash";
+import { Low, JSONFile } from 'lowdb';
+import path from 'path';
+import lodash from 'lodash';
 
 export interface SMLType {
   time: number;
@@ -16,7 +16,7 @@ export interface KeysData {
   keys: Array<SMLType>;
 }
 
-const __dirname = path.resolve(path.dirname(""));
+const __dirname = path.resolve(path.dirname(''));
 const location = path.join(__dirname, `/.key/key.json`);
 const adapter = new JSONFile<KeysData>(location);
 const db = new Low<KeysData>(adapter);
@@ -32,7 +32,7 @@ const obj = {
 
     const findData = await obj.get(filterData);
     if (findData) {
-      throw "已经生成相同的服务器信息";
+      throw '已经生成相同的服务器信息';
     } else {
       obj.set(params);
       const result = await obj.get();
@@ -42,7 +42,7 @@ const obj = {
   delete: (time: number) => {
     return new Promise((resolve, reject) => {
       db.read().then(() => {
-        const data = lodash.chain(db.data).get("keys").remove({ time }).value();
+        const data = lodash.chain(db.data).get('keys').remove({ time }).value();
         db.write();
         // 返回删除的数据
         resolve(data);
@@ -51,12 +51,12 @@ const obj = {
   },
   get: async (params?: { [key: string]: any }) => {
     await db.read();
-    const data = lodash.chain(db.data).get("keys").find(params).value();
-    console.log("----get", params, data);
+    const data = lodash.chain(db.data).get('keys').find(params).value();
+    console.log('----get', params, data);
     return data;
   },
   set: async (params: any) => {
-    console.log("----set", params);
+    console.log('----set', params);
     db.data ||= { keys: [] };
     db.data?.keys.push(params);
     await db.write();
