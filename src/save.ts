@@ -2,52 +2,42 @@
 /* eslint-disable no-underscore-dangle */
 import keygen from 'ssh-keygen';
 import path from 'path';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import os from 'os';
-import pty from 'node-pty';
 import process from 'process';
 
 const __dirname = path.resolve(path.dirname(''));
 
-function sshCopyId(file: any, port: number, username: string, password: string): Promise<any> {
-  const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
-  const ptyProcess = pty.spawn(shell, [], {
-    name: 'xterm-color',
-    cols: 80,
-    rows: 30,
-    cwd: process.env.HOME,
-    env: process.env,
-  });
-
+function sshCopyId(file: any, port: number, username: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    if (os.platform() === 'darwin') {
-      ptyProcess.write(`ssh-add ${file()}`);
-    }
-    ptyProcess.on('data', (data) => {
-      console.log('data----', data);
-      const isTest = (arg: any) => {
-        return data.search(arg);
-      };
+    // const copy = spawn('ssh-copy-id', ['-i', file('pub'), '-p', port, username], {
+    //   shell: true,
+    // });
 
-      if (isTest(/passphrase/)) {
-        console.log('passphrase');
-        ptyProcess.write(`${password}\r`);
+    exec(`ssh-copy-id -i .key/sshkey.pub zuigzm@192.168.1.3`, (err, stdout, stderr) => {
+      if (!err) {
+        console.log(stdout, stderr);
+        // resolve(true);
       }
-
-      if (isTest(/Identity added/)) {
-        console.log('Identity added');
-        // ptyProcess.write();
-        ptyProcess.kill();
-        exec(`ssh-copy-id -i ${file('pub')} -p ${port} ${username}`, (err) => {
-          console.log('-----这里也好了');
-          if (!err) {
-            resolve(true);
-          }
-
-          reject(new Error('错误提示'));
-        });
-      }
+      console.log(stdout, stderr);
+      // reject(new Error('错误提示'));
+    }).on('exit', (code) => {
+      console.error(`21212 ${code}`);
     });
+
+    // copy.stdout.on('data', (data) => {
+    //   process.stdout.write(data);
+    // });
+
+    // copy.stderr.on('data', (data) => {
+    //   process.stdout.write(data);
+    // });
+
+    // copy.on('close', (code) => {
+    //   if (code !== 0) {
+    //     console.log(`grep process exited with code ${code}`);
+    //   }
+    // });
   });
 }
 
@@ -98,10 +88,8 @@ export default (sml: SMLType) => {
       },
     );
   }).then(() => {
-    return sshCopyId(location, sml.port, `${sml.name}@${sml.address}`, sml.password).then(
-      (code) => {
-        return code;
-      },
-    );
+    return sshCopyId(location, sml.port, `${sml.name}@${sml.address}`).then((code) => {
+      return code;
+    });
   });
 };

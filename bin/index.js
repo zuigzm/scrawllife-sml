@@ -19,8 +19,6 @@ var inquirer = require('inquirer');
 var crypto = require('crypto');
 var keygen = require('ssh-keygen');
 var child_process = require('child_process');
-var os = require('os');
-var pty = require('node-pty');
 var _regeneratorRuntime = require('@babel/runtime/regenerator');
 var lodash = require('lodash');
 
@@ -39,8 +37,6 @@ var process__default$1 = /*#__PURE__*/_interopDefaultLegacy(process$2);
 var inquirer__default = /*#__PURE__*/_interopDefaultLegacy(inquirer);
 var crypto__default = /*#__PURE__*/_interopDefaultLegacy(crypto);
 var keygen__default = /*#__PURE__*/_interopDefaultLegacy(keygen);
-var os__default = /*#__PURE__*/_interopDefaultLegacy(os);
-var pty__default = /*#__PURE__*/_interopDefaultLegacy(pty);
 var _regeneratorRuntime__default = /*#__PURE__*/_interopDefaultLegacy(_regeneratorRuntime);
 var lodash__default = /*#__PURE__*/_interopDefaultLegacy(lodash);
 
@@ -5777,47 +5773,30 @@ cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, gen
 
 var __dirname$2 = path__default['default'].resolve(path__default['default'].dirname(''));
 
-function sshCopyId(file, port, username, password) {
-  var shell = os__default['default'].platform() === 'win32' ? 'powershell.exe' : 'bash';
-  var ptyProcess = pty__default['default'].spawn(shell, [], {
-    name: 'xterm-color',
-    cols: 80,
-    rows: 30,
-    cwd: process__default$1['default'].env.HOME,
-    env: process__default$1['default'].env
-  });
+function sshCopyId(file, port, username) {
   return new Promise(function (resolve, reject) {
-    if (os__default['default'].platform() === 'darwin') {
-      ptyProcess.write("ssh-add ".concat(file()));
-    }
-
-    ptyProcess.on('data', function (data) {
-      console.log('data----', data);
-
-      var isTest = function isTest(arg) {
-        return data.search(arg);
-      };
-
-      if (isTest(/passphrase/)) {
-        console.log('passphrase');
-        ptyProcess.write("".concat(password, "\r"));
+    // const copy = spawn('ssh-copy-id', ['-i', file('pub'), '-p', port, username], {
+    //   shell: true,
+    // });
+    child_process.exec("ssh-copy-id -i .key/sshkey.pub zuigzm@192.168.1.3", function (err, stdout, stderr) {
+      if (!err) {
+        console.log(stdout, stderr); // resolve(true);
       }
 
-      if (isTest(/Identity added/)) {
-        console.log('Identity added'); // ptyProcess.write();
-
-        ptyProcess.kill();
-        child_process.exec("ssh-copy-id -i ".concat(file('pub'), " -p ").concat(port, " ").concat(username), function (err) {
-          console.log('-----这里也好了');
-
-          if (!err) {
-            resolve(true);
-          }
-
-          reject(new Error('错误提示'));
-        });
-      }
-    });
+      console.log(stdout, stderr); // reject(new Error('错误提示'));
+    }).on('exit', function (code) {
+      console.error("21212 ".concat(code));
+    }); // copy.stdout.on('data', (data) => {
+    //   process.stdout.write(data);
+    // });
+    // copy.stderr.on('data', (data) => {
+    //   process.stdout.write(data);
+    // });
+    // copy.on('close', (code) => {
+    //   if (code !== 0) {
+    //     console.log(`grep process exited with code ${code}`);
+    //   }
+    // });
   });
 }
 
@@ -5851,7 +5830,7 @@ var save = (function (sml) {
       }
     });
   }).then(function () {
-    return sshCopyId(location, sml.port, "".concat(sml.name, "@").concat(sml.address), sml.password).then(function (code) {
+    return sshCopyId(location, sml.port, "".concat(sml.name, "@").concat(sml.address)).then(function (code) {
       return code;
     });
   });
@@ -6287,7 +6266,7 @@ var questions = [{
   type: 'input',
   name: 'address',
   message: '设置服务器:',
-  "default": '192.168.1.1'
+  "default": '192.168.1.3'
 }, {
   type: 'input',
   name: 'port',
@@ -6338,8 +6317,10 @@ var set = (function () {
         }, answers);
 
         obj.save(params).then(function (data) {
+          ora.succeed('创建秘钥成功');
+          ora.info('正在将秘钥传入服务器，请输入服务器密码');
           return save(params).then(function () {
-            ora.succeed('设置秘钥成功');
+            ora.succeed('传入秘钥成功');
           });
         })["catch"](function (err) {
           console.log(err);

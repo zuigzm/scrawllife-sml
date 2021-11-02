@@ -15,7 +15,7 @@ const questions = [
     type: 'input',
     name: 'address',
     message: '设置服务器:',
-    default: '192.168.1.1',
+    default: '192.168.1.3',
   },
   {
     type: 'input',
@@ -74,8 +74,10 @@ export default () => {
           };
           db.save(params)
             .then((data) => {
+              ora.succeed('创建秘钥成功');
+              ora.info('正在将秘钥传入服务器，请输入服务器密码');
               return save(params).then(() => {
-                ora.succeed('设置秘钥成功');
+                ora.succeed('传入秘钥成功');
               });
             })
             .catch((err) => {
