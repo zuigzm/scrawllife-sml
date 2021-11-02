@@ -2,57 +2,52 @@
 /* eslint-disable no-underscore-dangle */
 import keygen from 'ssh-keygen';
 import path from 'path';
-import { exec, spawnSync } from 'child_process';
+import { exec } from 'child_process';
 import os from 'os';
+import pty from 'node-pty';
+import process from 'process';
 
 const __dirname = path.resolve(path.dirname(''));
 
-function sshCopyId(file: any, port: number, username: string): Promise<any> {
+function sshCopyId(file: any, port: number, username: string, password: string): Promise<any> {
+  const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
+  const ptyProcess = pty.spawn(shell, [], {
+    name: 'xterm-color',
+    cols: 80,
+    rows: 30,
+    cwd: process.env.HOME,
+    env: process.env,
+  });
+
   return new Promise((resolve, reject) => {
-    const fn = () => {
-      exec(`ssh-copy-id -i ${file('pub')} -p ${port} ${username}`, (error, stdout, stderr) => {
-        if (error || stderr) {
-          console.log('----sshCopyId----');
-          reject(error || stderr);
-        } else {
-          resolve(stdout);
-        }
-      });
-    };
     if (os.platform() === 'darwin') {
-      const ls = spawnSync('ssh-add', [file()]);
-
-      console.log(ls.pid, ls.output, ls.stdout, ls.stderr, ls.status);
-      // ls.stdout.on('data', (data) => {
-      //   console.log('stdout', data);
-      // });
-
-      // ls.stderr.on('data', (data) => {
-      //   console.log('stderr', data);
-      // });
-
-      // ls.on('close', (code) => {
-      //   if (code === 0) {
-      //     resolve(code);
-      //   } else {
-      //     reject(new Error(`copy fail, error code：${code}`));
-      //   }
-      // });
-      // ls.on('error', (error) => {
-      //   reject(error);
-      // });
-      // exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
-      //   if (error || stderr) {
-      //     console.log("----ssh-add----");
-      //     reject(error || stderr);
-      //   } else {
-      //     console.log("stdout", stdout);
-      //     // fn();
-      //   }
-      // });
-    } else {
-      fn();
+      ptyProcess.write(`ssh-add ${file()}`);
     }
+    ptyProcess.on('data', (data) => {
+      console.log('data----', data);
+      const isTest = (arg: any) => {
+        return data.search(arg);
+      };
+
+      if (isTest(/passphrase/)) {
+        console.log('passphrase');
+        ptyProcess.write(`${password}\r`);
+      }
+
+      if (isTest(/Identity added/)) {
+        console.log('Identity added');
+        // ptyProcess.write();
+        ptyProcess.kill();
+        exec(`ssh-copy-id -i ${file('pub')} -p ${port} ${username}`, (err) => {
+          console.log('-----这里也好了');
+          if (!err) {
+            resolve(true);
+          }
+
+          reject(new Error('错误提示'));
+        });
+      }
+    });
   });
 }
 
@@ -103,8 +98,10 @@ export default (sml: SMLType) => {
       },
     );
   }).then(() => {
-    return sshCopyId(location, sml.port, `${sml.name}@${sml.address}`).then((code) => {
-      return code;
-    });
+    return sshCopyId(location, sml.port, `${sml.name}@${sml.address}`, sml.password).then(
+      (code) => {
+        return code;
+      },
+    );
   });
 };

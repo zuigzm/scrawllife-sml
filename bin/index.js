@@ -20,6 +20,7 @@ var crypto = require('crypto');
 var keygen = require('ssh-keygen');
 var child_process = require('child_process');
 var os = require('os');
+var pty = require('node-pty');
 var _regeneratorRuntime = require('@babel/runtime/regenerator');
 var lodash = require('lodash');
 
@@ -39,6 +40,7 @@ var inquirer__default = /*#__PURE__*/_interopDefaultLegacy(inquirer);
 var crypto__default = /*#__PURE__*/_interopDefaultLegacy(crypto);
 var keygen__default = /*#__PURE__*/_interopDefaultLegacy(keygen);
 var os__default = /*#__PURE__*/_interopDefaultLegacy(os);
+var pty__default = /*#__PURE__*/_interopDefaultLegacy(pty);
 var _regeneratorRuntime__default = /*#__PURE__*/_interopDefaultLegacy(_regeneratorRuntime);
 var lodash__default = /*#__PURE__*/_interopDefaultLegacy(lodash);
 
@@ -5775,49 +5777,47 @@ cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, gen
 
 var __dirname$2 = path__default['default'].resolve(path__default['default'].dirname(''));
 
-function sshCopyId(file, port, username) {
+function sshCopyId(file, port, username, password) {
+  var shell = os__default['default'].platform() === 'win32' ? 'powershell.exe' : 'bash';
+  var ptyProcess = pty__default['default'].spawn(shell, [], {
+    name: 'xterm-color',
+    cols: 80,
+    rows: 30,
+    cwd: process__default$1['default'].env.HOME,
+    env: process__default$1['default'].env
+  });
   return new Promise(function (resolve, reject) {
-    var fn = function fn() {
-      child_process.exec("ssh-copy-id -i ".concat(file('pub'), " -p ").concat(port, " ").concat(username), function (error, stdout, stderr) {
-        if (error || stderr) {
-          console.log('----sshCopyId----');
-          reject(error || stderr);
-        } else {
-          resolve(stdout);
-        }
-      });
-    };
-
     if (os__default['default'].platform() === 'darwin') {
-      var ls = child_process.spawnSync('ssh-add', [file()]);
-      console.log(ls.pid, ls.output, ls.stdout, ls.stderr, ls.status); // ls.stdout.on('data', (data) => {
-      //   console.log('stdout', data);
-      // });
-      // ls.stderr.on('data', (data) => {
-      //   console.log('stderr', data);
-      // });
-      // ls.on('close', (code) => {
-      //   if (code === 0) {
-      //     resolve(code);
-      //   } else {
-      //     reject(new Error(`copy fail, error code：${code}`));
-      //   }
-      // });
-      // ls.on('error', (error) => {
-      //   reject(error);
-      // });
-      // exec(`ssh-add ${file()}`, (error, stdout, stderr) => {
-      //   if (error || stderr) {
-      //     console.log("----ssh-add----");
-      //     reject(error || stderr);
-      //   } else {
-      //     console.log("stdout", stdout);
-      //     // fn();
-      //   }
-      // });
-    } else {
-      fn();
+      ptyProcess.write("ssh-add ".concat(file()));
     }
+
+    ptyProcess.on('data', function (data) {
+      console.log('data----', data);
+
+      var isTest = function isTest(arg) {
+        return data.search(arg);
+      };
+
+      if (isTest(/passphrase/)) {
+        console.log('passphrase');
+        ptyProcess.write("".concat(password, "\r"));
+      }
+
+      if (isTest(/Identity added/)) {
+        console.log('Identity added'); // ptyProcess.write();
+
+        ptyProcess.kill();
+        child_process.exec("ssh-copy-id -i ".concat(file('pub'), " -p ").concat(port, " ").concat(username), function (err) {
+          console.log('-----这里也好了');
+
+          if (!err) {
+            resolve(true);
+          }
+
+          reject(new Error('错误提示'));
+        });
+      }
+    });
   });
 }
 
@@ -5851,7 +5851,7 @@ var save = (function (sml) {
       }
     });
   }).then(function () {
-    return sshCopyId(location, sml.port, "".concat(sml.name, "@").concat(sml.address)).then(function (code) {
+    return sshCopyId(location, sml.port, "".concat(sml.name, "@").concat(sml.address), sml.password).then(function (code) {
       return code;
     });
   });
