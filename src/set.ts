@@ -7,7 +7,7 @@ import db from './db';
 const questions = [
   {
     type: 'input',
-    name: 'name',
+    name: 'serverName',
     message: '设置服务器名称:',
     default: '服务器名称',
   },
@@ -22,6 +22,12 @@ const questions = [
     name: 'port',
     message: '设置端口号',
     default: 22,
+  },
+  {
+    type: 'input',
+    name: 'user',
+    message: '用户名称:',
+    default: 'root',
   },
   {
     type: 'input',
@@ -75,13 +81,13 @@ export default () => {
           db.save(params)
             .then((data) => {
               ora.succeed('创建秘钥成功');
-              ora.info('正在将秘钥传入服务器，请输入服务器密码');
+              ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
               return save(params).then(() => {
                 ora.succeed('传入秘钥成功');
               });
             })
             .catch((err) => {
-              console.log(err);
+              // console.log(err);
               ora.fail('错误了');
             });
         }

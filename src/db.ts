@@ -1,16 +1,18 @@
-import { Low, JSONFile } from 'lowdb';
 import path from 'path';
 import lodash from 'lodash';
+import { Low, JSONFile } from 'lowdb';
+import { SMLType } from '../index.d';
 
-export interface SMLType {
-  time: number;
-  name: string;
-  file: string;
-  password: string;
-  comment: string;
-  format: string;
-  keyType: boolean;
-}
+// export interface SMLType {
+//   time: number;
+//   serverName: string;
+//   user: string;
+//   file: string;
+//   password: string;
+//   comment: string;
+//   format: string;
+//   keyType: boolean;
+// }
 
 export interface KeysData {
   keys: Array<SMLType>;
@@ -32,7 +34,7 @@ const obj = {
 
     const findData = await obj.get(filterData);
     if (findData) {
-      throw '已经生成相同的服务器信息';
+      throw new Error('已经生成相同的服务器信息');
     } else {
       obj.set(params);
       const result = await obj.get();
@@ -40,13 +42,11 @@ const obj = {
     }
   },
   delete: (time: number) => {
-    return new Promise((resolve, reject) => {
-      db.read().then(() => {
-        const data = lodash.chain(db.data).get('keys').remove({ time }).value();
-        db.write();
-        // 返回删除的数据
-        resolve(data);
-      });
+    return db.read().then(() => {
+      const data = lodash.chain(db.data).get('keys').remove({ time }).value();
+      db.write();
+      // 返回删除的数据
+      return data;
     });
   },
   get: async (params?: { [key: string]: any }) => {

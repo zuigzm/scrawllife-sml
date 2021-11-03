@@ -8,6 +8,13 @@
   "bin": {
     "sml": "./bin/index.js"
   },
+  "keywords": [
+    "nodejs",
+    "bash"
+  ],
+  "files": [
+    "bin"
+  ],
   "scripts": {
     "start": "node ./bin/index.js",
     "test": "yarn rm && yarn start",

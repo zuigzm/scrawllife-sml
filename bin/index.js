@@ -5773,30 +5773,23 @@ cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, gen
 
 var __dirname$2 = path__default['default'].resolve(path__default['default'].dirname(''));
 
-function sshCopyId(file, port, username) {
+function sshCopyId(file, port, address) {
   return new Promise(function (resolve, reject) {
-    // const copy = spawn('ssh-copy-id', ['-i', file('pub'), '-p', port, username], {
-    //   shell: true,
-    // });
-    child_process.exec("ssh-copy-id -i .key/sshkey.pub zuigzm@192.168.1.3", function (err, stdout, stderr) {
+    // copy to server
+    child_process.exec("ssh-copy-id -i ".concat(file, " -p ").concat(port, " ").concat(address), function (err) {
       if (!err) {
-        console.log(stdout, stderr); // resolve(true);
-      }
+        // console.log(stdout, stderr);
+        resolve(true);
+      } // console.log(stdout, stderr);
 
-      console.log(stdout, stderr); // reject(new Error('错误提示'));
+
+      reject(new Error('错误提示'));
     }).on('exit', function (code) {
-      console.error("21212 ".concat(code));
-    }); // copy.stdout.on('data', (data) => {
-    //   process.stdout.write(data);
-    // });
-    // copy.stderr.on('data', (data) => {
-    //   process.stdout.write(data);
-    // });
-    // copy.on('close', (code) => {
-    //   if (code !== 0) {
-    //     console.log(`grep process exited with code ${code}`);
-    //   }
-    // });
+      reject(new Error(JSON.stringify({
+        code: code,
+        message: '错误提示'
+      })));
+    });
   });
 }
 
@@ -5830,7 +5823,7 @@ var save = (function (sml) {
       }
     });
   }).then(function () {
-    return sshCopyId(location, sml.port, "".concat(sml.name, "@").concat(sml.address)).then(function (code) {
+    return sshCopyId(location, sml.port, "".concat(sml.user, "@").concat(sml.address)).then(function (code) {
       return code;
     });
   });
@@ -6156,7 +6149,7 @@ var obj = {
                 break;
               }
 
-              throw '已经生成相同的服务器信息';
+              throw new Error('已经生成相同的服务器信息');
 
             case 10:
               obj.set(params);
@@ -6182,15 +6175,13 @@ var obj = {
     return save;
   }(),
   "delete": function _delete(time) {
-    return new Promise(function (resolve, reject) {
-      db.read().then(function () {
-        var data = lodash__default['default'].chain(db.data).get('keys').remove({
-          time: time
-        }).value();
-        db.write(); // 返回删除的数据
+    return db.read().then(function () {
+      var data = lodash__default['default'].chain(db.data).get('keys').remove({
+        time: time
+      }).value();
+      db.write(); // 返回删除的数据
 
-        resolve(data);
-      });
+      return data;
     });
   },
   get: function () {
@@ -6259,7 +6250,7 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var questions = [{
   type: 'input',
-  name: 'name',
+  name: 'serverName',
   message: '设置服务器名称:',
   "default": '服务器名称'
 }, {
@@ -6272,6 +6263,11 @@ var questions = [{
   name: 'port',
   message: '设置端口号',
   "default": 22
+}, {
+  type: 'input',
+  name: 'user',
+  message: '用户名称:',
+  "default": 'root'
 }, {
   type: 'input',
   name: 'file',
@@ -6318,12 +6314,12 @@ var set = (function () {
 
         obj.save(params).then(function (data) {
           ora.succeed('创建秘钥成功');
-          ora.info('正在将秘钥传入服务器，请输入服务器密码');
+          ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
           return save(params).then(function () {
             ora.succeed('传入秘钥成功');
           });
         })["catch"](function (err) {
-          console.log(err);
+          // console.log(err);
           ora.fail('错误了');
         });
       }

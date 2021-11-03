@@ -2,54 +2,25 @@
 /* eslint-disable no-underscore-dangle */
 import keygen from 'ssh-keygen';
 import path from 'path';
-import { exec, spawn } from 'child_process';
-import os from 'os';
-import process from 'process';
+import { exec } from 'child_process';
+import { SMLType } from '../index.d';
 
 const __dirname = path.resolve(path.dirname(''));
 
-function sshCopyId(file: any, port: number, username: string): Promise<any> {
+function sshCopyId(file: any, port: number, address: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    // const copy = spawn('ssh-copy-id', ['-i', file('pub'), '-p', port, username], {
-    //   shell: true,
-    // });
-
-    exec(`ssh-copy-id -i .key/sshkey.pub zuigzm@192.168.1.3`, (err, stdout, stderr) => {
+    // copy to server
+    exec(`ssh-copy-id -i ${file} -p ${port} ${address}`, (err) => {
       if (!err) {
-        console.log(stdout, stderr);
-        // resolve(true);
+        // console.log(stdout, stderr);
+        resolve(true);
       }
-      console.log(stdout, stderr);
-      // reject(new Error('错误提示'));
+      // console.log(stdout, stderr);
+      reject(new Error('错误提示'));
     }).on('exit', (code) => {
-      console.error(`21212 ${code}`);
+      reject(new Error(JSON.stringify({ code, message: '错误提示' })));
     });
-
-    // copy.stdout.on('data', (data) => {
-    //   process.stdout.write(data);
-    // });
-
-    // copy.stderr.on('data', (data) => {
-    //   process.stdout.write(data);
-    // });
-
-    // copy.on('close', (code) => {
-    //   if (code !== 0) {
-    //     console.log(`grep process exited with code ${code}`);
-    //   }
-    // });
   });
-}
-
-export interface SMLType {
-  name: string;
-  file: string;
-  password: string;
-  comment: string;
-  format: string;
-  keyType: boolean;
-  address: string;
-  port: number;
 }
 
 export interface KeysData {
@@ -62,6 +33,7 @@ export default (sml: SMLType) => {
     suffix = suffix ? `.${suffix}` : '';
     return path.join(__dirname, `/.key/${sml.file}${suffix}`);
   };
+
   return new Promise((resolve, reject) => {
     keygen(
       {
@@ -88,7 +60,7 @@ export default (sml: SMLType) => {
       },
     );
   }).then(() => {
-    return sshCopyId(location, sml.port, `${sml.name}@${sml.address}`).then((code) => {
+    return sshCopyId(location, sml.port, `${sml.user}@${sml.address}`).then((code) => {
       return code;
     });
   });
