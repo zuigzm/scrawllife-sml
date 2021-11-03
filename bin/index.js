@@ -6193,11 +6193,11 @@ var obj = {
               return db.read();
 
             case 2:
-              data = lodash__default['default'].chain(db.data).get('keys').find(params).value();
-              console.log('----get', params, data);
+              data = lodash__default['default'].chain(db.data).get('keys').find(params).value(); // console.log('----get', params, data);
+
               return _context2.abrupt("return", data);
 
-            case 5:
+            case 4:
             case "end":
               return _context2.stop();
           }
@@ -6219,15 +6219,15 @@ var obj = {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              console.log('----set', params);
+              // console.log('----set', params);
               db.data || (db.data = {
                 keys: []
               });
               (_db$data = db.data) === null || _db$data === void 0 ? void 0 : _db$data.keys.push(params);
-              _context3.next = 5;
+              _context3.next = 4;
               return db.write();
 
-            case 5:
+            case 4:
             case "end":
               return _context3.stop();
           }

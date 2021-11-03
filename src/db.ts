@@ -52,11 +52,11 @@ const obj = {
   get: async (params?: { [key: string]: any }) => {
     await db.read();
     const data = lodash.chain(db.data).get('keys').find(params).value();
-    console.log('----get', params, data);
+    // console.log('----get', params, data);
     return data;
   },
   set: async (params: any) => {
-    console.log('----set', params);
+    // console.log('----set', params);
     db.data ||= { keys: [] };
     db.data?.keys.push(params);
     await db.write();
