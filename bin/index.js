@@ -5776,12 +5776,10 @@ var __dirname$2 = path__default['default'].resolve(path__default['default'].dirn
 function sshCopyId(file, port, address) {
   return new Promise(function (resolve, reject) {
     // copy to server
-    child_process.exec("ssh-copy-id -i ".concat(file, " -p ").concat(port, " ").concat(address), function (err) {
+    child_process.exec("ssh-copy-id -i ".concat(file('pub'), " -p ").concat(port, " ").concat(address), function (err) {
       if (!err) {
-        // console.log(stdout, stderr);
         resolve(true);
-      } // console.log(stdout, stderr);
-
+      }
 
       reject(new Error('错误提示'));
     }).on('exit', function (code) {

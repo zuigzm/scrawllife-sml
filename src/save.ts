@@ -10,12 +10,10 @@ const __dirname = path.resolve(path.dirname(''));
 function sshCopyId(file: any, port: number, address: string): Promise<any> {
   return new Promise((resolve, reject) => {
     // copy to server
-    exec(`ssh-copy-id -i ${file} -p ${port} ${address}`, (err) => {
+    exec(`ssh-copy-id -i ${file('pub')} -p ${port} ${address}`, (err) => {
       if (!err) {
-        // console.log(stdout, stderr);
         resolve(true);
       }
-      // console.log(stdout, stderr);
       reject(new Error('错误提示'));
     }).on('exit', (code) => {
       reject(new Error(JSON.stringify({ code, message: '错误提示' })));
