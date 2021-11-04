@@ -1,6 +1,7 @@
 import inquirer from 'inquirer';
 import cryptoRandomString from 'crypto-random-string';
 import ORA from 'ora';
+import _ from 'lodash';
 import save from './save';
 import db from './db';
 
@@ -90,8 +91,7 @@ export default () => {
               });
             })
             .catch((err) => {
-              console.log(err);
-              ora.fail('错误了');
+              ora.fail(err || '错误了');
             });
         }
       });

@@ -17,10 +17,10 @@ var url = require('url');
 var process$2 = require('process');
 var inquirer = require('inquirer');
 var crypto = require('crypto');
+var _regeneratorRuntime = require('@babel/runtime/regenerator');
 var keygen = require('ssh-keygen');
 var child_process = require('child_process');
-var _regeneratorRuntime = require('@babel/runtime/regenerator');
-var lodash = require('lodash');
+var _ = require('lodash');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -36,9 +36,9 @@ var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs$1);
 var process__default$1 = /*#__PURE__*/_interopDefaultLegacy(process$2);
 var inquirer__default = /*#__PURE__*/_interopDefaultLegacy(inquirer);
 var crypto__default = /*#__PURE__*/_interopDefaultLegacy(crypto);
-var keygen__default = /*#__PURE__*/_interopDefaultLegacy(keygen);
 var _regeneratorRuntime__default = /*#__PURE__*/_interopDefaultLegacy(_regeneratorRuntime);
-var lodash__default = /*#__PURE__*/_interopDefaultLegacy(lodash);
+var keygen__default = /*#__PURE__*/_interopDefaultLegacy(keygen);
+var ___default = /*#__PURE__*/_interopDefaultLegacy(_);
 
 const restoreCursor = onetime__default['default'](() => {
 	signalExit__default['default'](() => {
@@ -5769,64 +5769,6 @@ const cryptoRandomString = createGenerator(generateForCustomCharacters, generate
 
 cryptoRandomString.async = createGenerator(generateForCustomCharactersAsync, generateRandomBytesAsync);
 
-/* eslint-disable @typescript-eslint/naming-convention */
-
-var __dirname$2 = path__default['default'].resolve(path__default['default'].dirname(''));
-
-function sshCopyId(file, port, address) {
-  return new Promise(function (resolve, reject) {
-    // copy to server
-    child_process.exec("ssh-copy-id -i ".concat(file('pub'), " -p ").concat(port, " ").concat(address), function (err) {
-      if (!err) {
-        resolve(true);
-      }
-
-      reject(new Error('错误提示'));
-    }).on('exit', function (code) {
-      reject(new Error(JSON.stringify({
-        code: code,
-        message: '错误提示'
-      })));
-    });
-  });
-}
-
-var save = (function (sml) {
-  // 使用ssh2 在服务端 生成 ssh
-  var location = function location(suffix) {
-    suffix = suffix ? ".".concat(suffix) : '';
-    return path__default['default'].join(__dirname$2, "/.key/".concat(sml.file).concat(suffix));
-  };
-
-  return new Promise(function (resolve, reject) {
-    keygen__default['default']({
-      location: location(),
-      comment: sml.comment,
-      password: sml.password,
-      read: true,
-      format: sml.format
-    }, function (err, out) {
-      if (err) {
-        reject(err);
-      } else {
-        if (!sml.keyType) {
-          // 隐藏秘钥信息
-          console.log('Keys created!');
-          console.log("private key: ".concat(out.key));
-          console.log("public key: ".concat(out.pubKey));
-        } // exec(`chmod 600 ${location()}`, () => {
-
-
-        resolve(out); // });
-      }
-    });
-  }).then(function () {
-    return sshCopyId(location, sml.port, "".concat(sml.user, "@").concat(sml.address)).then(function (code) {
-      return code;
-    });
-  });
-});
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
@@ -6110,9 +6052,9 @@ class Low {
     }
 }
 
-var __dirname$1 = path__default['default'].resolve(path__default['default'].dirname(''));
+var __dirname$2 = path__default['default'].resolve(path__default['default'].dirname(''));
 
-var location = path__default['default'].join(__dirname$1, "/.key/key.json");
+var location = path__default['default'].join(__dirname$2, "/.key/key.json");
 var adapter = new JSONFile(location);
 var db = new Low(adapter);
 var obj = {
@@ -6131,7 +6073,7 @@ var obj = {
               filterData = {};
 
               if (opt && opt.filter) {
-                lodash__default['default'].map(opt.filter, function (i) {
+                ___default['default'].map(opt.filter, function (i) {
                   filterData[i] = params[i];
                 });
               }
@@ -6141,25 +6083,24 @@ var obj = {
 
             case 5:
               findData = _context.sent;
-              console.log('findData', filterData, findData);
 
               if (!findData) {
-                _context.next = 11;
+                _context.next = 10;
                 break;
               }
 
               throw new Error('已经生成相同的服务器信息');
 
-            case 11:
+            case 10:
               obj.set(params);
-              _context.next = 14;
+              _context.next = 13;
               return obj.get();
 
-            case 14:
+            case 13:
               result = _context.sent;
               return _context.abrupt("return", result);
 
-            case 16:
+            case 15:
             case "end":
               return _context.stop();
           }
@@ -6173,14 +6114,17 @@ var obj = {
 
     return save;
   }(),
-  "delete": function _delete(time) {
+  "delete": function _delete(params) {
     return db.read().then(function () {
-      var data = lodash__default['default'].chain(db.data).get('keys').remove({
-        time: time
-      }).value();
-      db.write(); // 返回删除的数据
+      if (___default['default'].isObject(params)) {
+        var data = ___default['default'].chain(db.data).get('keys').remove(params).value();
 
-      return data;
+        db.write();
+        return data;
+      } // 返回删除的数据
+
+
+      throw new Error('请删除正确的信息');
     });
   },
   get: function () {
@@ -6194,10 +6138,10 @@ var obj = {
               return db.read();
 
             case 2:
-              get = lodash__default['default'].chain(db.data).get('keys');
+              get = ___default['default'].chain(db.data).get('keys');
               data = null;
 
-              if (lodash__default['default'].isObject(params)) {
+              if (___default['default'].isObject(params)) {
                 data = get.find(params).value();
               } else {
                 data = get.value();
@@ -6251,6 +6195,115 @@ var obj = {
     return set;
   }()
 };
+
+var __dirname$1 = path__default['default'].resolve(path__default['default'].dirname('')); // 终止操作并返回错误信息
+
+
+function closeCopyId(user, file) {
+  return new Promise(function (resolve, reject) {
+    // 先删除，删除成功以后在清理数据
+    fs__default['default'].rm("".concat(file(), "*"), /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime__default['default'].mark(function _callee(err) {
+        var data;
+        return _regeneratorRuntime__default['default'].wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (!err) {
+                  _context.next = 2;
+                  break;
+                }
+
+                throw err;
+
+              case 2:
+                _context.next = 4;
+                return obj["delete"]({
+                  user: user
+                });
+
+              case 4:
+                data = _context.sent;
+
+                if (data) {
+                  resolve(true);
+                } else {
+                  reject(new Error('删除失败'));
+                }
+
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }());
+  });
+}
+
+function sshCopyId(file, port, user, address) {
+  return new Promise(function (resolve, reject) {
+    // copy to server
+    setTimeout(function () {
+      // 等待五秒钟以后，如果还为加载成功，就终止保存操作，返回错误信息
+      closeCopyId(user, file).then(function (data) {// resolve(true);
+        // 删除
+      })["catch"](function () {
+        reject(new Error('复制秘钥错误, 终止操作'));
+      });
+    }, 5000);
+    child_process.exec("ssh-copy-id -i ".concat(file('pub'), " -p ").concat(port, " ").concat(user, "@").concat(address), function (err) {
+      if (!err) {
+        resolve(true);
+      }
+
+      reject(new Error('复制秘钥错误, 终止操作'));
+    }).on('exit', function () {
+      reject(new Error('复制秘钥错误, 终止操作'));
+    });
+  });
+}
+
+var save = (function (sml) {
+  // 使用ssh2 在服务端 生成 ssh
+  var location = function location(suffix) {
+    suffix = suffix ? ".".concat(suffix) : '';
+    return path__default['default'].join(__dirname$1, "/.key/".concat(sml.file).concat(suffix));
+  };
+
+  return new Promise(function (resolve, reject) {
+    keygen__default['default']({
+      location: location(),
+      comment: sml.comment,
+      password: sml.password,
+      read: true,
+      format: sml.format
+    }, function (err, out) {
+      if (err) {
+        reject(err);
+      } else {
+        if (!sml.keyType) {
+          // 隐藏秘钥信息
+          console.log('Keys created!');
+          console.log("private key: ".concat(out.key));
+          console.log("public key: ".concat(out.pubKey));
+        } // exec(`chmod 600 ${location()}`, () => {
+
+
+        resolve(out); // });
+      }
+    });
+  }).then(function () {
+    return sshCopyId(location, sml.port, sml.user, sml.address).then(function (code) {
+      return code;
+    });
+  });
+});
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -6328,8 +6381,7 @@ var set = (function () {
             ora.succeed('传入秘钥成功');
           });
         })["catch"](function (err) {
-          console.log(err);
-          ora.fail('错误了');
+          ora.fail(err || '错误了');
         });
       }
     });
