@@ -26,13 +26,15 @@ const db = new Low<KeysData>(adapter);
 const obj = {
   save: async (params: SMLType, opt: { filter?: string[] } = {}) => {
     const filterData: { [key: string]: any } = {};
-    if (opt.filter) {
+    if (opt && opt.filter) {
       lodash.map(opt.filter, (i) => {
         filterData[i] = params[i];
       });
     }
 
     const findData = await obj.get(filterData);
+
+    console.log('findData', filterData, findData);
     if (findData) {
       throw new Error('已经生成相同的服务器信息');
     } else {
@@ -51,7 +53,13 @@ const obj = {
   },
   get: async (params?: { [key: string]: any }) => {
     await db.read();
-    const data = lodash.chain(db.data).get('keys').find(params).value();
+    const get = lodash.chain(db.data).get('keys');
+    let data = null;
+    if (lodash.isObject(params)) {
+      data = get.find(params).value();
+    } else {
+      data = get.value();
+    }
     // console.log('----get', params, data);
     return data;
   },

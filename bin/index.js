@@ -6130,7 +6130,7 @@ var obj = {
               opt = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
               filterData = {};
 
-              if (opt.filter) {
+              if (opt && opt.filter) {
                 lodash__default['default'].map(opt.filter, function (i) {
                   filterData[i] = params[i];
                 });
@@ -6141,24 +6141,25 @@ var obj = {
 
             case 5:
               findData = _context.sent;
+              console.log('findData', filterData, findData);
 
               if (!findData) {
-                _context.next = 10;
+                _context.next = 11;
                 break;
               }
 
               throw new Error('已经生成相同的服务器信息');
 
-            case 10:
+            case 11:
               obj.set(params);
-              _context.next = 13;
+              _context.next = 14;
               return obj.get();
 
-            case 13:
+            case 14:
               result = _context.sent;
               return _context.abrupt("return", result);
 
-            case 15:
+            case 16:
             case "end":
               return _context.stop();
           }
@@ -6184,7 +6185,7 @@ var obj = {
   },
   get: function () {
     var _get = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime__default['default'].mark(function _callee2(params) {
-      var data;
+      var get, data;
       return _regeneratorRuntime__default['default'].wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -6193,11 +6194,19 @@ var obj = {
               return db.read();
 
             case 2:
-              data = lodash__default['default'].chain(db.data).get('keys').find(params).value(); // console.log('----get', params, data);
+              get = lodash__default['default'].chain(db.data).get('keys');
+              data = null;
+
+              if (lodash__default['default'].isObject(params)) {
+                data = get.find(params).value();
+              } else {
+                data = get.value();
+              } // console.log('----get', params, data);
+
 
               return _context2.abrupt("return", data);
 
-            case 4:
+            case 6:
             case "end":
               return _context2.stop();
           }
@@ -6255,7 +6264,7 @@ var questions = [{
   type: 'input',
   name: 'address',
   message: '设置服务器:',
-  "default": '192.168.1.3'
+  "default": 'locahost'
 }, {
   type: 'input',
   name: 'port',
@@ -6310,14 +6319,16 @@ var set = (function () {
           time: Date.now()
         }, answers);
 
-        obj.save(params).then(function (data) {
+        obj.save(params, {
+          filter: ['address', 'serverName']
+        }).then(function (data) {
           ora.succeed('创建秘钥成功');
           ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
           return save(params).then(function () {
             ora.succeed('传入秘钥成功');
           });
         })["catch"](function (err) {
-          // console.log(err);
+          console.log(err);
           ora.fail('错误了');
         });
       }

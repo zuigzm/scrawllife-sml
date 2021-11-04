@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "start": "node ./bin/index.js",
-    "test": "yarn rm && yarn start",
+    "test": "yarn start",
     "build": "rollup -c -w",
     "mkdir": "mkdirp ./.key",
     "fix": "eslint --fix",

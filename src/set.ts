@@ -15,7 +15,7 @@ const questions = [
     type: 'input',
     name: 'address',
     message: '设置服务器:',
-    default: '192.168.1.3',
+    default: 'locahost',
   },
   {
     type: 'input',
@@ -78,7 +78,10 @@ export default () => {
             time: Date.now(),
             ...answers,
           };
-          db.save(params)
+
+          db.save(params, {
+            filter: ['address', 'serverName'],
+          })
             .then((data) => {
               ora.succeed('创建秘钥成功');
               ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
@@ -87,7 +90,7 @@ export default () => {
               });
             })
             .catch((err) => {
-              // console.log(err);
+              console.log(err);
               ora.fail('错误了');
             });
         }
