@@ -1,22 +1,19 @@
 import inquirer from 'inquirer';
-import { Low, JSONFile } from 'lowdb';
-import fs from 'fs';
-import path from 'path';
+import _ from 'lodash'
+import db from './db'
 
-import { KeysData } from './save';
+export default async () => {
 
-export default () => {
-  const __dirname = path.resolve(path.dirname(''));
-  const json = path.join(__dirname, '/.key/key.json');
-  const adapter = new JSONFile<KeysData>(json);
-  const db = new Low<KeysData>(adapter);
+  const data = await db.get()
+  if(_.isObject(data)) {
+    data.
+  }
 
   return new Promise((resolve, reject) => {
-    db.read().then(() => {
-      const { keys = [] } = db.data || {};
-      if (!keys.length) {
+    db.get().then((data) => {
+      if (!data.length) {
         reject('暂无保存的服务器列表');
-      } else {
+      } else 
         resolve(keys);
       }
     });

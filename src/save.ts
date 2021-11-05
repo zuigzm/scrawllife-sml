@@ -13,7 +13,7 @@ const __dirname = path.resolve(path.dirname(''));
 function closeCopyId(user: string, file: any) {
   return new Promise((resolve, reject) => {
     // 先删除，删除成功以后在清理数据
-    fs.rm(`${file()}*`, async (err) => {
+    fs.unlink(`${file()}*`, async (err) => {
       if (err) throw err;
       const data = await db.delete({
         user,
@@ -30,24 +30,33 @@ function closeCopyId(user: string, file: any) {
 function sshCopyId(file: any, port: number, user: string, address: string): Promise<any> {
   return new Promise((resolve, reject) => {
     // copy to server
-    setTimeout(() => {
-      // 等待五秒钟以后，如果还为加载成功，就终止保存操作，返回错误信息
-      closeCopyId(user, file)
-        .then((data) => {
-          // resolve(true);
-          // 删除
-        })
-        .catch(() => {
-          reject(new Error('复制秘钥错误, 终止操作'));
-        });
-    }, 5000);
+    // const closeTime = setTimeout(() => {
+    //   // 等待五秒钟以后，如果还为加载成功，就终止保存操作，返回错误信息
+    //   closeCopyId(user, file)
+    //     .then((data) => {
+    //       // resolve(true);
+    //       //
+    //     })
+    //     .catch(() => {
+    //       reject(new Error('复制秘钥错误, 终止操作'));
+    //     });
+    // }, 5000);
+
     exec(`ssh-copy-id -i ${file('pub')} -p ${port} ${user}@${address}`, (err) => {
       if (!err) {
         resolve(true);
       }
       reject(new Error('复制秘钥错误, 终止操作'));
     }).on('exit', () => {
-      reject(new Error('复制秘钥错误, 终止操作'));
+      closeCopyId(user, file)
+        .then((data) => {
+          if (data) {
+            reject(new Error('复制秘钥错误, 终止操作'));
+          }
+        })
+        .catch(() => {
+          reject(new Error('复制秘钥错误, 终止操作'));
+        });
     });
   });
 }

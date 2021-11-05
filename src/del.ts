@@ -1,16 +1,8 @@
 import inquirer from 'inquirer';
-import path from 'path';
-import { Low, JSONFile } from 'lowdb';
-import { KeysData } from './save';
 import serverList from './server';
 
 // 删除指定服务器
 export default () => {
-  const __dirname = path.resolve(path.dirname(''));
-  const json = path.join(__dirname, '/.key/key.json');
-  const adapter = new JSONFile<KeysData>(json);
-  const db = new Low<KeysData>(adapter);
-
   return serverList()
     .then(({ select, datas }) => {
       // 获取指定的服务器 answers

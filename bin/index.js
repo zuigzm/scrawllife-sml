@@ -6129,7 +6129,7 @@ var obj = {
   },
   get: function () {
     var _get = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime__default['default'].mark(function _callee2(params) {
-      var get, data;
+      var get;
       return _regeneratorRuntime__default['default'].wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -6139,16 +6139,16 @@ var obj = {
 
             case 2:
               get = ___default['default'].chain(db.data).get('keys');
-              data = null;
 
-              if (___default['default'].isObject(params)) {
-                data = get.find(params).value();
-              } else {
-                data = get.value();
-              } // console.log('----get', params, data);
+              if (!___default['default'].isObject(params)) {
+                _context2.next = 5;
+                break;
+              }
 
+              return _context2.abrupt("return", get.find(params).value());
 
-              return _context2.abrupt("return", data);
+            case 5:
+              return _context2.abrupt("return", get.value());
 
             case 6:
             case "end":
@@ -6202,7 +6202,7 @@ var __dirname$1 = path__default['default'].resolve(path__default['default'].dirn
 function closeCopyId(user, file) {
   return new Promise(function (resolve, reject) {
     // 先删除，删除成功以后在清理数据
-    fs__default['default'].rm("".concat(file(), "*"), /*#__PURE__*/function () {
+    fs__default['default'].unlink("".concat(file(), "*"), /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime__default['default'].mark(function _callee(err) {
         var data;
         return _regeneratorRuntime__default['default'].wrap(function _callee$(_context) {
@@ -6249,14 +6249,17 @@ function closeCopyId(user, file) {
 function sshCopyId(file, port, user, address) {
   return new Promise(function (resolve, reject) {
     // copy to server
-    setTimeout(function () {
-      // 等待五秒钟以后，如果还为加载成功，就终止保存操作，返回错误信息
-      closeCopyId(user, file).then(function (data) {// resolve(true);
-        // 删除
-      })["catch"](function () {
-        reject(new Error('复制秘钥错误, 终止操作'));
-      });
-    }, 5000);
+    // const closeTime = setTimeout(() => {
+    //   // 等待五秒钟以后，如果还为加载成功，就终止保存操作，返回错误信息
+    //   closeCopyId(user, file)
+    //     .then((data) => {
+    //       // resolve(true);
+    //       //
+    //     })
+    //     .catch(() => {
+    //       reject(new Error('复制秘钥错误, 终止操作'));
+    //     });
+    // }, 5000);
     child_process.exec("ssh-copy-id -i ".concat(file('pub'), " -p ").concat(port, " ").concat(user, "@").concat(address), function (err) {
       if (!err) {
         resolve(true);
@@ -6264,7 +6267,13 @@ function sshCopyId(file, port, user, address) {
 
       reject(new Error('复制秘钥错误, 终止操作'));
     }).on('exit', function () {
-      reject(new Error('复制秘钥错误, 终止操作'));
+      closeCopyId(user, file).then(function (data) {
+        if (data) {
+          reject(new Error('复制秘钥错误, 终止操作'));
+        }
+      })["catch"](function () {
+        reject(new Error('复制秘钥错误, 终止操作'));
+      });
     });
   });
 }
@@ -6430,11 +6439,6 @@ var serverList = (function () {
 });
 
 var del = (function () {
-  var __dirname = path__default['default'].resolve(path__default['default'].dirname(''));
-
-  var json = path__default['default'].join(__dirname, '/.key/key.json');
-  var adapter = new JSONFile(json);
-  new Low(adapter);
   return serverList().then(function (_ref) {
     var select = _ref.select,
         datas = _ref.datas;

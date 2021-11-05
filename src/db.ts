@@ -56,14 +56,13 @@ const obj = {
   get: async (params?: { [key: string]: any }) => {
     await db.read();
     const get = _.chain(db.data).get('keys');
-    let data = null;
     if (_.isObject(params)) {
-      data = get.find(params).value();
-    } else {
-      data = get.value();
+      return get.find(params).value();
     }
+    return get.value();
+
     // console.log('----get', params, data);
-    return data;
+    // return data;
   },
   set: async (params: any) => {
     // console.log('----set', params);
