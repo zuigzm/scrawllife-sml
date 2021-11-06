@@ -2,7 +2,8 @@
 /* eslint-disable no-underscore-dangle */
 import keygen from 'ssh-keygen';
 import path from 'path';
-import fs from 'fs';
+import rimraf from 'rimraf';
+import mkdirp from 'mkdirp';
 import { exec } from 'child_process';
 import { SMLType } from './type.d';
 import db from './db';
@@ -13,7 +14,7 @@ const __dirname = path.resolve(path.dirname(''));
 function closeCopyId(user: string, file: any) {
   return new Promise((resolve, reject) => {
     // 先删除，删除成功以后在清理数据
-    fs.unlink(`${file()}*`, async (err) => {
+    rimraf(`${file()}*`, async (err: any) => {
       if (err) throw err;
       const data = await db.delete({
         user,
@@ -29,19 +30,6 @@ function closeCopyId(user: string, file: any) {
 
 function sshCopyId(file: any, port: number, user: string, address: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    // copy to server
-    // const closeTime = setTimeout(() => {
-    //   // 等待五秒钟以后，如果还为加载成功，就终止保存操作，返回错误信息
-    //   closeCopyId(user, file)
-    //     .then((data) => {
-    //       // resolve(true);
-    //       //
-    //     })
-    //     .catch(() => {
-    //       reject(new Error('复制秘钥错误, 终止操作'));
-    //     });
-    // }, 5000);
-
     exec(`ssh-copy-id -i ${file('pub')} -p ${port} ${user}@${address}`, (err) => {
       if (!err) {
         resolve(true);
@@ -65,14 +53,20 @@ export interface KeysData {
   keys: Array<SMLType>;
 }
 
-export default (sml: SMLType) => {
+export default async (sml: SMLType) => {
   // 使用ssh2 在服务端 生成 ssh
   const location = (suffix?: string) => {
     suffix = suffix ? `.${suffix}` : '';
-    return path.join(__dirname, `/.key/${sml.file}${suffix}`);
+    return path.join(__dirname, `/.key/${sml.file}/sshKey${suffix}`);
   };
 
-  return new Promise((resolve, reject) => {
+  const dirp = await mkdirp(path.join(__dirname, `/.key/${sml.file}`));
+
+  if (!dirp) {
+    throw new Error(`创建${sml.file}文件夹失败`);
+  }
+
+  const outKey = await new Promise((resolve, reject) => {
     keygen(
       {
         location: location(),
@@ -97,9 +91,17 @@ export default (sml: SMLType) => {
         }
       },
     );
-  }).then(() => {
-    return sshCopyId(location, sml.port, sml.user, sml.address).then((code) => {
-      return code;
-    });
   });
+
+  if (!outKey) {
+    throw new Error('创建秘钥失败');
+  }
+
+  return await sshCopyId(location, sml.port, sml.user, sml.address);
+
+  // return .then(() => {
+  //   return sshCopyId(location, sml.port, sml.user, sml.address).then((code) => {
+  //     return code;
+  //   });
+  // });
 };

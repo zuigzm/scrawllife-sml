@@ -1,4 +1,5 @@
 import inquirer from 'inquirer';
+import rimraf from 'rimraf';
 import serverList from './server';
 
 // 删除指定服务器

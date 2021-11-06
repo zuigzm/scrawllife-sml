@@ -40,9 +40,10 @@ Yargs(hideBin(process.argv))
     serverList()
       .then(({ select }) => {
         if (select) {
-          db.get({ time: select.time }).then((data) => {
-            // ssh(data);
-          });
+          console.log(select);
+          // db.get({ time: select.time }).then((data) => {
+          //   // ssh(data);
+          // });
         }
       })
       .catch((err) => {
