@@ -4,7 +4,9 @@ import keygen from 'ssh-keygen';
 import path from 'path';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
+import fs from 'fs/promises';
 import { exec } from 'child_process';
+import ORA from 'ora';
 import { SMLType } from './type.d';
 import db from './db';
 
@@ -14,7 +16,7 @@ const __dirname = path.resolve(path.dirname(''));
 function closeCopyId(user: string, file: any) {
   return new Promise((resolve, reject) => {
     // 先删除，删除成功以后在清理数据
-    rimraf(`${file()}*`, async (err: any) => {
+    rimraf(`${file()}`, async (err: any) => {
       if (err) throw err;
       const data = await db.delete({
         user,
@@ -28,9 +30,9 @@ function closeCopyId(user: string, file: any) {
   });
 }
 
-function sshCopyId(file: any, port: number, user: string, address: string): Promise<any> {
+export function sshCopyId(file: any, port: number, user: string, address: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    exec(`ssh-copy-id -i ${file('pub')} -p ${port} ${user}@${address}`, (err) => {
+    exec(`ssh-copy-id -i ${file('sshKey.pub')} -p ${port} ${user}@${address}`, (err) => {
       if (!err) {
         resolve(true);
       }
@@ -53,23 +55,28 @@ export interface KeysData {
   keys: Array<SMLType>;
 }
 
-export default async (sml: SMLType) => {
+export default async (sml: SMLType, cb: any) => {
   // 使用ssh2 在服务端 生成 ssh
-  const location = (suffix?: string) => {
-    suffix = suffix ? `.${suffix}` : '';
-    return path.join(__dirname, `/.key/${sml.file}/sshKey${suffix}`);
+  const location = (file?: string) => {
+    return path.join(__dirname, `/.key/${sml.file}`, `${file || ''}`);
   };
 
-  const dirp = await mkdirp(path.join(__dirname, `/.key/${sml.file}`));
+  const mkState = await mkdirp(path.join(__dirname, `/.key/${sml.file}`));
 
-  if (!dirp) {
-    throw new Error(`创建${sml.file}文件夹失败`);
+  if (!mkState) {
+    throw new Error('已创建该文件');
+  }
+
+  const fsStat = await fs.stat(mkState);
+
+  if (!fsStat.isDirectory()) {
+    throw new Error('没有该文件夹');
   }
 
   const outKey = await new Promise((resolve, reject) => {
     keygen(
       {
-        location: location(),
+        location: path.join(mkState, 'sshKey'),
         comment: sml.comment,
         password: sml.password,
         read: true,
@@ -85,9 +92,7 @@ export default async (sml: SMLType) => {
             console.log(`private key: ${out.key}`);
             console.log(`public key: ${out.pubKey}`);
           }
-          // exec(`chmod 600 ${location()}`, () => {
           resolve(out);
-          // });
         }
       },
     );
@@ -97,7 +102,8 @@ export default async (sml: SMLType) => {
     throw new Error('创建秘钥失败');
   }
 
-  return await sshCopyId(location, sml.port, sml.user, sml.address);
+  cb && cb();
+  return sshCopyId(location, sml.port, sml.user, sml.address);
 
   // return .then(() => {
   //   return sshCopyId(location, sml.port, sml.user, sml.address).then((code) => {

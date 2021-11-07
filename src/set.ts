@@ -62,38 +62,38 @@ const questions = [
 
 export default async () => {
   const ora = ORA();
-  const answers = await inquirer.prompt(questions);
-  const ft = await inquirer.prompt({
-    type: 'confirm',
-    name: 'type',
-    message: `请确定你的信息!`,
-  });
-
-  if (ft.type) {
-    ora.start('生成ssh-keygen中...');
-    // todo: https://github.com/typicode/lowdb/issues/380
-    // const adapter = new JSONFile<KeysData>(json)
-    // 给每个账号设置一个时间戳，来区分
-    const params = {
-      time: Date.now(),
-      ...answers,
-    };
-
-    // 生成秘钥成功后，添加秘钥信息
-    save(params).then(() => {
-      ora.succeed('传入秘钥成功');
+  try {
+    const answers = await inquirer.prompt(questions);
+    const ft = await inquirer.prompt({
+      type: 'confirm',
+      name: 'type',
+      message: `请确定你的信息!`,
     });
 
-    const saveData = await db.save(params, {
-      filter: ['address', 'serverName'],
-    });
+    if (ft.type) {
+      ora.start('生成ssh-keygen中...');
+      // todo: https://github.com/typicode/lowdb/issues/380
+      // const adapter = new JSONFile<KeysData>(json)
+      // 给每个账号设置一个时间戳，来区分
+      const params = {
+        time: Date.now(),
+        ...answers,
+      };
 
-    if (saveData) {
-      ora.succeed('创建秘钥成功');
-      ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
-      save(params).then(() => {
-        ora.succeed('传入秘钥成功');
+      // 生成秘钥成功后，添加秘钥信息
+      await save(params, () => {
+        ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
       });
+
+      const saveData = await db.save(params, {
+        filter: ['address', 'serverName'],
+      });
+
+      if (saveData) {
+        ora.succeed('创建秘钥成功');
+      }
     }
+  } catch (err: any) {
+    ora.fail(err && err.toString());
   }
 };
