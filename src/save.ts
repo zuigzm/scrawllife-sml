@@ -6,7 +6,6 @@ import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import fs from 'fs/promises';
 import { exec } from 'child_process';
-import ORA from 'ora';
 import { SMLType } from './type.d';
 import db from './db';
 
@@ -37,16 +36,18 @@ export function sshCopyId(file: any, port: number, user: string, address: string
         resolve(true);
       }
       reject(new Error('复制秘钥错误, 终止操作'));
-    }).on('exit', () => {
-      closeCopyId(user, file)
-        .then((data) => {
-          if (data) {
+    }).on('exit', (err) => {
+      if (err) {
+        closeCopyId(user, file)
+          .then((data) => {
+            if (data) {
+              reject(new Error('复制秘钥错误, 终止操作'));
+            }
+          })
+          .catch(() => {
             reject(new Error('复制秘钥错误, 终止操作'));
-          }
-        })
-        .catch(() => {
-          reject(new Error('复制秘钥错误, 终止操作'));
-        });
+          });
+      }
     });
   });
 }
@@ -80,7 +81,7 @@ export default async (sml: SMLType, cb: any) => {
         comment: sml.comment,
         password: sml.password,
         read: true,
-        format: sml.format,
+        format: sml.format || sml.user,
       },
       (err: any, out: any) => {
         if (err) {
@@ -104,10 +105,4 @@ export default async (sml: SMLType, cb: any) => {
 
   cb && cb();
   return sshCopyId(location, sml.port, sml.user, sml.address);
-
-  // return .then(() => {
-  //   return sshCopyId(location, sml.port, sml.user, sml.address).then((code) => {
-  //     return code;
-  //   });
-  // });
 };

@@ -81,16 +81,18 @@ export default async () => {
       };
 
       // 生成秘钥成功后，添加秘钥信息
-      await save(params, () => {
+      const saveKey = await save(params, () => {
         ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
       });
 
-      const saveData = await db.save(params, {
-        filter: ['address', 'serverName'],
-      });
+      if (saveKey) {
+        const saveData = await db.save(params, {
+          filter: ['address', 'serverName'],
+        });
 
-      if (saveData) {
-        ora.succeed('创建秘钥成功');
+        if (saveData) {
+          ora.succeed('创建秘钥成功');
+        }
       }
     }
   } catch (err: any) {

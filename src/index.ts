@@ -5,8 +5,8 @@ import { hideBin } from 'yargs/helpers';
 import process from 'process';
 import set from './set';
 import del from './del';
+import ssh from './ssh';
 import serverList from './server';
-import db from './db';
 
 const ora = ORA();
 
@@ -40,9 +40,9 @@ Yargs(hideBin(process.argv))
     serverList()
       .then(({ select }) => {
         if (select) {
-          console.log(select);
+          ssh(select);
           // db.get({ time: select.time }).then((data) => {
-          //   // ssh(data);
+          // ssh(data);
           // });
         }
       })
