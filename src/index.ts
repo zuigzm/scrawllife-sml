@@ -40,7 +40,9 @@ Yargs(hideBin(process.argv))
     serverList()
       .then(({ select }) => {
         if (select) {
-          ssh(select);
+          ssh(select).then(() => {
+            ora.succeed(`登录 ${select.address} 成功`);
+          });
           // db.get({ time: select.time }).then((data) => {
           // ssh(data);
           // });

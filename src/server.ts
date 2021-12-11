@@ -1,8 +1,9 @@
 import inquirer from 'inquirer';
 import _ from 'lodash';
 import db from './db';
+import { SMLType } from './type.d';
 
-export default async () => {
+export default async (): Promise<{ select: SMLType; datas: SMLType[] }> => {
   const data: any = await db.get();
   if (!_.isArray(data)) {
     throw new Error('暂无保存的服务器列表');

@@ -8,7 +8,7 @@ const __dirname = path.resolve(path.dirname(''));
 
 export default (sml: SMLType) => {
   return new Promise((resolve, reject) => {
-    exec(
+    const procss = exec(
       `ssh -i ${path.join(__dirname, `.key/${sml.file}`, 'sshKey')} ${sml.user}@${sml.address} -p ${
         sml.port
       }`,
@@ -23,5 +23,6 @@ export default (sml: SMLType) => {
         reject(new Error('登录错误，意外退出'));
       }
     });
+    resolve(procss);
   });
 };

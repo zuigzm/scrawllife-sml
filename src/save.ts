@@ -78,10 +78,10 @@ export default async (sml: SMLType, cb: any) => {
     keygen(
       {
         location: path.join(mkState, 'sshKey'),
-        comment: sml.comment,
+        comment: sml.comment || sml.user,
         password: sml.password,
         read: true,
-        format: sml.format || sml.user,
+        format: sml.format,
       },
       (err: any, out: any) => {
         if (err) {

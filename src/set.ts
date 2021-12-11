@@ -39,8 +39,8 @@ const questions = [
   {
     type: 'input',
     name: 'password',
-    message: '设置ssh-keygen密码:',
-    default: cryptoRandomString({ length: 12, type: 'base64' }),
+    message: '设置ssh-keygen密码:（不设置即无秘登录）',
+    // default: cryptoRandomString({ length: 12, type: 'base64' }),
   },
   {
     type: 'input',
