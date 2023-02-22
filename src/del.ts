@@ -2,7 +2,6 @@
 /* eslint-disable no-underscore-dangle */
 
 import path from 'path';
-import rimraf from 'rimraf';
 
 import pty from 'node-pty';
 import os from 'os';

@@ -1,6 +1,7 @@
 import path from 'path';
 import _ from 'lodash';
-import { Low, JSONFile } from 'lowdb';
+import { Low } from 'lowdb/lib';
+import { JSONFile } from 'lowdb/lib/node';
 import { SMLType } from './type.d';
 
 // export interface SMLType {

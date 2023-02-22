@@ -1,5 +1,4 @@
 import inquirer from 'inquirer';
-import cryptoRandomString from 'crypto-random-string';
 import ORA from 'ora';
 import _ from 'lodash';
 import save from './save';

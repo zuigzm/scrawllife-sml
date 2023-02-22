@@ -1,10 +1,10 @@
-/* eslint-disable import/no-extraneous-dependencies */
+// /* eslint-disable import/no-extraneous-dependencies */
 import path from 'path';
 import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import { terser } from 'rollup-plugin-terser';
-import pkg from './package.json';
+import terser from '@rollup/plugin-terser';
+import pkg from './package.json' assert { type: 'json' };
 
 const extensions = ['.js', '.ts'];
 
@@ -33,6 +33,7 @@ module.exports = {
     }),
     babel({
       exclude: ['node_modules/**', 'bin/**'],
+      include: ['src/**'],
       presets: ['@babel/preset-env', '@babel/preset-typescript'],
       plugins: ['@babel/plugin-transform-runtime'],
       babelHelpers: 'runtime',
