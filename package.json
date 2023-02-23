@@ -18,7 +18,7 @@
   "scripts": {
     "start": "node ./bin/index.js",
     "test": "yarn start",
-    "build": "rollup -c -w",
+    "build": "rollup --bundleConfigAsCjs -c -w",
     "mkdir": "mkdirp ./.key",
     "fix": "eslint --fix",
     "rm": "rimraf ./.key/*",
