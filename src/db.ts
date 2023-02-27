@@ -1,5 +1,5 @@
 import path from 'path';
-import _ from 'lodash';
+import { chain, map, isObject } from 'lodash';
 import { Low } from 'lowdb/lib';
 import { JSONFile } from 'lowdb/lib/node';
 import { SMLType } from './type.d';
@@ -28,7 +28,7 @@ const obj = {
   save: async (params: SMLType, opt: { filter?: string[] } = {}) => {
     const filterData: { [key: string]: any } = {};
     if (opt && opt.filter) {
-      _.map(opt.filter, (i) => {
+      map(opt.filter, (i) => {
         filterData[i] = params[i];
       });
     }
@@ -45,8 +45,8 @@ const obj = {
   },
   delete: <T = { [key: string]: any }>(params: T) => {
     return db.read().then(() => {
-      if (_.isObject(params)) {
-        const data = _.chain(db.data).get('keys').remove(params).value();
+      if (isObject(params)) {
+        const data = chain(db.data).get('keys').remove(params).value();
         db.write();
         return data;
       }
@@ -56,8 +56,8 @@ const obj = {
   },
   get: async (params?: { [key: string]: any }) => {
     await db.read();
-    const get = _.chain(db.data).get('keys');
-    if (_.isObject(params)) {
+    const get = chain(db.data).get('keys');
+    if (isObject(params)) {
       return get.find(params).value();
     }
     return get.value();

@@ -14,7 +14,7 @@ Yargs(hideBin(process.argv))
   .command(
     'set [server]',
     '添加一台新的服务器配置',
-    (yargs: any) => {
+    (yargs) => {
       ora.start('Loading...');
       return yargs.option('server', {
         alias: 'S',

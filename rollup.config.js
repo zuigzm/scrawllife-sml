@@ -1,10 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 // /* eslint-disable import/no-extraneous-dependencies */
 import path from 'path';
-import { babel } from '@rollup/plugin-babel';
+import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
+import json from '@rollup/plugin-json';
+
 import pkg from './package.json' assert { type: 'json' };
 
 const extensions = ['.js', '.ts'];
@@ -18,12 +20,21 @@ module.exports = {
   output: {
     file: resolve('./', pkg.main), // 为了项目的统一性，这里读取 package.json 中的配置项
     format: 'cjs',
-    // plugins: [
-    //   getBabelOutputPlugin({
-    //     babelHelpers: "bundled",
-    //     configFile: path.resolve(__dirname, "babel.config.js"),
-    //   }),
-    // ],
+    plugins: [
+      getBabelOutputPlugin({
+        babelHelpers: 'bundled',
+        // configFile: path.resolve(__dirname, "babel.config.js"),
+        exclude: ['node_modules/**', 'bin/**'],
+        include: ['src/**'],
+        presets: [['@babel/preset-env', { modules: false }], '@babel/preset-typescript'],
+        plugins: [
+          ['@babel/plugin-transform-runtime', { useESModules: false }],
+          'lodash',
+          '@babel/plugin-transform-modules-commonjs',
+        ],
+        extensions,
+      }),
+    ],
     banner: '#!/usr/bin/env node',
   },
   plugins: [
@@ -32,14 +43,21 @@ module.exports = {
       extensions,
       modulesOnly: true,
     }),
-    babel({
-      exclude: ['node_modules/**', 'bin/**'],
-      include: ['src/**'],
-      presets: ['@babel/preset-env', '@babel/preset-typescript'],
-      plugins: ['@babel/plugin-transform-runtime'],
-      babelHelpers: 'runtime',
-      extensions,
-    }),
+    json(),
+    babel(),
+    // babel({
+    //   exclude: ['node_modules/**', 'bin/**'],
+    //   include: ['src/**'],
+    //   presets: [['@babel/preset-env', { modules: false }], '@babel/preset-typescript'],
+    //   plugins: [
+    //     ['@babel/plugin-transform-runtime', { useESModules: false }],
+    //     'lodash',
+    //     '@babel/plugin-transform-modules-commonjs',
+    //   ],
+    //   babelHelpers: 'runtime',
+    //   extensions,
+    // }),
     terser(),
   ],
+  external: ['lodash'],
 };
