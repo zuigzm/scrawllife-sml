@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable no-underscore-dangle */
-import keygen from 'ssh-keygen';
+import keygen from 'ssh-keygen-lite';
 import path from 'path';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
@@ -9,23 +7,21 @@ import { exec } from 'child_process';
 import { SMLType } from './type.d';
 import db from './db';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
 const __dirname = path.resolve(path.dirname(''));
 
 // 终止操作并返回错误信息
 function closeCopyId(user: string, file: any) {
-  return new Promise((resolve, reject) => {
-    // 先删除，删除成功以后在清理数据
-    rimraf(`${file()}`, async (err: any) => {
-      if (err) throw err;
-      const data = await db.delete({
-        user,
-      });
-      if (data) {
-        resolve(true);
-      } else {
-        reject(new Error('删除失败'));
-      }
+  // 先删除，删除成功以后在清理数据
+  return rimraf(`${file()}`).then(async (err: any) => {
+    if (err) throw err;
+    const data = await db.delete({
+      user,
     });
+    if (data) {
+      return true;
+    }
+    throw new Error('删除失败');
   });
 }
 

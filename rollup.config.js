@@ -6,6 +6,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import json from '@rollup/plugin-json';
+// import typescript from '@rollup/plugin-typescript';
 
 import pkg from './package.json' assert { type: 'json' };
 
@@ -15,49 +16,42 @@ const resolve = (...args) => {
   return path.resolve(__dirname, ...args);
 };
 
-module.exports = {
+export default {
   input: resolve('./src/index.ts'),
   output: {
     file: resolve('./', pkg.main), // 为了项目的统一性，这里读取 package.json 中的配置项
-    format: 'cjs',
+    format: 'esm',
+    banner: '#!/usr/bin/env node',
+    sourceMap: true,
     plugins: [
       getBabelOutputPlugin({
-        babelHelpers: 'bundled',
-        // configFile: path.resolve(__dirname, "babel.config.js"),
-        exclude: ['node_modules/**', 'bin/**'],
-        include: ['src/**'],
-        presets: [['@babel/preset-env', { modules: false }], '@babel/preset-typescript'],
-        plugins: [
-          ['@babel/plugin-transform-runtime', { useESModules: false }],
-          'lodash',
-          '@babel/plugin-transform-modules-commonjs',
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              useBuiltIns: 'usage',
+            },
+          ],
+          '@babel/preset-typescript',
         ],
-        extensions,
+        plugins: ['@babel/plugin-transform-runtime', 'lodash'],
       }),
     ],
-    banner: '#!/usr/bin/env node',
   },
   plugins: [
-    commonjs(),
     nodeResolve({
       extensions,
-      modulesOnly: true,
+      exportConditions: ['node'],
     }),
+    commonjs({ extensions }),
     json(),
-    babel(),
-    // babel({
-    //   exclude: ['node_modules/**', 'bin/**'],
-    //   include: ['src/**'],
-    //   presets: [['@babel/preset-env', { modules: false }], '@babel/preset-typescript'],
-    //   plugins: [
-    //     ['@babel/plugin-transform-runtime', { useESModules: false }],
-    //     'lodash',
-    //     '@babel/plugin-transform-modules-commonjs',
-    //   ],
-    //   babelHelpers: 'runtime',
-    //   extensions,
-    // }),
+    babel({
+      exclude: ['node_modules/**', 'bin/**'],
+      include: ['src/**'],
+      babelHelpers: 'bundled',
+      extensions,
+    }),
     terser(),
   ],
-  external: ['lodash'],
+  external: ['lodash', 'lowdb'],
 };

@@ -7,6 +7,7 @@ export interface SMLType {
   file: string;
   password: string;
   comment: string;
-  format: string;
+  format: 'RFC4716' | 'PKCS8' | 'PEM';
   keyType: boolean;
+  [key: string]: any;
 }

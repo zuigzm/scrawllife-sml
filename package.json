@@ -4,6 +4,7 @@
   "main": "bin/index.js",
   "author": "zuigzm <zuigzm@gmail.com>",
   "repository": "https://github.com/zuigzm/scrawllife-sml.git",
+  "type": "module",
   "license": "MIT",
   "bin": {
     "sml": "./bin/index.js"
@@ -17,12 +18,12 @@
   ],
   "scripts": {
     "start": "node ./bin/index.js",
-    "test": "yarn start",
-    "build": "rollup --bundleConfigAsCjs -c -w",
+    "test": "pnpm start",
+    "build": "rollup -c -w",
     "mkdir": "mkdirp ./.key",
     "fix": "eslint --fix",
     "rm": "rimraf ./.key/*",
-    "postinstall": "yarn mkdir"
+    "postinstall": "pnpm mkdir"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -33,9 +34,11 @@
     "lowdb": "^5.1.0",
     "mkdirp": "^2.1.3",
     "node-pty": "^0.10.1",
+    "onetime": "^6.0.0",
     "ora": "^6.1.2",
     "rimraf": "^4.1.2",
-    "ssh-keygen": "^0.5.0",
+    "ssh-keygen-lite": "^1.3.0",
+    "tslib": "^2.5.0",
     "yargs": "^17.7.1"
   },
   "devDependencies": {
@@ -49,6 +52,7 @@
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-terser": "^0.4.0",
+    "@rollup/plugin-typescript": "^11.0.0",
     "@scrawllife/fabric": "^1.0.11",
     "@types/inquirer": "^9.0.3",
     "@types/lodash": "^4.14.191",

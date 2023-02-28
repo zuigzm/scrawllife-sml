@@ -1,11 +1,11 @@
 import inquirer from 'inquirer';
-import _ from 'lodash';
+import { isArray, map, find } from 'lodash';
 import db from './db';
 import { SMLType } from './type.d';
 
 export default async (): Promise<{ select: SMLType; datas: SMLType[] }> => {
   const data: any = await db.get();
-  if (!_.isArray(data)) {
+  if (!isArray(data)) {
     throw new Error('暂无保存的服务器列表');
   }
 
@@ -18,14 +18,14 @@ export default async (): Promise<{ select: SMLType; datas: SMLType[] }> => {
       type: 'list',
       name: 'time',
       message: '请选择服务器',
-      choices: data.map((i: any) => ({
+      choices: map(data, (i: any) => ({
         name: i.serverName,
         value: i.time,
       })),
     },
   ]);
 
-  const serverList = _.find(data, (item: any) => item.time === answers.time);
+  const serverList = find(data, (item: any) => item.time === answers.time);
   return {
     select: serverList,
     datas: data,

@@ -1,6 +1,5 @@
 import inquirer from 'inquirer';
 import ORA from 'ora';
-import _ from 'lodash';
 import save from './save';
 import db from './db';
 

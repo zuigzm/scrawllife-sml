@@ -1,7 +1,7 @@
 import path from 'path';
 import { chain, map, isObject } from 'lodash';
-import { Low } from 'lowdb/lib';
-import { JSONFile } from 'lowdb/lib/node';
+import { Low } from 'lowdb';
+import { JSONFile } from 'lowdb/node';
 import { SMLType } from './type.d';
 
 // export interface SMLType {
@@ -19,6 +19,7 @@ export interface KeysData {
   keys: Array<SMLType>;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
 const __dirname = path.resolve(path.dirname(''));
 const location = path.join(__dirname, `/.key/key.json`);
 const adapter = new JSONFile<KeysData>(location);

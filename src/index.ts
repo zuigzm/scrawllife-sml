@@ -4,7 +4,7 @@ import Yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import process from 'process';
 import set from './set';
-import del from './del';
+// import del from './del';
 import ssh from './ssh';
 import serverList from './server';
 
@@ -14,7 +14,7 @@ Yargs(hideBin(process.argv))
   .command(
     'set [server]',
     '添加一台新的服务器配置',
-    (yargs) => {
+    (yargs: any) => {
       ora.start('Loading...');
       return yargs.option('server', {
         alias: 'S',
@@ -36,7 +36,7 @@ Yargs(hideBin(process.argv))
       }
     },
   )
-  .command('list', '服务器选择列表', (argv: any) => {
+  .command('list', '服务器选择列表', () => {
     serverList()
       .then(({ select }) => {
         if (select) {
@@ -54,11 +54,11 @@ Yargs(hideBin(process.argv))
         }
       });
   })
-  .command('del', '删除服务器', (argv: any) => {
-    del().catch((err) => {
-      if (err) {
-        ora.warn(chalk.yellow('暂时未获取到服务器信息'));
-      }
-    });
-  })
+  // .command('del', '删除服务器', () => {
+  //   del().catch((err) => {
+  //     if (err) {
+  //       ora.warn(chalk.yellow('暂时未获取到服务器信息'));
+  //     }
+  //   });
+  // })
   .demandCommand(1).argv;
