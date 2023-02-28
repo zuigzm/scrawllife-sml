@@ -19,6 +19,7 @@ specifiers:
   '@types/yargs': ^17.0.22
   babel-plugin-lodash: ^3.3.4
   chalk: ^5.2.0
+  core-js: '3'
   crypto-random-string: ^5.0.0
   inquirer: ^9.1.4
   lodash: ^4.17.21
@@ -68,6 +69,7 @@ devDependencies:
   '@types/lodash': 4.14.191
   '@types/yargs': 17.0.22
   babel-plugin-lodash: 3.3.4
+  core-js: 3.29.0
   prettier: 2.8.4
   rollup: 3.17.2
   typescript: 4.9.5
@@ -2559,6 +2561,11 @@ packages:
     resolution: {integrity: sha512-myzPgE7QodMg4nnd3K1TDoES/nADRStM8Gpz0D6nhkwbmwEnE0ZGJgoWsvQ722FR8D7xS0n0LV556RcEicjTyg==}
     dependencies:
       browserslist: 4.21.5
+    dev: true
+
+  /core-js/3.29.0:
+    resolution: {integrity: sha512-VG23vuEisJNkGl6XQmFJd3rEG/so/CNatqeE+7uZAwTSwFeB/qaO0be8xZYUNWprJ/GIwL8aMt9cj1kvbpTZhg==}
+    requiresBuild: true
     dev: true
 
   /cosmiconfig/5.2.1:

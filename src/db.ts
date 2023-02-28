@@ -1,19 +1,9 @@
 import path from 'path';
-import { chain, map, isObject } from 'lodash';
+import { map, isObject } from 'lodash';
+import chain from 'lodash/chain.js';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
-import { SMLType } from './type.d';
-
-// export interface SMLType {
-//   time: number;
-//   serverName: string;
-//   user: string;
-//   file: string;
-//   password: string;
-//   comment: string;
-//   format: string;
-//   keyType: boolean;
-// }
+import { SMLType } from './type.d.js';
 
 export interface KeysData {
   keys: Array<SMLType>;

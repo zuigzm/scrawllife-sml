@@ -3,10 +3,11 @@ import chalk from 'chalk';
 import Yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import process from 'process';
-import set from './set';
+import set from './set.js';
 // import del from './del';
-import ssh from './ssh';
-import serverList from './server';
+import ssh from './ssh.js';
+import serverList from './server.js';
+import { __dirname } from './utils.js';
 
 const ora = ORA();
 

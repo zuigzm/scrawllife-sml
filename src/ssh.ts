@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import { exec } from 'child_process';
 import path from 'path';
-import { SMLType } from './type.d';
+import { SMLType } from './type.d.js';
 
 const __dirname = path.resolve(path.dirname(''));
 

@@ -1,7 +1,8 @@
 import inquirer from 'inquirer';
+import { assign } from 'lodash';
 import ORA from 'ora';
-import save from './save';
-import db from './db';
+import save from './save.js';
+import db from './db.js';
 
 const questions = [
   {
@@ -14,7 +15,7 @@ const questions = [
     type: 'input',
     name: 'address',
     message: '设置服务器:',
-    default: 'locahost',
+    default: 'localhost',
   },
   {
     type: 'input',
@@ -28,6 +29,46 @@ const questions = [
     message: '用户名称:',
     default: 'root',
   },
+  {
+    type: 'list',
+    name: 'select',
+    message: '请选择登录方式（默认口令登录）',
+    default: 'password',
+    choices: [
+      {
+        name: '口令登录',
+        value: 'password',
+      },
+      {
+        name: '秘钥登录',
+        value: 'keygen',
+      },
+    ],
+  },
+];
+
+const passwordFlow = [
+  {
+    type: 'password',
+    name: 'password1',
+    message: '请输入登录口令',
+  },
+  {
+    type: 'password',
+    name: 'password2',
+    message: '请再次输入登录口令',
+  },
+];
+
+const wordFlow = [
+  {
+    type: 'input',
+    name: 'commit',
+    message: '输入备注',
+  },
+];
+
+const keygenFlow = [
   {
     type: 'input',
     name: 'file',
@@ -62,6 +103,21 @@ export default async () => {
   const ora = ORA();
   try {
     const answers = await inquirer.prompt(questions);
+    if (answers.select === 'password') {
+      const passwordFlowData = await inquirer.prompt(passwordFlow);
+      if (passwordFlowData.password1 !== passwordFlowData.password2) {
+        throw new Error('两次输入的口令不同');
+      }
+
+      await inquirer.prompt(wordFlow);
+      // 设置口令步骤
+      assign(answers, {});
+    } else {
+      // 设置秘钥步骤
+      const keygenFlowData = await inquirer.prompt(keygenFlow);
+      assign(answers, { ...keygenFlowData });
+    }
+
     const ft = await inquirer.prompt({
       type: 'confirm',
       name: 'type',

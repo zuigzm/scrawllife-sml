@@ -1,7 +1,7 @@
 import inquirer from 'inquirer';
 import { isArray, map, find } from 'lodash';
-import db from './db';
-import { SMLType } from './type.d';
+import db from './db.js';
+import { SMLType } from './type.d.js';
 
 export default async (): Promise<{ select: SMLType; datas: SMLType[] }> => {
   const data: any = await db.get();

@@ -4,11 +4,12 @@ import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import fs from 'fs/promises';
 import { exec } from 'child_process';
-import { SMLType } from './type.d';
-import db from './db';
+import { SMLType } from './type.d.js';
+import db from './db.js';
+import { __dirname } from './utils.js';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
-const __dirname = path.resolve(path.dirname(''));
+// const __dirname = path.resolve(path.dirname(''));
 
 // 终止操作并返回错误信息
 function closeCopyId(user: string, file: any) {

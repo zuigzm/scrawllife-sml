@@ -58,6 +58,7 @@
     "@types/lodash": "^4.14.191",
     "@types/yargs": "^17.0.22",
     "babel-plugin-lodash": "^3.3.4",
+    "core-js": "3",
     "prettier": "^2.8.4",
     "rollup": "^3.17.2",
     "typescript": "^4.9.5"
