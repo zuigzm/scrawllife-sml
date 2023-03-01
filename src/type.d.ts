@@ -1,13 +1,14 @@
 export interface SMLType {
-  time: number;
-  serverName: string;
+  serverName?: string;
   address: string;
   port: number;
   user: string;
-  file: string;
-  password: string;
-  comment: string;
-  format: 'RFC4716' | 'PKCS8' | 'PEM';
-  keyType: boolean;
+  select: 'password' | 'keygen';
+  file?: string;
+  password?: string;
+  comment?: string;
+  format?: 'RFC4716' | 'PKCS8' | 'PEM';
+  keyType?: boolean;
+  time?: number;
   [key: string]: any;
 }

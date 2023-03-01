@@ -3,6 +3,8 @@ import chalk from 'chalk';
 import Yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import process from 'process';
+import fs from 'fs';
+import path from 'path';
 import set from './set.js';
 // import del from './del';
 import ssh from './ssh.js';
@@ -54,6 +56,13 @@ Yargs(hideBin(process.argv))
           ora.warn(chalk.yellow('暂时未获取到服务器信息'));
         }
       });
+  })
+  .command('init', '初始化环境', () => {
+    fs.writeFile(path.resolve(__dirname, ''), '#保存数据', (err) => {
+      if (err) {
+        return ora.warn(chalk.yellow('初始化环境失败'));
+      }
+    });
   })
   // .command('del', '删除服务器', () => {
   //   del().catch((err) => {

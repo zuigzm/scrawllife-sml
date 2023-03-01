@@ -28,8 +28,6 @@ export default {
       extensions,
       exportConditions: ['node'],
     }),
-    commonjs(),
-    json(),
     babel({
       babelHelpers: 'runtime',
       presets: [
@@ -47,7 +45,9 @@ export default {
       plugins: ['@babel/plugin-transform-runtime', 'lodash'],
       extensions,
     }),
+    commonjs(),
+    json(),
     terser(),
   ],
-  external: ['lodash', 'lowdb'],
+  external: ['lodash'],
 };

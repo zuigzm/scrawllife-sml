@@ -1,16 +1,16 @@
 import path from 'path';
+import fs from 'fs';
 import { map, isObject } from 'lodash';
 import chain from 'lodash/chain.js';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import { SMLType } from './type.d.js';
+import { __dirname } from './utils.js';
 
 export interface KeysData {
   keys: Array<SMLType>;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
-const __dirname = path.resolve(path.dirname(''));
 const location = path.join(__dirname, `/.key/key.json`);
 const adapter = new JSONFile<KeysData>(location);
 const db = new Low<KeysData>(adapter);
@@ -18,6 +18,7 @@ const db = new Low<KeysData>(adapter);
 const obj = {
   save: async (params: SMLType, opt: { filter?: string[] } = {}) => {
     const filterData: { [key: string]: any } = {};
+
     if (opt && opt.filter) {
       map(opt.filter, (i) => {
         filterData[i] = params[i];
@@ -29,6 +30,9 @@ const obj = {
     if (findData) {
       throw new Error('已经生成相同的服务器信息');
     } else {
+      // if (params.select === 'password') {
+      // } else {
+      // }
       obj.set(params);
       const result = await obj.get();
       return result;
@@ -46,7 +50,12 @@ const obj = {
     });
   },
   get: async (params?: { [key: string]: any }) => {
-    await db.read();
+    console.log('db', db);
+    if (db && db.data) {
+      await db.read();
+    } else {
+      throw new Error('文件不存在');
+    }
     const get = chain(db.data).get('keys');
     if (isObject(params)) {
       return get.find(params).value();
@@ -63,4 +72,5 @@ const obj = {
     await db.write();
   },
 };
+
 export default obj;

@@ -4,6 +4,8 @@ import ORA from 'ora';
 import save from './save.js';
 import db from './db.js';
 
+import { SMLType } from './type.d.js';
+
 const questions = [
   {
     type: 'input',
@@ -52,19 +54,23 @@ const passwordFlow = [
     type: 'password',
     name: 'password1',
     message: '请输入登录口令',
+    validate: (aws: string) => {
+      if (aws) {
+        return true;
+      }
+      return false;
+    },
   },
   {
     type: 'password',
     name: 'password2',
     message: '请再次输入登录口令',
-  },
-];
-
-const wordFlow = [
-  {
-    type: 'input',
-    name: 'commit',
-    message: '输入备注',
+    validate: (aws: string) => {
+      if (aws) {
+        return true;
+      }
+      return false;
+    },
   },
 ];
 
@@ -99,57 +105,69 @@ const keygenFlow = [
   },
 ];
 
-export default async () => {
-  const ora = ORA();
-  try {
-    const answers = await inquirer.prompt(questions);
-    if (answers.select === 'password') {
-      const passwordFlowData = await inquirer.prompt(passwordFlow);
-      if (passwordFlowData.password1 !== passwordFlowData.password2) {
-        throw new Error('两次输入的口令不同');
-      }
+const ora = ORA();
 
-      await inquirer.prompt(wordFlow);
+export default async () => {
+  try {
+    let params: SMLType | null = null;
+    const answers: SMLType = await inquirer.prompt(questions);
+    if (answers.select === 'password') {
+      const pwFlowData = await pwFlow(answers);
       // 设置口令步骤
-      assign(answers, {});
+      params = assign(params, pwFlowData);
     } else {
       // 设置秘钥步骤
-      const keygenFlowData = await inquirer.prompt(keygenFlow);
-      assign(answers, { ...keygenFlowData });
+      const ftFlowData = await ftFlow(answers);
+      params = assign(params, ftFlowData);
     }
 
-    const ft = await inquirer.prompt({
-      type: 'confirm',
-      name: 'type',
-      message: `请确定你的信息!`,
-    });
-
-    if (ft.type) {
-      ora.start('生成ssh-keygen中...');
-      // todo: https://github.com/typicode/lowdb/issues/380
-      // const adapter = new JSONFile<KeysData>(json)
-      // 给每个账号设置一个时间戳，来区分
-      const params = {
-        time: Date.now(),
-        ...answers,
-      };
-
-      // 生成秘钥成功后，添加秘钥信息
-      const saveKey = await save(params, () => {
-        ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
+    if (params) {
+      const saveData = await db.save(params, {
+        filter: ['address', 'serverName'],
       });
 
-      if (saveKey) {
-        const saveData = await db.save(params, {
-          filter: ['address', 'serverName'],
-        });
-
-        if (saveData) {
-          ora.succeed('创建秘钥成功');
-        }
+      if (saveData) {
+        ora.succeed('创建秘钥成功');
       }
     }
   } catch (err: any) {
     ora.fail(err && err.toString());
   }
 };
+
+async function pwFlow(answers: SMLType) {
+  const passwordFlowData = await inquirer.prompt(passwordFlow);
+  if (passwordFlowData.password1 !== passwordFlowData.password2) {
+    throw new Error('两次输入的口令不同');
+  }
+  return assign({}, passwordFlowData, answers);
+}
+
+async function ftFlow(answers: SMLType) {
+  const keygenFlowData = await inquirer.prompt(keygenFlow);
+
+  const ft = await inquirer.prompt({
+    type: 'confirm',
+    name: 'type',
+    message: `请确定你的信息!`,
+  });
+
+  if (ft.type) {
+    ora.start('生成ssh-keygen中...');
+    // todo: https://github.com/typicode/lowdb/issues/380
+    // const adapter = new JSONFile<KeysData>(json)
+    // 给每个账号设置一个时间戳，来区分
+    const params = {
+      ...answers,
+      ...keygenFlowData,
+      time: Date.now(),
+    };
+
+    // 生成秘钥成功后，添加秘钥信息
+    const saveKey = await save(params, () => {
+      ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
+    });
+
+    return assign({}, params, saveKey);
+  }
+}

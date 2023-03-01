@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "bin",
+    "outDir": "./bin",
     "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     "module": "ESNext" /* Specify what module code is generated. */,
     "rootDir": "./src" /* Specify the root folder within your source files. */,
@@ -10,8 +10,9 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "declaration": true,
     "declarationDir": ".",
-    "moduleResolution": "nodenext",
-    "resolveJsonModule": true
+    "moduleResolution": "node16",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts"]
