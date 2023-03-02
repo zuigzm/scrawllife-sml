@@ -123,7 +123,7 @@ export default async () => {
 
     if (params) {
       const saveData = await db.save(params, {
-        filter: ['address', 'serverName'],
+        filter: ['serverName'],
       });
 
       if (saveData) {

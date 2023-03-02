@@ -1,17 +1,16 @@
-import path from 'path';
-import { map, isObject } from 'lodash';
-import chain from 'lodash/chain.js';
+import { join, resolve } from 'path';
+import { map, isObject, find } from 'lodash';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import { SMLType } from './type.d.js';
 import { __dirname } from './utils.js';
-
 export interface KeysData {
   keys: Array<SMLType>;
 }
 
-const location = path.join(__dirname, `.key/db.json`);
+const location = join(resolve(__dirname, '.key'), 'db.json');
 const adapter = new JSONFile<KeysData>(location);
+
 const db = new Low<KeysData>(adapter);
 
 const obj = {
@@ -40,7 +39,8 @@ const obj = {
   delete: <T = { [key: string]: any }>(params: T) => {
     return db.read().then(() => {
       if (isObject(params)) {
-        const data = chain(db.data).get('keys').remove(params).value();
+        // const data = db.chain.get('keys').remove(params).value();
+        const data = {};
         db.write();
         return data;
       }
@@ -49,17 +49,19 @@ const obj = {
     });
   },
   get: async (params?: { [key: string]: any }) => {
+    await db.read();
     if (!(db && db.data)) {
       return null;
     }
-    await db.read();
-    const get = chain(db.data).get('keys');
+    const keys = db.data.keys;
+    // 匹配是否有相同的值
     if (isObject(params)) {
-      return get.find(params).value();
+      return find(keys, params);
     }
-    return get.value();
+    return keys;
   },
   set: async (params: any) => {
+    await db.read();
     db.data ||= { keys: [] };
     if (params) {
       db.data?.keys.push(params);
