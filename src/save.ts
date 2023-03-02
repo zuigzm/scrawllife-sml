@@ -8,9 +8,6 @@ import { SMLType } from './type.d.js';
 import db from './db.js';
 import { __dirname } from './utils.js';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
-// const __dirname = path.resolve(path.dirname(''));
-
 // 终止操作并返回错误信息
 function closeCopyId(user: string, file: any) {
   // 先删除，删除成功以后在清理数据
@@ -56,16 +53,20 @@ export interface KeysData {
 export default async (sml: SMLType, cb: any) => {
   // 使用ssh2 在服务端 生成 ssh
   const location = (file?: string) => {
-    return path.join(__dirname, `/.key/${sml.file}`, `${file || ''}`);
+    return path.resolve(__dirname, `.key/${sml.file}`, `${file || ''}`);
   };
 
-  const mkState = await mkdirp(path.join(__dirname, `/.key/${sml.file}`));
+  const mkState = await mkdirp(path.resolve(__dirname, `.key/${sml.file}`));
 
   if (!mkState) {
     throw new Error('已创建该文件');
   }
 
+  console.log('mkState', mkState);
+
   const fsStat = await fs.stat(mkState);
+
+  console.log('fsStat', fsStat);
 
   if (!fsStat.isDirectory()) {
     throw new Error('没有该文件夹');

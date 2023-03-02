@@ -127,7 +127,7 @@ export default async () => {
       });
 
       if (saveData) {
-        ora.succeed('创建秘钥成功');
+        ora.succeed('保存服务器信息成功');
       }
     }
   } catch (err: any) {
