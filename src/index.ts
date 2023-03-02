@@ -3,13 +3,11 @@ import chalk from 'chalk';
 import Yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import process from 'process';
-import fs from 'fs';
-import path from 'path';
 import set from './set.js';
 // import del from './del';
 import ssh from './ssh.js';
 import serverList from './server.js';
-import { __dirname } from './utils.js';
+import { __dirname, init } from './utils.js';
 
 const ora = ORA();
 
@@ -58,11 +56,7 @@ Yargs(hideBin(process.argv))
       });
   })
   .command('init', '初始化环境', () => {
-    fs.writeFile(path.resolve(__dirname, ''), '#保存数据', (err) => {
-      if (err) {
-        return ora.warn(chalk.yellow('初始化环境失败'));
-      }
-    });
+    init();
   })
   // .command('del', '删除服务器', () => {
   //   del().catch((err) => {

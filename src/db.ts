@@ -1,5 +1,4 @@
 import path from 'path';
-import fs from 'fs';
 import { map, isObject } from 'lodash';
 import chain from 'lodash/chain.js';
 import { Low } from 'lowdb';
@@ -11,7 +10,7 @@ export interface KeysData {
   keys: Array<SMLType>;
 }
 
-const location = path.join(__dirname, `/.key/key.json`);
+const location = path.join(__dirname, `.key/db.json`);
 const adapter = new JSONFile<KeysData>(location);
 const db = new Low<KeysData>(adapter);
 
@@ -30,11 +29,11 @@ const obj = {
     if (findData) {
       throw new Error('已经生成相同的服务器信息');
     } else {
-      // if (params.select === 'password') {
-      // } else {
-      // }
-      obj.set(params);
+      await obj.set(params);
       const result = await obj.get();
+      if (!result) {
+        throw new Error('请添加服务器信息');
+      }
       return result;
     }
   },
@@ -50,25 +49,21 @@ const obj = {
     });
   },
   get: async (params?: { [key: string]: any }) => {
-    console.log('db', db);
-    if (db && db.data) {
-      await db.read();
-    } else {
-      throw new Error('文件不存在');
+    if (!(db && db.data)) {
+      return null;
     }
+    await db.read();
     const get = chain(db.data).get('keys');
     if (isObject(params)) {
       return get.find(params).value();
     }
     return get.value();
-
-    // console.log('----get', params, data);
-    // return data;
   },
   set: async (params: any) => {
-    // console.log('----set', params);
     db.data ||= { keys: [] };
-    db.data?.keys.push(params);
+    if (params) {
+      db.data?.keys.push(params);
+    }
     await db.write();
   },
 };
