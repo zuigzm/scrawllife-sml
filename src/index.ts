@@ -4,7 +4,7 @@ import Yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import process from 'process';
 import set from './set.js';
-// import del from './del';
+import del from './del.js';
 import ssh from './ssh.js';
 import serverList from './server.js';
 import { __dirname, init } from './utils.js';
@@ -58,11 +58,11 @@ Yargs(hideBin(process.argv))
   .command('init', '初始化环境', () => {
     init();
   })
-  // .command('del', '删除服务器', () => {
-  //   del().catch((err) => {
-  //     if (err) {
-  //       ora.warn(chalk.yellow('暂时未获取到服务器信息'));
-  //     }
-  //   });
-  // })
+  .command('del', '删除服务器', () => {
+    del().catch((err) => {
+      if (err) {
+        ora.warn(chalk.yellow('暂时未获取到服务器信息'));
+      }
+    });
+  })
   .demandCommand(1).argv;

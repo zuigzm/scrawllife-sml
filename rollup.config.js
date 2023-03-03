@@ -49,5 +49,5 @@ export default {
     json(),
     terser(),
   ],
-  external: ['lodash'],
+  external: ['lodash', 'ssh-keygen-lite', 'node-pty'],
 };
