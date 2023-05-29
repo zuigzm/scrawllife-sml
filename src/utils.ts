@@ -7,7 +7,8 @@ import chalk from 'chalk';
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export function init() {
-  fs.writeFile(resolve(__dirname, './.key/db.json.tmp'), `//${new Date()}`, (err) => {
+  const filePath = resolve(__dirname, './.key/db.json.tmp');
+  fs.writeFile(filePath, `//${new Date()}`, (err) => {
     if (err) {
       return ORA().fail(chalk.yellow('初始化环境失败'));
     } else {

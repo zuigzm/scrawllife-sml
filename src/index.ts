@@ -44,9 +44,6 @@ Yargs(hideBin(process.argv))
           ssh(select).then(() => {
             ora.succeed(`登录 ${select.address} 成功`);
           });
-          // db.get({ time: select.time }).then((data) => {
-          // ssh(data);
-          // });
         }
       })
       .catch((err) => {
