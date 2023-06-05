@@ -3,10 +3,11 @@ import chalk from 'chalk';
 import Yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import process from 'process';
-import set from './set';
-import del from './del';
-import serverList from './server';
-import db from './db';
+import set from './set.js';
+import del from './del.js';
+import ssh from './ssh.js';
+import serverList from './server.js';
+import { __dirname, init } from './utils.js';
 
 const ora = ORA();
 
@@ -36,12 +37,12 @@ Yargs(hideBin(process.argv))
       }
     },
   )
-  .command('list', '服务器选择列表', (argv: any) => {
+  .command('list', '服务器选择列表', () => {
     serverList()
       .then(({ select }) => {
         if (select) {
-          db.get({ time: select.time }).then((data) => {
-            // ssh(data);
+          ssh(select).then(() => {
+            ora.succeed(`登录 ${select.address} 成功`);
           });
         }
       })
@@ -51,7 +52,10 @@ Yargs(hideBin(process.argv))
         }
       });
   })
-  .command('del', '删除服务器', (argv: any) => {
+  .command('init', '初始化环境', () => {
+    init();
+  })
+  .command('del', '删除服务器', () => {
     del().catch((err) => {
       if (err) {
         ora.warn(chalk.yellow('暂时未获取到服务器信息'));

@@ -1,8 +1,10 @@
 import inquirer from 'inquirer';
-import cryptoRandomString from 'crypto-random-string';
+import { assign } from 'lodash';
 import ORA from 'ora';
-import save from './save';
-import db from './db';
+import save from './save.js';
+import db from './db.js';
+
+import { SMLType } from './type.d.js';
 
 const questions = [
   {
@@ -15,7 +17,7 @@ const questions = [
     type: 'input',
     name: 'address',
     message: '设置服务器:',
-    default: '192.168.1.3',
+    default: 'localhost',
   },
   {
     type: 'input',
@@ -30,6 +32,50 @@ const questions = [
     default: 'root',
   },
   {
+    type: 'list',
+    name: 'select',
+    message: '请选择登录方式（默认口令登录）',
+    default: 'password',
+    choices: [
+      {
+        name: '口令登录',
+        value: 'password',
+      },
+      {
+        name: '秘钥登录',
+        value: 'keygen',
+      },
+    ],
+  },
+];
+
+const passwordFlow = [
+  {
+    type: 'password',
+    name: 'password1',
+    message: '请输入登录口令',
+    validate: (aws: string) => {
+      if (aws) {
+        return true;
+      }
+      return false;
+    },
+  },
+  {
+    type: 'password',
+    name: 'password2',
+    message: '请再次输入登录口令',
+    validate: (aws: string) => {
+      if (aws) {
+        return true;
+      }
+      return false;
+    },
+  },
+];
+
+const keygenFlow = [
+  {
     type: 'input',
     name: 'file',
     message: '设置ssh-keygen名称:',
@@ -38,8 +84,8 @@ const questions = [
   {
     type: 'input',
     name: 'password',
-    message: '设置ssh-keygen密码:',
-    default: cryptoRandomString({ length: 12, type: 'base64' }),
+    message: '设置ssh-keygen密码:（不设置即无秘登录）',
+    // default: cryptoRandomString({ length: 12, type: 'base64' }),
   },
   {
     type: 'input',
@@ -59,38 +105,69 @@ const questions = [
   },
 ];
 
-export default () => {
-  const ora = ORA();
-  return inquirer.prompt(questions).then((answers) => {
-    return inquirer
-      .prompt({
-        type: 'confirm',
-        name: 'type',
-        message: `请确定你的信息!`,
-      })
-      .then((ft) => {
-        if (ft.type) {
-          ora.start('生成ssh-keygen中...');
-          // todo: https://github.com/typicode/lowdb/issues/380
-          // const adapter = new JSONFile<KeysData>(json)
-          // 给每个账号设置一个时间戳，来区分
-          const params = {
-            time: Date.now(),
-            ...answers,
-          };
-          db.save(params)
-            .then((data) => {
-              ora.succeed('创建秘钥成功');
-              ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
-              return save(params).then(() => {
-                ora.succeed('传入秘钥成功');
-              });
-            })
-            .catch((err) => {
-              // console.log(err);
-              ora.fail('错误了');
-            });
-        }
+const ora = ORA();
+
+export default async () => {
+  try {
+    let params: SMLType | null = null;
+    const answers: SMLType = await inquirer.prompt(questions);
+    if (answers.select === 'password') {
+      const pwFlowData = await pwFlow(answers);
+      // 设置口令步骤
+      params = assign(params, pwFlowData);
+    } else {
+      // 设置秘钥步骤
+      const ftFlowData = await ftFlow(answers);
+      params = assign(params, ftFlowData);
+    }
+
+    if (params) {
+      const saveData = await db.save(params, {
+        filter: ['serverName'],
       });
-  });
+
+      if (saveData) {
+        ora.succeed('保存服务器信息成功');
+      }
+    }
+  } catch (err: any) {
+    ora.fail(err && err.toString());
+  }
 };
+
+async function pwFlow(answers: SMLType) {
+  const passwordFlowData = await inquirer.prompt(passwordFlow);
+  if (passwordFlowData.password1 !== passwordFlowData.password2) {
+    throw new Error('两次输入的口令不同');
+  }
+  return assign({}, passwordFlowData, answers);
+}
+
+async function ftFlow(answers: SMLType) {
+  const keygenFlowData = await inquirer.prompt(keygenFlow);
+
+  const ft = await inquirer.prompt({
+    type: 'confirm',
+    name: 'type',
+    message: `请确定你的信息!`,
+  });
+
+  if (ft.type) {
+    ora.start('生成ssh-keygen中...');
+    // todo: https://github.com/typicode/lowdb/issues/380
+    // const adapter = new JSONFile<KeysData>(json)
+    // 给每个账号设置一个时间戳，来区分
+    const params = {
+      ...answers,
+      ...keygenFlowData,
+      time: Date.now(),
+    };
+
+    // 生成秘钥成功后，添加秘钥信息
+    const saveKey = await save(params, () => {
+      ora.info(' 正在将秘钥传入服务器，请输入服务器密码');
+    });
+
+    return assign({}, params, saveKey);
+  }
+}

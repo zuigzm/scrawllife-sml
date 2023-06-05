@@ -1,41 +1,53 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import path from 'path';
-import { babel } from '@rollup/plugin-babel';
+import { fileURLToPath } from 'node:url';
+import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import pkg from './package.json';
+import terser from '@rollup/plugin-terser';
+import json from '@rollup/plugin-json';
+// import typescript from '@rollup/plugin-typescript';
+
+import pkg from './package.json' assert { type: 'json' };
 
 const extensions = ['.js', '.ts'];
 
 const resolve = (...args) => {
-  return path.resolve(__dirname, ...args);
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), ...args);
 };
 
-module.exports = {
+export default {
   input: resolve('./src/index.ts'),
   output: {
     file: resolve('./', pkg.main), // 为了项目的统一性，这里读取 package.json 中的配置项
-    format: 'cjs',
-    // plugins: [
-    //   getBabelOutputPlugin({
-    //     babelHelpers: "bundled",
-    //     configFile: path.resolve(__dirname, "babel.config.js"),
-    //   }),
-    // ],
+    format: 'esm',
     banner: '#!/usr/bin/env node',
+    plugins: [getBabelOutputPlugin({})],
   },
   plugins: [
-    commonjs(),
     nodeResolve({
       extensions,
-      modulesOnly: true,
+      exportConditions: ['node'],
     }),
     babel({
-      exclude: ['node_modules/**', 'bin/**'],
-      presets: ['@babel/preset-env', '@babel/preset-typescript'],
-      plugins: ['@babel/plugin-transform-runtime'],
       babelHelpers: 'runtime',
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            useBuiltIns: 'usage',
+            corejs: 3,
+          },
+        ],
+        '@babel/preset-typescript',
+      ],
+      exclude: ['node_modules/**', 'bin/**'],
+      include: ['src/**'],
+      plugins: ['@babel/plugin-transform-runtime', 'lodash'],
       extensions,
     }),
+    commonjs(),
+    json(),
+    terser(),
   ],
+  external: ['lodash', 'ssh-keygen-lite', 'node-pty'],
 };

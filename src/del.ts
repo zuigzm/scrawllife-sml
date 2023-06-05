@@ -1,39 +1,45 @@
-import inquirer from 'inquirer';
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-underscore-dangle */
+
 import path from 'path';
-import { Low, JSONFile } from 'lowdb';
-import { KeysData } from './save';
-import serverList from './server';
+import pty from 'node-pty';
+import os from 'os';
+import serverList from './server.js';
+
+// 说明：删除的时候，先删除 对应服务器中的数据 然后删除 文件夹内的信息，再删除 key.json 中的数据
 
 // 删除指定服务器
 export default () => {
   const __dirname = path.resolve(path.dirname(''));
-  const json = path.join(__dirname, '/.key/key.json');
-  const adapter = new JSONFile<KeysData>(json);
-  const db = new Low<KeysData>(adapter);
+  const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 
-  return serverList()
-    .then(({ select, datas }) => {
-      // 获取指定的服务器 answers
-      const d = datas.filter((i) => i.time !== select.time);
+  const ptyProcess = pty.spawn(shell, [], {
+    name: 'xterm-color',
+    cols: 80,
+    rows: 30,
+    cwd: process.env.HOME,
+  });
 
-      // 直接复写数据
-      return d;
-    })
-    .then((data) => {
-      return inquirer
-        .prompt({
-          type: 'confirm',
-          name: 'type',
-          message: `确认删除该服务器？`,
-        })
-        .then((ft) => {
-          if (ft.type) {
-            fs.writeFile(json, data.join('-'), 'utf8', (err) => {
-              if (err) throw err;
-            });
+  return serverList().then(({ select }) => {
+    if (select) {
+      ptyProcess.on('data', (data) => {
+        process.stdout.write(data);
+        if (/oh-my-zsh/.test(data)) {
+          ptyProcess.write('n\r');
+        }
 
-            return ft.type;
-          }
-        });
-    });
+        // if (/~/.test(data)) {
+        //   ptyProcess.write('ls\r');
+        // }
+      });
+
+      ptyProcess.write(
+        `ssh -i ${path.join(__dirname, `.key/${select.file}`, 'sshKey')} ${select.user}@${
+          select.address
+        } -p ${select.port}\r`,
+      );
+
+      ptyProcess.write(`cat ~/.ssh/authorized_keys\r`);
+    }
+  });
 };

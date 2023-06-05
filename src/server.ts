@@ -1,44 +1,33 @@
 import inquirer from 'inquirer';
-import { Low, JSONFile } from 'lowdb';
-import fs from 'fs';
-import path from 'path';
+import { isArray, map, find } from 'lodash';
+import db from './db.js';
+import { SMLType } from './type.d.js';
 
-import { KeysData } from './save';
+export default async (): Promise<{ select: SMLType; datas: SMLType[] }> => {
+  const data: any = await db.get();
+  if (!isArray(data)) {
+    throw new Error('暂无保存的服务器列表');
+  }
 
-export default () => {
-  const __dirname = path.resolve(path.dirname(''));
-  const json = path.join(__dirname, '/.key/key.json');
-  const adapter = new JSONFile<KeysData>(json);
-  const db = new Low<KeysData>(adapter);
+  if (!(data && data.length)) {
+    throw new Error('暂无保存的服务器列表');
+  }
 
-  return new Promise((resolve, reject) => {
-    db.read().then(() => {
-      const { keys = [] } = db.data || {};
-      if (!keys.length) {
-        reject('暂无保存的服务器列表');
-      } else {
-        resolve(keys);
-      }
-    });
-  }).then((data: any) => {
-    return inquirer
-      .prompt([
-        {
-          type: 'list',
-          name: 'time',
-          message: '请选择服务器',
-          choices: data.map((i: any) => ({
-            name: i.name,
-            value: i.time,
-          })),
-        },
-      ])
-      .then((answers) => {
-        const serverList = data.find((item: any) => item.time === answers.time);
-        return {
-          select: serverList,
-          datas: data,
-        };
-      });
-  });
+  const answers = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'time',
+      message: '请选择服务器',
+      choices: map(data, (i: any) => ({
+        name: i.serverName,
+        value: i.time,
+      })),
+    },
+  ]);
+
+  const serverList = find(data, (item: any) => item.time === answers.time);
+  return {
+    select: serverList,
+    datas: data,
+  };
 };
