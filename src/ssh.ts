@@ -12,6 +12,7 @@ const conn = pty.spawn(shell, [], {
   name: 'xterm-color',
   cwd: process.env.HOME,
   env: process.env,
+  autoContinue: true,
 });
 
 const __dirname = path.resolve(path.dirname(''));
@@ -25,17 +26,21 @@ export default (sml: SMLType) => {
 
 function passwordFun(sml: SMLType) {
   return new Promise((resolve, reject) => {
-    // conn.on('data', (data) => console.log(data.toString()));
     conn.pipe(process.stdout);
-
-    // console.log(`ssh ${sml.user}@${sml.address} -p ${sml.port}`);
     conn.write(`ssh ${sml.user}@${sml.address} -p ${sml.port}`);
+    conn.write('');
 
     conn.on('data', (data) => {
       // 监听 shell 的输出
-      if (data.toString().includes('password')) {
+      const string = data.toString();
+      if (string.includes('password') || string.includes('Password')) {
         // 输入密码
         conn.write(sml.password1);
+        conn.write('');
+      }
+
+      if (string.includes('exit')) {
+        conn.kill();
       }
     });
 
