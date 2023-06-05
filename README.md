@@ -13,3 +13,21 @@ sml set --server  // sml set -S 设置需要保存的服务器信息
 
 sml list // 查看并进入需要保存的服务器
 ```
+
+## 本地使用方法
+
+```bash
+git clone https://github.com/zuigzm/scrawllife-sml
+
+cd scrawllife-sml
+
+npm link
+
+// 查看 sml
+sml --help
+
+// 使用
+sml set --server  // sml set -S 设置需要保存的服务器信息
+
+sml list // 查看并进入需要保存的服务器
+```
