@@ -132,6 +132,8 @@ export default async () => {
     }
   } catch (err: any) {
     ora.fail(err && err.toString());
+    // 避免报错时，不自动退出进程，进行手动退出
+    process.exit();
   }
 };
 

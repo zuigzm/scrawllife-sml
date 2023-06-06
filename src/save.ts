@@ -9,17 +9,20 @@ import db from './db.js';
 import { __dirname } from './utils.js';
 
 // 终止操作并返回错误信息
-function closeCopyId(user: string, file: any) {
+function closeCopyId(file: any, user?: string) {
   // 先删除，删除成功以后在清理数据
   return rimraf(`${file()}`).then(async (err: any) => {
     if (err) throw err;
-    const data = await db.delete({
-      user,
-    });
-    if (data) {
-      return true;
+    if (user) {
+      const data = await db.delete({
+        user,
+      });
+      if (data) {
+        return true;
+      }
+      throw new Error('删除失败');
     }
-    throw new Error('删除失败');
+    return true;
   });
 }
 
@@ -29,10 +32,9 @@ export function sshCopyId(file: any, port: number, user: string, address: string
       if (!err) {
         resolve(true);
       }
-      reject(new Error('复制秘钥错误, 终止操作'));
     }).on('exit', (err) => {
       if (err) {
-        closeCopyId(user, file)
+        closeCopyId(file, user)
           .then((data) => {
             if (data) {
               reject(new Error('复制秘钥错误, 终止操作'));
@@ -50,23 +52,19 @@ export interface KeysData {
   keys: Array<SMLType>;
 }
 
-export default async (sml: SMLType, cb: any) => {
+export default async (sml: SMLType, cb?: any) => {
   // 使用ssh2 在服务端 生成 ssh
   const location = (file?: string) => {
     return path.resolve(__dirname, `.key/${sml.file}`, `${file || ''}`);
   };
 
-  const mkState = await mkdirp(path.resolve(__dirname, `.key/${sml.file}`));
+  const mkState = await mkdirp(location());
 
   if (!mkState) {
     throw new Error('已创建该文件');
   }
 
-  console.log('mkState', mkState);
-
   const fsStat = await fs.stat(mkState);
-
-  console.log('fsStat', fsStat);
 
   if (!fsStat.isDirectory()) {
     throw new Error('没有该文件夹');
@@ -102,5 +100,9 @@ export default async (sml: SMLType, cb: any) => {
   }
 
   cb && cb();
+  process.on('SIGINT', () => {
+    process.off('SIGINT', () => {});
+  });
+
   return sshCopyId(location, sml.port, sml.user, sml.address);
 };
