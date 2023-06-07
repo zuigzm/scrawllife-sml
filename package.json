@@ -18,7 +18,6 @@
   ],
   "scripts": {
     "start": "node ./bin/index.js",
-    "test": "pnpm start",
     "build": "rollup -c -w",
     "mkdir": "mkdirp ./bin/.key",
     "fix": "eslint --fix",
