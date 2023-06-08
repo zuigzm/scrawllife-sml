@@ -32,7 +32,8 @@ Yargs(hideBin(process.argv))
             }
           })
           .catch(() => {
-            console.log('错误');
+            ora.warn('错误');
+            process.exit();
           });
       }
     },
@@ -49,6 +50,7 @@ Yargs(hideBin(process.argv))
       .catch((err) => {
         if (err) {
           ora.warn(chalk.yellow('暂时未获取到服务器信息'));
+          process.exit();
         }
       });
   })
@@ -59,6 +61,7 @@ Yargs(hideBin(process.argv))
     del().catch((err) => {
       if (err) {
         ora.warn(chalk.yellow('暂时未获取到服务器信息'));
+        process.exit();
       }
     });
   })

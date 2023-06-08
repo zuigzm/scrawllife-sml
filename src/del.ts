@@ -5,7 +5,10 @@ import path from 'path';
 import pty from 'node-pty';
 import os from 'os';
 import serverList from './server.js';
+import db from './db.js';
+import ORA from 'ora';
 
+const ora = ORA();
 // 说明：删除的时候，先删除 对应服务器中的数据 然后删除 文件夹内的信息，再删除 key.json 中的数据
 
 // 删除指定服务器
@@ -22,24 +25,30 @@ export default () => {
 
   return serverList().then(({ select }) => {
     if (select) {
-      ptyProcess.on('data', (data) => {
-        process.stdout.write(data);
-        if (/oh-my-zsh/.test(data)) {
-          ptyProcess.write('n\r');
+      return db.delete(select).then((data) => {
+        if (data) {
+          ora.succeed('删除成功');
+          // 错误或者删除成功以后，都需要终止当前的进行
+          process.exit();
         }
-
-        // if (/~/.test(data)) {
-        //   ptyProcess.write('ls\r');
-        // }
       });
+      // if(select.select === 'password') {
+      //   db.delete(select)
+      // }
+      // ptyProcess.on('data', (data) => {
+      //   process.stdout.write(data);
+      //   if (/oh-my-zsh/.test(data)) {
+      //     ptyProcess.write('n\r');
+      //   }
+      // });
 
-      ptyProcess.write(
-        `ssh -i ${path.join(__dirname, `.key/${select.file}`, 'sshKey')} ${select.user}@${
-          select.address
-        } -p ${select.port}\r`,
-      );
+      // ptyProcess.write(
+      //   `ssh -i ${path.join(__dirname, `.key/${select.file}`, 'sshKey')} ${select.user}@${
+      //     select.address
+      //   } -p ${select.port}\r`,
+      // );
 
-      ptyProcess.write(`cat ~/.ssh/authorized_keys\r`);
+      // ptyProcess.write(`cat ~/.ssh/authorized_keys\r`);
     }
   });
 };

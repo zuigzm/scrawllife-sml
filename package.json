@@ -22,7 +22,8 @@
     "mkdir": "mkdirp ./bin/.key",
     "fix": "eslint --fix",
     "rm": "rimraf ./.key/*",
-    "postinstall": "pnpm mkdir"
+    "postinstall": "pnpm mkdir",
+    "test": "jest"
   },
   "dependencies": {
     "@babel/runtime": "^7.22.3",
@@ -46,6 +47,7 @@
     "@babel/plugin-transform-runtime": "^7.22.2",
     "@babel/preset-env": "^7.22.2",
     "@babel/preset-typescript": "^7.21.5",
+    "@jest/globals": "^29.5.0",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-json": "^6.0.0",
@@ -55,11 +57,18 @@
     "@scrawllife/fabric": "^1.0.11",
     "@types/inquirer": "^9.0.3",
     "@types/lodash": "^4.14.195",
+    "@types/shelljs": "^0.8.12",
     "@types/yargs": "^17.0.24",
     "babel-plugin-lodash": "^3.3.4",
     "core-js": "^3.30.2",
+    "jest": "^29.5.0",
     "prettier": "^2.8.8",
     "rollup": "^3.23.0",
+    "shelljs": "^0.8.5",
+    "ts-jest": "^29.1.0",
     "typescript": "^4.9.5"
+  },
+  "publishConfig": {
+    "prePublishOnly": "echo 'Skipping npm test.'"
   }
 }

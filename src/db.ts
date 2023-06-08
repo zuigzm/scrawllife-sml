@@ -1,5 +1,5 @@
 import { join, resolve } from 'path';
-import { map, isObject, find } from 'lodash';
+import { map, isObject, find, remove } from 'lodash';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import { SMLType } from './type.d.js';
@@ -36,17 +36,20 @@ const obj = {
       return result;
     }
   },
-  delete: <T = { [key: string]: any }>(params: T) => {
-    return db.read().then(() => {
-      if (isObject(params)) {
-        // const data = db.chain.get('keys').remove(params).value();
-        const data = {};
-        db.write();
-        return data;
-      }
+  delete: async <T = { [key: string]: any }>(params: T) => {
+    if (isObject(params)) {
+      const data: any = await obj.get();
+      remove(data, params);
+      // 删除数据后，重新写入 db中
+      db.data = {
+        keys: data,
+      };
+      await db.write();
+      return data;
+    } else {
       // 返回删除的数据
       throw new Error('请删除正确的信息');
-    });
+    }
   },
   get: async (params?: { [key: string]: any }) => {
     await db.read();
