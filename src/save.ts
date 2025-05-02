@@ -28,7 +28,18 @@ function closeCopyId(file: any, user?: string) {
 
 export function sshCopyId(file: any, port: number, user: string, address: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    exec(`ssh-copy-id -i ${file('sshKey.pub')} -p ${port} ${user}@${address}`, (err) => {
+    const isWin = process.platform === 'win32';
+    let command;
+
+    if (isWin) {
+      // Windows 替代方案：使用 PowerShell 读取公钥并通过 SSH 写入远程服务器
+      command = `powershell -Command "Get-Content '${file('sshKey.pub')}' | ssh -p ${port} ${user}@${address} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys'"`;
+    } else {
+      // Linux/Mac 使用 ssh-copy-id
+      command = `ssh-copy-id -i ${file('sshKey.pub')} -p ${port} ${user}@${address}`;
+    }
+
+    exec(command, (err) => {
       if (!err) {
         resolve(true);
       }
