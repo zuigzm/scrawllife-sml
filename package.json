@@ -18,7 +18,8 @@
   ],
   "scripts": {
     "start": "node ./bin/index.js",
-    "build": "rollup -c -w",
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
     "mkdir": "mkdirp ./bin/.key",
     "lint": "eslint src --ext .ts,.js",
     "lint:fix": "eslint --fix src --ext .ts,.js",
@@ -36,7 +37,6 @@
     "lodash": "^4.17.21",
     "lowdb": "^5.1.0",
     "mkdirp": "^2.1.6",
-    "node-pty": "^0.10.1",
     "onetime": "^6.0.0",
     "ora": "^6.3.1",
     "rimraf": "^4.4.1",

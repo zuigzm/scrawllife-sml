@@ -6,8 +6,10 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import json from '@rollup/plugin-json';
 // import typescript from '@rollup/plugin-typescript';
+import fs from 'fs';
 
-import pkg from './package.json' assert { type: 'json' };
+// 使用 fs 读取 package.json 而不是使用 import assertions
+const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
 const extensions = ['.js', '.ts'];
 
@@ -49,5 +51,5 @@ export default {
     json(),
     terser(),
   ],
-  external: ['lodash', 'ssh-keygen-lite', 'node-pty'],
+  external: ['lodash', 'ssh-keygen-lite', 'child_process', 'path', 'os', 'fs'],
 };
