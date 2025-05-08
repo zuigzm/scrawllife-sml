@@ -118,7 +118,14 @@ export default async () => {
     } else {
       // 设置秘钥步骤
       const ftFlowData = await ftFlow(answers);
-      params = assign(params, ftFlowData);
+      params = assign(params, {
+        password: ftFlowData.password1,
+        serverName: ftFlowData.serverName,
+        address: ftFlowData.address,
+        port: ftFlowData.port,
+        user: ftFlowData.user,
+        select: ftFlowData.select,
+      });
     }
 
     if (params) {
