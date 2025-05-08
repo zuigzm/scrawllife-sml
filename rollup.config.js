@@ -1,15 +1,37 @@
-import path from 'path';
-import { fileURLToPath } from 'node:url';
 import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
-import json from '@rollup/plugin-json';
+import { fileURLToPath } from 'node:url';
+import path from 'path';
 // import typescript from '@rollup/plugin-typescript';
 import fs from 'fs';
 
 // 使用 fs 读取 package.json 而不是使用 import assertions
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+
+// 创建一个插件来处理 ES 模块中的 __dirname 和 __filename
+function esmDirname() {
+  return {
+    name: 'esm-dirname',
+    renderChunk(code) {
+      // 替换 __dirname 的使用，使用 import.meta.url 代替 require
+      code = code.replace(
+        /\b__dirname\b/g,
+        `(typeof document === 'undefined' ? new URL(import.meta.url).pathname.substring(process.platform === 'win32' ? 1 : 0).split('/').slice(0, -1).join('/') : null)`,
+      );
+
+      // 替换 __filename 的使用
+      code = code.replace(
+        /\b__filename\b/g,
+        `(typeof document === 'undefined' ? new URL(import.meta.url).pathname.substring(process.platform === 'win32' ? 1 : 0) : null)`,
+      );
+
+      return code;
+    },
+  };
+}
 
 const extensions = ['.js', '.ts'];
 
@@ -50,6 +72,7 @@ export default {
     commonjs(),
     json(),
     terser(),
+    esmDirname(), // 添加 ESM __dirname 插件
   ],
   external: ['lodash', 'ssh-keygen-lite', 'child_process', 'path', 'os', 'fs'],
 };

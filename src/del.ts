@@ -1,16 +1,20 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-underscore-dangle */
 
-import path from 'path';
 import { spawn } from 'child_process';
 import ora from 'ora';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import serverList from './server.js';
 
 // 说明：删除的时候，先删除 对应服务器中的数据 然后删除 文件夹内的信息，再删除 key.json 中的数据
 
+// 在 ES 模块中获取 __dirname 的替代方案
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // 删除指定服务器
 export default async () => {
-  const __dirname = path.resolve(path.dirname(''));
   const spinner = ora();
 
   try {
@@ -20,9 +24,9 @@ export default async () => {
       spinner.start('正在连接服务器...');
 
       // 构建 SSH 命令
-      const sshCommand = `ssh -i ${path.join(__dirname, `.key/${select.file}`, 'sshKey')} ${select.user}@${
-        select.address
-      } -p ${select.port} "cat ~/.ssh/authorized_keys"`;
+      const sshCommand = `ssh -i ${path.join(__dirname, `.key/${select.file}`, 'sshKey')} ${
+        select.user
+      }@${select.address} -p ${select.port} "cat ~/.ssh/authorized_keys"`;
 
       // 分割命令和参数
       const [command, ...args] = sshCommand.split(' ').filter(Boolean);
@@ -47,7 +51,7 @@ export default async () => {
         spinner.fail(`连接错误: ${err.message}`);
       });
     }
-  } catch (error) {
-    spinner.fail(`操作失败: ${error.message}`);
+  } catch (error: any) {
+    spinner.fail(`操作失败: ${error?.message || '未知错误'}`);
   }
 };

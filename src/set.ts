@@ -1,8 +1,8 @@
 import inquirer from 'inquirer';
 import { assign } from 'lodash';
 import ORA from 'ora';
-import save from './save.js';
 import db from './db.js';
+import save from './save.js';
 
 import { SMLType } from './type.d.js';
 
@@ -113,18 +113,20 @@ export default async () => {
     const answers: SMLType = await inquirer.prompt(questions);
     if (answers.select === 'password') {
       const pwFlowData = await pwFlow(answers);
-      // 设置口令步骤
-      params = assign(params, pwFlowData);
+      // 设置口令步骤，确保将 password1 复制到 password 字段
+      params = assign(params, {
+        password: pwFlowData.password1,
+        serverName: pwFlowData.serverName,
+        address: pwFlowData.address,
+        port: pwFlowData.port,
+        user: pwFlowData.user,
+        select: pwFlowData.select,
+      });
     } else {
       // 设置秘钥步骤
       const ftFlowData = await ftFlow(answers);
       params = assign(params, {
-        password: ftFlowData.password1,
-        serverName: ftFlowData.serverName,
-        address: ftFlowData.address,
-        port: ftFlowData.port,
-        user: ftFlowData.user,
-        select: ftFlowData.select,
+        ...ftFlowData,
       });
     }
 
@@ -149,6 +151,7 @@ async function pwFlow(answers: SMLType) {
   if (passwordFlowData.password1 !== passwordFlowData.password2) {
     throw new Error('两次输入的口令不同');
   }
+  // 确保将 password1 复制到 password 字段
   return assign({}, passwordFlowData, answers);
 }
 

@@ -20,6 +20,68 @@
 
 ## 常见问题解决
 
+### "ReferenceError: \_\_dirname is not defined in ES module scope"
+
+如果您遇到这个错误，这是因为项目使用了 ES 模块（在 package.json 中设置了 `"type": "module"`），而在 ES 模块中，`__dirname` 和 `__filename` 变量不可用。
+
+最新版本已经修复了这个问题，使用以下方式获取当前文件的目录路径：
+
+```javascript
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// 在 ES 模块中获取 __dirname 的替代方案
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+```
+
+如果您仍然遇到这个问题，可以尝试以下解决方案：
+
+1. **更新到最新版本**：最新版本已经修复了这个问题
+2. **重新构建项目**：如果您修改了代码，请运行 `npm run build`
+3. **使用 utils.js 中的 \_\_dirname**：
+   ```javascript
+   import { __dirname } from './utils.js';
+   ```
+4. **降级 Node.js 版本**：如果您使用的是 Node.js v22.x，可以尝试降级到 v18.x LTS 版本
+5. **修改 package.json**：将 `"type": "module"` 改为 `"type": "commonjs"`，但这可能需要修改其他导入语句
+
+### "ReferenceError: require is not defined in ES module scope"
+
+如果您遇到这个错误，这是因为在 ES 模块中，`require` 函数不可用，需要使用 `import` 语句代替。
+
+解决方案：
+
+1. **使用 import 语句**：
+
+   ```javascript
+   // 替换这个
+   const fs = require('fs');
+
+   // 使用这个
+   import fs from 'fs';
+   ```
+
+2. **使用动态导入**：
+
+   ```javascript
+   // 替换这个
+   const module = require('module-name');
+
+   // 使用这个
+   const module = await import('module-name');
+   ```
+
+3. **使用 createRequire API**：
+
+   ```javascript
+   import { createRequire } from 'module';
+   const require = createRequire(import.meta.url);
+   const fs = require('fs');
+   ```
+
+4. **修改文件扩展名**：将 `.js` 改为 `.cjs`，这样文件会被视为 CommonJS 模块
+
 ### "Pseudo-terminal will not be allocated because stdin is not a terminal"
 
 如果您遇到这个错误，工具已经自动添加了 `-tt` 参数来强制分配伪终端。如果仍然出现问题，可以尝试以下方法：
@@ -28,21 +90,38 @@
 2. 尝试使用密钥认证而不是密码认证
 3. 在交互式终端中运行命令，而不是通过脚本或其他非交互式方式
 
-### "Permission denied, please try again"
+### "Permission denied, please try again" 或 "All configured authentication methods failed"
 
-如果您遇到权限被拒绝的错误，可能是以下原因：
+如果您遇到权限被拒绝或认证方法失败的错误，可能是以下原因：
 
 1. **密码错误**：请确认您设置的密码是正确的
 2. **用户权限**：确认该用户有权限通过 SSH 登录服务器
 3. **SSH 配置**：服务器可能禁用了密码认证，只允许密钥认证
 4. **登录限制**：服务器可能限制了特定 IP 地址的登录
+5. **密钥问题**：SSH 密钥格式不正确或权限设置不当
+6. **认证方法限制**：服务器可能只允许特定的认证方法
 
 解决方法：
 
-1. 使用 `sml set --server` 重新设置正确的密码
-2. 尝试使用密钥认证方式
-3. 检查服务器的 SSH 配置（`/etc/ssh/sshd_config`）
-4. 联系服务器管理员确认您的账号权限
+1. **重新设置密码**：使用 `sml set --server` 重新设置正确的密码
+2. **尝试其他认证方式**：如果密码认证失败，尝试使用密钥认证，反之亦然
+3. **检查服务器配置**：查看服务器的 SSH 配置（`/etc/ssh/sshd_config`）
+4. **联系管理员**：联系服务器管理员确认您的账号权限
+5. **检查密钥权限**：确保密钥文件权限正确（私钥应为 600）
+6. **启用调试模式**：使用 `-v` 参数查看详细的连接过程
+
+### "TypeError: Cannot read properties of null (reading 'join')"
+
+如果您遇到这个错误，可能是因为 SSH 认证方法列表为 null。最新版本已经修复了这个问题，添加了对 null 值的检查和处理。
+
+解决方法：
+
+1. **更新到最新版本**：最新版本已经修复了这个问题
+2. **检查网络连接**：确保您的网络连接正常，可以访问目标服务器
+3. **检查服务器状态**：确保目标服务器正常运行并且 SSH 服务可用
+4. **检查防火墙设置**：确保防火墙没有阻止 SSH 连接
+
+最新版本已经添加了更详细的错误信息和自动重试机制，可以帮助您更好地诊断和解决连接问题。
 
 ### 关于自动密码登录
 

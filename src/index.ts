@@ -1,13 +1,13 @@
-import ORA from 'ora';
 import chalk from 'chalk';
+import ORA from 'ora';
+import process from 'process';
 import Yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import process from 'process';
-import set from './set.js';
 import del from './del.js';
-import ssh from './ssh.js';
 import serverList from './server.js';
-import { __dirname, init } from './utils.js';
+import set from './set.js';
+import ssh from './ssh.js';
+import { init } from './utils.js';
 
 const ora = ORA();
 
@@ -42,9 +42,7 @@ Yargs(hideBin(process.argv))
     serverList()
       .then(({ select }) => {
         if (select) {
-          ssh(select).then(() => {
-            ora.succeed(`登录 ${select.address} 成功`);
-          });
+          ssh(select);
         }
       })
       .catch((err) => {
