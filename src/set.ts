@@ -166,9 +166,6 @@ async function ftFlow(answers: SMLType) {
 
   if (ft.type) {
     ora.start('生成ssh-keygen中...');
-    // todo: https://github.com/typicode/lowdb/issues/380
-    // const adapter = new JSONFile<KeysData>(json)
-    // 给每个账号设置一个时间戳，来区分
     const params = {
       ...answers,
       ...keygenFlowData,
