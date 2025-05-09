@@ -40,7 +40,7 @@ export default async (sml: SMLType) => {
     }
   } catch (error: any) {
     spinner.fail(`连接失败: ${error?.message || '未知错误'}`);
-    throw error;
+    process.exit();
   }
 };
 
